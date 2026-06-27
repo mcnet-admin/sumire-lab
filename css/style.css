@@ -1,1 +1,304 @@
+/*---------------------------------------------
+ * すみれクラブ予約システム開発室 - style.css 概要
+ * ・Google Fonts から Noto Sans JP をインポート（高い可読性の日本語UIフォント）
+ * ・WCAG基準に準拠した配色（本文の最低コントラスト比4.5:1以上）
+ * ・キーボードフォーカス時に見やすいアウトラインを設定
+ * ・レスポンシブ対応：PC3列・タブレット2列・モバイル1列のカードレイアウト
+ * ・カード：角丸・柔らかなシャドウ、ホバー時に浮き上がるエフェクト
+ * 画像: img/sumire_lab_logo.png を img/ フォルダ内に配置
+ * 使い方: このファイルを css/style.css として保存し、index.html からリンク
+ *---------------------------------------------*/
 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+/* ルート変数 (カラーパレットとフォント設定) */
+:root {
+  --color-main: #8F7CC3;
+  --color-dark: #6E56A5;
+  --color-bg: #FAF8FD;
+  --color-card: #FFFFFF;
+  --color-hover: #F3EEFC;
+  --color-border: #DDD5EF;
+  --font-sans: 'Noto Sans JP', 'Yu Gothic', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+}
+
+/* リセットと基本スタイル */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+body, h1, h2, h3, p, section {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: #333;
+  line-height: 1.6;
+}
+h1, h2 {
+  font-weight: normal;
+}
+h1 {
+  font-size: 2.2rem;
+  margin: 0.5rem 0;
+}
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-dark);
+}
+h3, h4, h5, h6 {
+  margin: 0.5rem 0;
+}
+p {
+  margin-bottom: 1rem;
+}
+
+/* ヘッダー */
+header {
+  background: linear-gradient(135deg, #A88BD9, #8D73C8);
+  color: #fff;
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  position: relative;
+}
+.logo {
+  width: 220px;
+  max-width: 90%;
+  height: auto;
+  display: block;
+  margin: 0 auto 1rem;
+}
+.subtitle {
+  font-size: 1.1rem;
+  line-height: 1.4;
+  margin-top: 0.5rem;
+  color: #f1f1f1;
+}
+.version {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+}
+
+/* セクションカード */
+.card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  margin: 2rem auto;
+  padding: 1.5rem;
+  max-width: 800px;
+}
+
+/* ドキュメントメニュー */
+.menu-title {
+  text-align: center;
+  font-size: 1.25rem;
+  margin: 2rem 0 1rem;
+  color: var(--color-dark);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  padding: 0 1rem;
+}
+.menu-card {
+  display: block;
+  background-color: var(--color-hover);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-decoration: none;
+  color: var(--color-dark);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.menu-card:hover,
+.menu-card:focus-visible {
+  transform: translateY(-4px);
+  background-color: #E6DDFC; /* 少し濃いホバー色 */
+}
+.menu-card h3 {
+  margin-bottom: 0.5rem;
+}
+.menu-card h4 {
+  margin: 0.25rem 0 0.5rem;
+}
+.menu-card p {
+  font-size: 0.9rem;
+}
+
+/* キーボードフォーカス用スタイル */
+/* キー操作時にフォーカスがわかりやすいようアウトラインを表示 */
+:focus-visible {
+  outline: 3px dashed var(--color-dark);
+  outline-offset: 3px;
+}
+
+/* レスポンシブ: スマホ・タブレット */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+  .card {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  .menu-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* 印刷用: 余分な背景色やシャドウを除去 */
+@media print {
+  body { background: #fff; }
+  .card, .menu-card {
+    box-shadow: none;
+    background-color: #fff;
+  }
+}
+
+/*=========================
+  Footer
+=========================*/
+
+footer{
+    margin-top:70px;
+    padding:40px 20px;
+    background:#ffffff;
+    border-top:1px solid #ddd7f2;
+    text-align:center;
+    color:#666;
+}
+
+footer img{
+    width:60px;
+    margin-bottom:10px;
+}
+
+footer h3{
+    color:#7d63b8;
+    margin-bottom:8px;
+}
+
+footer p{
+    margin:6px 0;
+    font-size:0.95rem;
+}
+
+/*=================================
+ Hero
+=================================*/
+
+.hero{
+
+    text-align:center;
+    margin:50px auto;
+
+}
+
+.hero h2{
+
+    color:var(--color-dark);
+    font-size:2rem;
+
+}
+
+.hero p{
+
+    margin-top:15px;
+    font-size:1.1rem;
+
+}
+
+.hero .lead{
+
+    font-weight:bold;
+    font-size:1.3rem;
+
+}
+
+/*=================================
+ Timeline
+=================================*/
+
+.timeline{
+
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+
+}
+
+.timeline-item{
+
+    background:white;
+
+    border-left:5px solid var(--color-main);
+
+    padding:18px;
+
+    border-radius:10px;
+
+}
+
+/*=================================
+ Development Status
+=================================*/
+
+.progress{
+
+    width:100%;
+    height:12px;
+
+    background:#ddd;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+}
+
+.progress-bar{
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        #79c67a,
+        #9fdd8b
+    );
+
+}
+
+.status{
+
+display:inline-block;
+
+padding:3px 10px;
+
+border-radius:20px;
+
+font-size:.8rem;
+
+background:#eef8ef;
+
+color:#2e7d32;
+
+font-weight:bold;
+
+}
