@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🖥️ システム構成｜すみれクラブ予約システム開発室</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<img src="../img/sumire_lab_logo.png"
+     alt="Sumire Lab Logo"
+     class="logo">
+
+<h1>🖥️ システム構成</h1>
+
+<p class="subtitle">
+
+予約システム全体の構成と技術概要
+
+</p>
+
+<div class="version">
+
+Version 1.1
+
+</div>
+
+</header>
+
+<main>
+
+<!-- =====================================
+ Breadcrumb
+===================================== -->
+
+<nav class="breadcrumb">
+
+<a href="../index.html">
+
+🏠 開発室トップ
+
+</a>
+
+&nbsp; &gt; &nbsp;
+
+<span>
+
+🖥️ システム構成
+
+</span>
+
+</nav>
+
+<!-- =====================================
+ Hero
+===================================== -->
+
+<section class="hero">
+
+<h2>
+
+システム全体を見渡すためのページです。
+
+</h2>
+
+<p class="lead">
+
+「どのような仕組みで予約システムが動いているのか」
+を概要として紹介します。
+
+</p>
+
+<p>
+
+詳細なデータ設計や運用方法については、
+各ページで個別に説明しています。
+
+</p>
+
+</section>
+
+<!-- =====================================
+ システム全体構成
+===================================== -->
+
+<section class="card">
+
+<h2>
+
+🌐 システム全体構成
+
+</h2>
+
+<p>
+
+すみれクラブ予約システムは、
+複数の仕組みが連携して動作しています。
+
+</p>
+
+<pre>
+
+保護者
+    │
+    ▼
+予約システム（Web）
+    │
+    ▼
+students.json
+reservations.json
+    │
+    ▼
+利用料金集計
+    │
+    ▼
+PDF請求書
+    │
+    ▼
+メール送信
+
+</pre>
+
+<p>
+
+各機能は共通データを利用することで、
+同じ内容を何度も入力することなく
+運用できるよう設計しています。
+
+</p>
+
+</section>
+
+<!-- =====================================
+ GitHub構成
+===================================== -->
+
+<section class="card">
+
+<h2>
+
+🐙 GitHub構成
+
+</h2>
+
+<p>
+
+本プロジェクトでは、
+GitHub上で役割を分けて管理しています。
+
+</p>
+
+<pre>
+
+GitHub
+
+├── sumire-portal
+│
+│   実際に運用する予約システム
+│
+└── sumire-lab
+    開発室
+    設計書
+    マニュアル
+    更新履歴
+
+</pre>
+
+<p>
+
+<strong>sumire-portal</strong> は実際に運用するシステム、
+
+<strong>sumire-lab</strong> は
+設計・記録・引継ぎのための開発室です。
+
+</p>
+
+</section>
+
+<!-- =====================================
+ システムの特徴
+===================================== -->
+
+<section class="card">
+
+<h2>
+
+✨ システムの特徴
+
+</h2>
+
+<ul>
+
+<li>園児情報を一元管理</li>
+
+<li>予約から請求までデータを連携</li>
+
+<li>GitHubによるバージョン管理</li>
+
+<li>継続的な改善を前提とした設計</li>
+
+<li>将来担当者への引継ぎを重視</li>
+
+</ul>
+
+</section>
+
+<!-- =====================================
+ フォルダー構成
+===================================== -->
+
+<section class="card">
+
+<h2>
+
+📁 フォルダー構成
+
+</h2>
+
+<p>
+
+システム本体と開発室は、それぞれ目的に応じたフォルダー構成で管理しています。
+
+</p>
+
+<pre>
+
+sumire-portal/
+│
+├── css/
+├── js/
+├── data/
+├── templates/
+├── index.html
+└── ...
+
+sumire-lab/
+│
+├── css/
+├── design/
+├── manual/
+├── history/
+├── img/
+├── index.html
+└── README.md
+
+</pre>
+
+<p>
+
+このように役割を分けることで、
+システム本体とドキュメントを独立して管理できるようにしています。
+
+</p>
+
+</section>
+
+<!-- =====================================
+ 使用技術
+===================================== -->
+
+<section class="card">
+
+<h2>
+
+🛠️ 使用技術
+
+</h2>
+
+<table>
+
+<tr>
+<th>技術</th>
+<th>主な用途</th>
+</tr>
+
+<tr>
+<td>HTML</td>
+<td>画面表示・ドキュメント作成</td>
+</tr>
+
+<tr>
+<td>CSS</td>
+<td>デザイン・レイアウト</td>
+</tr>
+
+<tr>
+<td>JavaScript</td>
+<td>予約画面の動作</td>
+</tr>
+
+<tr>
+<td>Python</td>
+<td>データ処理・請求書作成</td>
+</tr>
+
+<tr>
+<td>GitHub</td>
+<td>ソースコード管理</td>
+</tr>
+
+<tr>
+<td>GitHub Pages</td>
+<td>開発室の公開</td>
+</tr>
+
+<tr>
+<td>GitHub Actions</td>
+<td>自動処理・自動更新</td>
+</tr>
+
+<tr>
+<td>Google Workspace</td>
+<td>メール・各種サービス連携</td>
+</tr>
+
+</table>
+
+</section>
+
+<!-- =====================================
+ データの流れ
+===================================== -->
+
+<section class="card">
+
+<h2>
+
+🔄 データの流れ
+
+</h2>
+
+<p>
+
+園児情報は一元管理され、
+予約・請求・メール送信まで
+同じデータを利用します。
+
+</p>
+
+<pre>
+
+園児DB.xlsx
+      │
+      ▼
+students.json
+      │
+      ▼
+予約データ
+      │
+      ▼
+料金集計
+      │
+      ▼
+PDF請求書
+      │
+      ▼
+メール送信
+
+</pre>
+
+<p>
+
+詳細なデータ構造については、
+
+<strong>
+
+「03 データ設計」
+
+</strong>
+
+で詳しく説明します。
+
+</p>
+
+</section>
+
+<!-- =====================================
+ Next
+===================================== -->
+
+<section class="card">
+
+<h2>
+
+➡️ 次のページ
+
+</h2>
+
+<p>
+
+園児情報・予約データ・student_id など、
+データ構造については
+
+<strong>
+
+「03 データ設計」
+
+</strong>
+
+をご覧ください。
+
+</p>
+
+<p>
+
+<a href="03_database.html">
+
+▶ 03 データ設計へ
+
+</a>
+
+</p>
+
+</section>
+
+<!-- =====================================
+ Page Navigation
+===================================== -->
+
+<nav class="page-nav">
+
+<a href="01_system_overview.html">
+
+⬅ 01 システム概要
+
+</a>
+
+<a href="03_database.html">
+
+03 データ設計 ➡
+
+</a>
+
+</nav>
+
+</main>
+
+<footer>
+
+<p>
+
+🌸 <strong>Sumire Lab</strong>
+
+</p>
+
+<p>
+
+園のDXを記録し、
+未来へ引き継ぐ、
+生きたドキュメント。
+
+</p>
+
+<p>
+
+© McLean Kindergarten
+
+</p>
+
+<p>
+
+Version 1.1<br>
+
+Last Update　2026-06-27
+
+</p>
+
+</footer>
+
+</body>
+
+</html>
