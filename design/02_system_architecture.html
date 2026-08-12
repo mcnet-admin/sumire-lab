@@ -6,120 +6,900 @@
   <title>02 システムの流れ | すみれクラブ予約システム 開発進捗案内</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
 
 <header>
-  <img src="../img/sumire_lab_logo.png" alt="Sumire Lab Logo" class="logo">
+  <img src="../img/sumire_lab_logo.png"
+       alt="Sumire Lab Logo"
+       class="logo">
+
   <h1>🖥️ システムの流れ</h1>
-  <p class="subtitle">園児ごとの「デジタルの予約カード」が自動でつながる、新しい安心の仕組み</p>
+
+  <p class="subtitle">
+    園児ごとの「デジタルの予約カード」がつながる、新しい仕組み
+  </p>
+
   <div class="version">Version 2.0</div>
 </header>
 
+
 <main>
+
   <!-- =====================================
    Breadcrumb
   ===================================== -->
   <nav class="breadcrumb">
-    <a href="../index.html">🏠 開発進捗案内トップ</a> &nbsp; &gt; &nbsp; <span>🖥️ システムの流れ</span>
+    <a href="../index.html">
+      🏠 開発進捗案内トップ
+    </a>
+    &nbsp; &gt; &nbsp;
+    <span>🖥️ システムの流れ</span>
   </nav>
+
 
   <!-- =====================================
    Hero
   ===================================== -->
   <section class="hero">
-    <h2>先生方の手作業を、ボタンひとつに。</h2>
-    <p class="lead">保護者がスマホで予約した情報が、園児ごとの「デジタルの予約カード」として蓄積され、日々の集計や月末の請求まで一本の線でつながります。</p>
-    <p>Version 2.0では、大掛かりなサーバーに頼るのをやめ、園児一人ひとりの独立した「予約カード（JSONデータ）」をパズルのように組み合わせる仕組みを採用しました。これにより、安全かつ確実な業務効率化を実現しています。</p>
+
+    <h2>
+      先生方の手作業を、ボタンひとつに。
+    </h2>
+
+    <p class="lead">
+      保護者がスマホで予約した情報が、
+      園児ごとの「デジタルの予約カード」として蓄積され、
+      日々の集計や月末の請求まで一本の線でつながります。
+    </p>
+
+    <p>
+      Version 2.0では、大掛かりなサーバーに頼るのではなく、
+      園児一人ひとりの独立した「予約カード（JSONデータ）」を
+      利用する仕組みを採用しています。
+    </p>
+
   </section>
+
 
   <!-- =====================================
    システム全体の流れ
   ===================================== -->
   <section class="card">
+
     <h2>🌸 業務をつなぐ情報のバトンリレー</h2>
-    <p>「すみれクラブ」の予約から請求書が完成するまでの流れは、すべて自動で作られる「デジタルの予約カード」が中心となっています。</p>
-    
-    <pre style="background: var(--color-hover); padding: 1.5rem; border-radius: 0.5rem; font-family: monospace; line-height: 1.5; color: var(--color-dark); overflow-x: auto;">
-【保護者】スマートフォンからいつでも予約を入力 ※
-  ↓
-【自動化】園児ごとの「予約カード（JSON）」が作成・更新される 💡
-  ↓
-【園（先生）】集計画面を開くだけで、全員分のカードをパッと確認
-  ↓
-【集計】日々の利用実績（預かり時間など）がカードに蓄積される
-  ↓
-【請求】ボタン一つでカードから利用料金が計算され、請求書が完成！
+
+    <p>
+      「すみれクラブ」の予約から請求書が完成するまでの流れは、
+      保護者の予約情報をもとに作られる
+      「デジタルの予約カード」が中心となっています。
+    </p>
+
+
+    <pre style="
+      background: var(--color-hover);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      line-height: 1.5;
+      color: var(--color-dark);
+      overflow-x: auto;
+    ">
+【保護者】スマートフォンから予約を入力
+        ↓
+【予約】日別予約 または 一括登録
+        ↓
+【自動化】園の予定を確認して対象日を判定
+        ↓
+【管理】園児ごとの「予約カード（JSON）」として管理
+        ↓
+【園（先生）】集計画面から全員分を確認
+        ↓
+【集計】日々の利用実績を確認
+        ↓
+【請求】利用料金を計算し、請求書を作成
     </pre>
-    
-    <div style="background: #fffafa; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border: 1px dashed #ffb3b3; font-size: 0.95rem;">
-      <strong>※ 保護者用スマートフォンアプリについてのお知らせ</strong><br>
-      流れに登場する「保護者用のスマートフォンアプリ」については、現在この案内サイトとは別に、先行してアプリ単体での開発を進めております。形になり次第、また皆様にご紹介いたします。
+
+
+    <div style="
+      background: #fffafa;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+      border: 1px dashed #ffb3b3;
+      font-size: 0.95rem;
+    ">
+
+      <strong>
+        ※ 保護者用スマートフォンアプリについて
+      </strong>
+
+      <br>
+
+      保護者用のスマートフォンアプリについては、
+      この案内サイトとは別に開発を進めています。
+      実際の操作画面が形になり次第、
+      あらためてご紹介します。
+
     </div>
-    
-    <p>それぞれの作業が同じ「カード」を参照するため、同じ内容をノートに書き写したり、エクセルに二重入力したりする手間は一切必要ありません。</p>
+
+
+    <p>
+      それぞれの作業で同じ予約情報を利用することで、
+      同じ内容を何度も手作業で転記する負担を減らします。
+    </p>
+
   </section>
+
+
+  <!-- =====================================
+   予約方法の改善
+  ===================================== -->
+  <section class="card">
+
+    <h2>
+      📱 Ver.2.0 予約方法の改善
+    </h2>
+
+    <p>
+      保護者・園のスタッフから寄せられたご意見をもとに、
+      予約方法をさらに使いやすくするための改編を行います。
+    </p>
+
+    <p>
+      ポイントは、
+      <strong>
+        「日別予約を残しながら、同じ内容を繰り返し利用する場合は、
+        一度の操作でまとめて登録できるようにする」
+      </strong>
+      ことです。
+    </p>
+
+
+    <div class="grid">
+
+      <div class="menu-card"
+           style="
+             transform: none;
+             background: var(--color-card);
+           ">
+
+        <h3>
+          📅 日別予約
+        </h3>
+
+        <p>
+          単発利用や、利用日が毎回異なる場合に使用します。
+        </p>
+
+        <p>
+          必要な日だけを選択して、
+          その日の利用時間などを入力します。
+        </p>
+
+        <strong>
+          → ランダムな利用に便利
+        </strong>
+
+      </div>
+
+
+      <div class="menu-card"
+           style="
+             transform: none;
+             background: var(--color-card);
+           ">
+
+        <h3>
+          🔄 一括登録
+        </h3>
+
+        <p>
+          毎週同じ曜日・時間など、
+          同じパターンで利用する場合に使用します。
+        </p>
+
+        <p>
+          条件を一度設定すると、
+          対象期間の予約をまとめて作成します。
+        </p>
+
+        <strong>
+          → 定期的な利用に便利
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+   一括登録の仕組み
+  ===================================== -->
+  <section class="card">
+
+    <h2>
+      🔄 「一括登録」は30回入力する仕組みではありません
+    </h2>
+
+    <p>
+      一括登録では、
+      1か月分の予約を1日ずつ30回入力する必要はありません。
+    </p>
+
+    <p>
+      保護者が利用期間・曜日・時間などの条件を
+      <strong>一度だけ設定</strong>し、
+      「一括登録」を実行します。
+    </p>
+
+
+    <div style="
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      background: var(--color-hover);
+      border-radius: 0.5rem;
+      text-align: center;
+      line-height: 1.8;
+    ">
+
+      <div style="
+        padding: 0.8rem;
+        background: #fff;
+        border-radius: 0.5rem;
+      ">
+        👨‍👩‍👧 保護者が条件を設定
+        <br>
+        <small>
+          利用期間・曜日・利用時間など
+        </small>
+      </div>
+
+      <div style="font-size: 1.5rem;">
+        ↓
+      </div>
+
+      <div style="
+        padding: 0.8rem;
+        background: #fff;
+        border-radius: 0.5rem;
+      ">
+        ▶ 一括登録
+      </div>
+
+      <div style="font-size: 1.5rem;">
+        ↓
+      </div>
+
+      <div style="
+        padding: 0.8rem;
+        background: #fff;
+        border-radius: 0.5rem;
+      ">
+        ⚙️ システムが園の予定を確認
+      </div>
+
+      <div style="font-size: 1.5rem;">
+        ↓
+      </div>
+
+      <div style="
+        padding: 0.8rem;
+        background: #fff;
+        border-radius: 0.5rem;
+      ">
+        🗓️ 利用可能な日の予約を自動作成
+      </div>
+
+      <div style="font-size: 1.5rem;">
+        ↓
+      </div>
+
+      <div style="
+        padding: 0.8rem;
+        background: #fff;
+        border-radius: 0.5rem;
+      ">
+        📋 日別の予約データとして管理
+      </div>
+
+    </div>
+
+
+    <div style="
+      background: #fffdf5;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+      border: 1px solid #e6dfc8;
+    ">
+
+      <strong>
+        💡 Ver.2.0の重要な考え方
+      </strong>
+
+      <p>
+        <strong>
+          「入力は一括、データは日別」
+        </strong>
+      </p>
+
+      <p style="margin-bottom: 0;">
+        保護者の操作は一度で済ませながら、
+        システム内部では利用日ごとの予約情報として管理します。
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+   予約生成ルール
+  ===================================== -->
+  <section class="card">
+
+    <h2>
+      🌸 Ver.2.0 予約生成ルール
+    </h2>
+
+    <p>
+      一括登録では、保護者が設定した条件だけで
+      予約日を決めるのではありません。
+    </p>
+
+    <p>
+      <strong>
+        園側の予定を確認し、
+        その日のすみれクラブの運用に合わせて
+        予約を作成する仕組み
+      </strong>
+      を想定しています。
+    </p>
+
+
+    <div style="
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      background: var(--color-hover);
+      border-radius: 0.5rem;
+    ">
+
+      <div style="
+        text-align: center;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 0.5rem;
+        font-weight: bold;
+      ">
+        🔄 保護者が一括登録
+      </div>
+
+      <div style="
+        text-align: center;
+        font-size: 1.5rem;
+        padding: 0.5rem;
+      ">
+        ↓
+      </div>
+
+      <div style="
+        text-align: center;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 0.5rem;
+        font-weight: bold;
+      ">
+        🏫 園の予定を確認
+      </div>
+
+      <div style="
+        text-align: center;
+        font-size: 1.5rem;
+        padding: 0.5rem;
+      ">
+        ↓
+      </div>
+
+      <div style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      ">
+
+        <div style="
+          background: #fff;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border-left: 5px solid #999;
+        ">
+
+          <h3>① 長期休暇</h3>
+
+          <p>
+            <strong>
+              すみれクラブなし
+            </strong>
+          </p>
+
+          <p style="margin-bottom: 0;">
+            対象日の予約を作成しません。
+          </p>
+
+        </div>
+
+
+        <div style="
+          background: #fff;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border-left: 5px solid #999;
+        ">
+
+          <h3>② イベント</h3>
+
+          <p>
+            <strong>
+              すみれクラブなし
+            </strong>
+          </p>
+
+          <p style="margin-bottom: 0;">
+            「イベント一覧（預かりなし）」に
+            該当する日は予約を作成しません。
+          </p>
+
+        </div>
+
+
+        <div style="
+          background: #fff;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border-left: 5px solid #999;
+        ">
+
+          <h3>③ 午前保育</h3>
+
+          <p>
+            <strong>
+              すみれクラブあり
+            </strong>
+          </p>
+
+          <p style="margin-bottom: 0;">
+            午前保育終了後から利用できるよう、
+            開始時間を早める想定です。
+          </p>
+
+        </div>
+
+
+        <div style="
+          background: #fff;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border-left: 5px solid #999;
+        ">
+
+          <h3>④ 通常日</h3>
+
+          <p>
+            <strong>
+              登録内容どおり
+            </strong>
+          </p>
+
+          <p style="margin-bottom: 0;">
+            保護者が設定した時間・内容で
+            予約を作成します。
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- 確認依頼 -->
+    <div style="
+      background: #fffaf0;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      border: 2px solid #e6d5b8;
+      margin-top: 1.5rem;
+    ">
+
+      <h3>
+        📌 園側への確認事項
+      </h3>
+
+      <p>
+        現在、予約生成のルールとして
+        上記の4パターンを想定しています。
+      </p>
+
+      <p>
+        <strong>
+          実際の園の運用と相違がないか、
+          ご確認をお願いいたします。
+        </strong>
+      </p>
+
+      <p style="margin-bottom: 0;">
+        特に、午前保育の日については、
+        「すみれクラブは利用できるが、
+        開始時間が早まる」という理解で
+        よいか、ご確認をお願いいたします。
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+   変更・キャンセル
+  ===================================== -->
+  <section class="card">
+
+    <h2>
+      ✏️ 変更・キャンセルは必要な日だけ
+    </h2>
+
+    <p>
+      一括登録した後に予定が変わった場合は、
+      すべてを最初から入力し直す必要はありません。
+    </p>
+
+    <p>
+      <strong>
+        変更やキャンセルが必要な日だけを個別に編集します。
+      </strong>
+    </p>
+
+
+    <div class="grid">
+
+      <div class="menu-card"
+           style="
+             transform: none;
+             background: var(--color-card);
+           ">
+
+        <h3>
+          ❌ キャンセル
+        </h3>
+
+        <p>
+          例えば、1か月分を一括登録した後、
+          特定の日だけ利用しなくなった場合、
+          その日だけキャンセルします。
+        </p>
+
+      </div>
+
+
+      <div class="menu-card"
+           style="
+             transform: none;
+             background: var(--color-card);
+           ">
+
+        <h3>
+          🕐 時間変更
+        </h3>
+
+        <p>
+          特定の日だけ利用時間が違う場合も、
+          その日だけ時間を変更します。
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+   日別データとして管理
+  ===================================== -->
+  <section class="card">
+
+    <h2>
+      📋 一括登録された予約も「日別データ」として管理
+    </h2>
+
+    <p>
+      一括登録は保護者の入力を簡単にするための機能です。
+      園側の管理や集計を複雑にするものではありません。
+    </p>
+
+    <p>
+      一括登録された内容も、
+      システム上では利用日ごとの予約情報として扱います。
+    </p>
+
+
+    <pre style="
+      background: var(--color-hover);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      line-height: 1.5;
+      color: var(--color-dark);
+      overflow-x: auto;
+    ">
+一括登録
+    ↓
+園の予定を確認
+    ↓
+利用可能日だけ予約を作成
+    ↓
+9/1  16:00～18:00
+9/2  16:00～18:00
+9/3  16:00～18:00
+  ・
+  ・
+  ・
+9/30 16:00～18:00
+    ↓
+必要な日だけ変更・キャンセル
+    ↓
+園の集計画面
+    </pre>
+
+
+    <p>
+      この仕組みにより、
+      保護者にとっては入力が簡単になり、
+      園側では日ごとの利用状況を確認できます。
+    </p>
+
+  </section>
+
 
   <!-- =====================================
    システムの特長
   ===================================== -->
   <section class="card">
-    <h2>✨ 新システム（Version 2.0）の3つの強み</h2>
+
+    <h2>
+      ✨ 新システム（Version 2.0）の強み
+    </h2>
+
     <ul>
-      <li><strong>壊れない・迷子にならない</strong>：データが園児ごとに独立しているため、万が一のトラブル時も他の園児のデータに影響しません。</li>
-      <li><strong>いつでもパッと自動集計</strong>：先生が確認したい日付を選ぶだけで、システムが全員分のカードを読み込んで一瞬で一覧表を作ります。</li>
-      <li><strong>月末の請求書もワンクリック</strong>：カードに蓄積された利用実績をもとに、料金計算から請求書の書き出しまでが自動で完了します。</li>
+
+      <li>
+        <strong>
+          日別利用にも対応
+        </strong>
+        ：
+        単発・ランダムな利用の場合も、
+        必要な日だけ予約できます。
+      </li>
+
+      <li>
+        <strong>
+          一括登録にも対応
+        </strong>
+        ：
+        同じパターンで利用する場合は、
+        条件を一度設定するだけで
+        対象日の予約を作成できます。
+      </li>
+
+      <li>
+        <strong>
+          園の予定を自動的に考慮
+        </strong>
+        ：
+        長期休暇や預かりなしのイベント、
+        午前保育など、
+        園の運用に合わせて予約を作成します。
+      </li>
+
+      <li>
+        <strong>
+          変更・キャンセルが簡単
+        </strong>
+        ：
+        一括登録後も、
+        変更がある日だけ個別に編集できます。
+      </li>
+
+      <li>
+        <strong>
+          園側の集計を複雑にしない
+        </strong>
+        ：
+        最終的には利用日ごとの予約情報として扱うため、
+        園側では日別の利用状況を確認できます。
+      </li>
+
+      <li>
+        <strong>
+          月末の請求作業を効率化
+        </strong>
+        ：
+        日別の利用実績をもとに、
+        料金計算や請求書作成につなげます。
+      </li>
+
     </ul>
+
   </section>
+
 
   <!-- =====================================
    導入による効果
   ===================================== -->
   <section class="card">
-    <h2>🌱 導入による現場の変化</h2>
-    <p>手作業による転記ミスや確認の時間が削減されることで、マクリン幼稚園の業務がこのように変わります。</p>
-    
+
+    <h2>
+      🌱 導入による現場の変化
+    </h2>
+
+    <p>
+      今回の改編では、
+      保護者の入力負担を減らしながら、
+      園側の管理方法を複雑にしないことを重視しています。
+    </p>
+
+
     <div class="grid">
-      <div class="menu-card" style="transform: none; background: var(--color-card);">
-        <h3>📱 保護者のメリット</h3>
-        <p>24時間いつでもスマホから預かり予約が可能になり、園への連絡帳や電話の手間が減ります。過去の予約履歴もいつでも手元で確認できます。</p>
+
+      <div class="menu-card"
+           style="
+             transform: none;
+             background: var(--color-card);
+           ">
+
+        <h3>
+          📱 保護者のメリット
+        </h3>
+
+        <p>
+          毎日同じ内容を入力する必要がなくなり、
+          定期的な利用では一度の設定から
+          まとめて予約できます。
+        </p>
+
+        <p>
+          予定変更があった場合も、
+          変更する日だけ編集できます。
+        </p>
+
       </div>
-      <div class="menu-card" style="transform: none; background: var(--color-card);">
-        <h3>🏫 先生方のメリット</h3>
-        <p>毎朝の出席確認と同時に予約状況が画面に並み、月末に電卓を叩いて預かり時間を計算する苦労から解放されます。子どもたちと向き合う時間をより多く確保できます。</p>
+
+
+      <div class="menu-card"
+           style="
+             transform: none;
+             background: var(--color-card);
+           ">
+
+        <h3>
+          🏫 先生方のメリット
+        </h3>
+
+        <p>
+          一括登録された予約も日別の予約情報として
+          管理するため、
+          園側の確認・集計方法をできるだけ
+          シンプルに保ちます。
+        </p>
+
+        <p>
+          保護者の入力負担軽減と、
+          園側の業務負担軽減を
+          同時に目指します。
+        </p>
+
       </div>
+
     </div>
+
   </section>
+
 
   <!-- =====================================
    今後の展望
   ===================================== -->
   <section class="card">
-    <h2>🚀 現場に寄り添い、共に育てるシステム</h2>
-    <p>このシステムは、一度作って終わりではありません。</p>
-    <p>日々の保育の中で「もっとこうなったら便利だな」「この画面は見づらいな」という先生方の生の声を取り入れながら、少しずつ機能やデザインを改善していきます。案内サイトを通じて現在の進捗をタイムリーにお伝えしながら、先生方の笑顔をサポートし続けます。どんな小さなご希望でも、ぜひどんどん私までお寄せください！</p>
+
+    <h2>
+      🚀 現場に寄り添い、共に育てるシステム
+    </h2>
+
+    <p>
+      このシステムは、一度作って終わりではありません。
+    </p>
+
+    <p>
+      今回のように、保護者・園のスタッフから寄せられた
+      ご意見をもとに、
+      実際の使いやすさを確認しながら、
+      少しずつ機能やデザインを改善していきます。
+    </p>
+
+    <p>
+      今後も、
+      「もっとこうなったら便利」
+      「ここは少し使いにくい」
+      といった現場の声を大切にしながら、
+      すみれクラブに合ったシステムを
+      一緒に育てていきます。
+    </p>
+
   </section>
+
 
   <!-- =====================================
    次のページ
   ===================================== -->
   <section class="card" style="text-align: center;">
-    <h2>📘 次のページ</h2>
-    <p>次のページでは、このシステムがどのように安全に「デジタルの予約カード」のデータを管理しているのか、その具体的な中身をご紹介します。</p>
+
+    <h2>
+      📘 次のページ
+    </h2>
+
+    <p>
+      次のページでは、
+      このシステムで扱う情報（データ）が
+      どのように管理されるのか、
+      具体的な内容をご紹介します。
+    </p>
+
     <p style="margin-top: 1.5rem;">
-      <a href="03_data_design.html" class="menu-card" style="display: inline-block; padding: 0.8rem 2rem; background: var(--color-dark); color: #fff;">
+
+      <a href="03_data_design.html"
+         class="menu-card"
+         style="
+           display: inline-block;
+           padding: 0.8rem 2rem;
+           background: var(--color-dark);
+           color: #fff;
+         ">
         ▶ 03 情報の管理へ
       </a>
+
     </p>
+
   </section>
+
 </main>
 
+
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を, 子どもたちの笑顔へ。</p>
-  <p>園のDXを支える開発進捗案内</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br>Last Update 2026-07-05</p>
+
+  <p>
+    🌸 <strong>Sumire Lab</strong>
+  </p>
+
+  <p>
+    先生方の時間を、子どもたちの笑顔へ。
+  </p>
+
+  <p>
+    園のDXを支える開発進捗案内
+  </p>
+
+  <p>
+    © McLean Kindergarten
+  </p>
+
+  <p>
+    Version 2.0<br>
+    Last Update 2026-08-12
+  </p>
+
 </footer>
+
 
 </body>
 </html>
