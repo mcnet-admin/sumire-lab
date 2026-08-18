@@ -61,18 +61,18 @@
     <p>予約システム本体の開発進捗に合わせて、現在の状況をタイムリーにお知らせしています。</p>
     <div class="progress-container">
       <div class="progress-bar">
-        <div class="progress" style="width: 65%;"></div>
+        <div class="progress" style="width: 70%;"></div>
       </div>
-      <p>システム開発進捗 65％</p>
+      <p>システム開発進捗 70％　｜　現在：日別予約データ設計</p>
     </div>
   </section>
 
 
   <section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
-    <h2>👈 今回ここをご確認ください</h2>
-    <p>Ver.2.0では、保護者の方が毎日の予約をより簡単に行えるよう、<strong>「日別予約」＋「一括登録」</strong>の仕組みを検討しています。</p>
-    <p>まず<strong>「01 システム概要」</strong>で今回の改訂イメージをご覧いただき、その後<strong>「02 システムの流れ」</strong>で、一括登録した予約を園の予定に合わせてどのように作成するかをご確認ください。</p>
-    <p><strong>特に「02 システムの流れ」にある4つの予約生成ルールについて、ご意見をいただければ幸いです。</strong></p>
+    <h2>🌸 Ver.2.0 設計更新のお知らせ</h2>
+    <p>保護者の方が毎日の予約をより簡単に行えるよう、<strong>「日別予約」＋「一括登録」</strong>の仕組みを設計しています。</p>
+    <p><strong>4つの予約生成ルールについて園側の確認が完了しました。</strong>これを受けて、「03 情報（データ）の管理」もVer.2.0の新しい設計内容に更新しています。</p>
+    <p>01 → 02 → 03 → 04 の順にご覧いただくと、予約方法からデータ管理、日別予約と予約履歴までの流れをご確認いただけます。</p>
     <div style="margin-top: 1.2rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
       <a href="design/01_system_overview.html" class="menu-card" style="flex: 1 1 240px;">
         <h3>📘 01 システム概要を見る</h3>
@@ -82,21 +82,20 @@
         <h3>🖥️ 02 システムの流れを見る</h3>
         <p>予約生成の4つのルールをご確認ください。</p>
       </a>
+      <a href="design/03_data_design.html" class="menu-card" style="flex: 1 1 240px;">
+        <h3>📋 03 情報の管理を見る</h3>
+        <p>一括登録から日別予約データができる流れをご確認ください。</p>
+      </a>
+      <a href="design/04_reservation_design.html" class="menu-card" style="flex: 1 1 240px; border: 2px solid #6f42c1;">
+        <h3>🟣 04 日別予約データを見る</h3>
+        <p>現在の予約と、変更・取消などの予約履歴（LOG）の管理方法をご確認ください。</p>
+      </a>
     </div>
   </section>
 
   <section class="card">
     <h2>📚 開発ドキュメント</h2>
     <p>システム開発の内容を、テーマごとにご紹介しています。</p>
-
-    <div style="background: #fffaf0; padding: 1.25rem; border-radius: 0.5rem; border: 2px solid #e6d5b8; margin: 1rem 0 1.5rem;">
-      <strong>📌 今回ご確認いただくのは「01」「02」までです</strong>
-      <p style="margin-bottom: 0;">
-        <strong>「03 情報（データ）の管理」</strong>は、
-        今回の確認内容をもとに今後改訂する予定ですので、<br>
-        <strong>現時点ではご確認いただく必要はありません。</strong>
-      </p>
-    </div>
 
     <div class="grid">
       <a href="design/01_system_overview.html" class="menu-card">
@@ -107,10 +106,14 @@
         <h3>🖥️ 02 システムの流れ</h3>
         <p>予約から請求までの流れをご紹介します。</p>
       </a>
-      <div class="menu-card" style="opacity: 0.65; cursor: default;">
+      <a href="design/03_data_design.html" class="menu-card">
         <h3>📋 03 情報（データ）の管理</h3>
-        <p>現在改訂準備中です。</p>
-      </div>
+        <p>予約システムで管理する情報と、日別予約データができる流れをご紹介します。</p>
+      </a>
+      <a href="design/04_reservation_design.html" class="menu-card" style="border: 2px solid #6f42c1;">
+        <h3>🟣 04 日別予約データ</h3>
+        <p>現在の予約と、変更・取消などの予約履歴（LOG）の管理方法をご紹介します。</p>
+      </a>
     </div>
   </section>
 </main>
@@ -120,7 +123,7 @@
   <p>先生方の時間を、子どもたちの笑顔へ。</p>
   <p>園のDXを支える開発記録</p>
   <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br>Last Update 2026-08-13</p>
+  <p>Version 2.0<br>Last Update 2026-08-18</p>
 </footer>
 
 </body>
