@@ -41,345 +41,430 @@ Version 2.0
 
 <main>
 
-<!-- =====================================
- Breadcrumb
-===================================== -->
-
 <nav class="breadcrumb">
-
-<a href="../index.html">
-
-🏠 開発室トップ
-
-</a>
-
-&nbsp; &gt; &nbsp;
-
-<span>
-
-📋 情報（データ）の管理
-
-</span>
-
+  <a href="../index.html">🏠 開発室トップ</a>
+  &nbsp; &gt; &nbsp;
+  <span>📋 情報（データ）の管理</span>
 </nav>
-
-<!-- =====================================
- Hero
-===================================== -->
 
 <section class="hero">
-
-<h2>
-
-必要な情報を、
-必要な場面で活用する。
-
-</h2>
-
-<p class="lead">
-
-予約システムでは、
-園児・保護者・予約・利用実績・請求など、
-さまざまな情報を関連付けながら管理します。
-
-</p>
-
-<p>
-
-一度入力した情報は、
-必要な場面で繰り返し利用できるように設計しています。
-
-これにより、
-同じ内容を何度も入力する手間を減らし、
-正確で効率的な運用を目指します。
-
-</p>
-
+  <h2>「入力は一括、データは日別」を支える情報設計</h2>
+  <p class="lead">
+    Version 2.0では、保護者の入力をできるだけ簡単にしながら、<br>
+    園側ではこれまでどおり日ごとの利用状況を確認できる仕組みを目指します。
+  </p>
+  <p>
+    一括登録した内容をそのまま一つの大きな予約として扱うのではなく、<br>
+    <strong>園の予定をシステムが確認し、利用可能な日だけを「日別予約」として作成する</strong>
+    ことが今回のデータ設計の中心です。
+  </p>
 </section>
 
-<!-- =====================================
- 管理する情報
-===================================== -->
-
 <section class="card">
-
-<h2>
-
-📂 管理する情報
-
-</h2>
-
-<p>
-
-このシステムでは、
-次のような情報を管理します。
-
-</p>
-
-<ul>
-
-<li><strong>園児情報</strong> … 園児氏名・クラスなど</li>
-
-<li><strong>保護者情報</strong> … 連絡先・メールアドレスなど</li>
-
-<li><strong>予約情報</strong> … 利用日・利用区分・予約状況など</li>
-
-<li><strong>利用実績</strong> … 実際の利用内容</li>
-
-<li><strong>請求情報</strong> … 利用料金・請求内容</li>
-
-</ul>
-
-<p>
-
-これらの情報は、
-互いに関連しながら管理され、
-予約から請求までの業務を支えています。
-
-</p>
-
+  <h2>📂 Version 2.0で管理する主な情報</h2>
+  <p>予約から利用実績、請求までをつなぐために、次の情報をそれぞれの役割に分けて管理します。</p>
+  <ul>
+    <li><strong>園児情報</strong> … 園児氏名・クラス・child_id など、予約に必要な最小限の情報</li>
+    <li><strong>保護者情報</strong> … 連絡先・メールアドレスなど</li>
+    <li><strong>一括登録条件</strong> … 利用期間・曜日・利用時間など</li>
+    <li><strong>園の予定データ</strong> … 長期休暇・イベント・午前保育・通常日</li>
+    <li><strong>日別予約データ</strong> … 実際に利用可能と判定された日ごとの予約</li>
+    <li><strong>利用実績</strong> … 実際の利用内容</li>
+    <li><strong>請求情報</strong> … 利用実績をもとにした料金・請求内容</li>
+  </ul>
+  <p>
+    それぞれの情報を必要な場面で使い分けることで、
+    保護者の入力負担を減らしながら、園側の管理を複雑にしない構成とします。
+  </p>
 </section>
 
-<!-- =====================================
- 情報のつながり
-===================================== -->
+<section class="card">
+  <h2>💡 「日別でも、一括でも入力できます」</h2>
+  <p>
+    予約は、利用日ごとに1日ずつ登録することも、同じ条件が続く場合にまとめて一括登録することもできます。
+    一括登録した場合も、システム内部では利用日ごとの「日別予約データ」として管理します。
+  </p>
+
+  <div style="background: var(--color-hover); padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; text-align: center; line-height: 1.8;">
+    <div style="padding: 0.8rem; background: #fff; border-radius: 0.5rem;">
+      👨‍👩‍👧 保護者が予約内容を入力<br>
+      <small>「1日ずつ入力」または「同じ条件を一括入力」</small>
+    </div>
+    <div style="font-size: 1.5rem;">↓</div>
+    <div style="padding: 0.8rem; background: #fff; border-radius: 0.5rem;">📅 園の予定データを参照</div>
+    <div style="font-size: 1.5rem;">↓</div>
+    <div style="padding: 0.8rem; background: #fff; border-radius: 0.5rem;">⚙️ システムが4つのルールで判定</div>
+    <div style="font-size: 1.5rem;">↓</div>
+    <div style="padding: 0.8rem; background: #fff; border-radius: 0.5rem;">📋 利用可能日の「日別予約データ」を生成</div>
+  </div>
+
+  <div style="background: #fffdf5; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #e6dfc8;">
+    <strong>大切な考え方</strong>
+    <p style="margin-bottom: 0;">
+      保護者は、必要な日を1日ずつ登録することも、同じ条件の日をまとめて登録することもできます。園側では、どちらの方法で入力された場合も最終的に
+      <strong>1日ごとの予約として確認・変更・キャンセル・集計</strong>できます。
+    </p>
+  </div>
+</section>
 
 <section class="card">
+  <h2>🏫 園の予定データ</h2>
+  <p>
+    一括登録から日別予約を作成するために、
+    システムは園側で用意されている予定データを確認します。
+  </p>
 
-<h2>
+  <div class="grid">
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>① 長期休暇</h3>
+      <p><strong>すみれクラブなし</strong></p>
+      <p>対象日の予約は作成しません。</p>
+    </div>
 
-🔗 情報のつながり
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>② イベント</h3>
+      <p><strong>すみれクラブなし</strong></p>
+      <p>「イベント一覧（預かりなし）」に該当する日は予約を作成しません。</p>
+    </div>
 
-</h2>
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>③ 午前保育</h3>
+      <p><strong>すみれクラブあり</strong></p>
+      <p>午前保育終了後から利用できるよう、開始時間を早めます。</p>
+    </div>
 
-<p>
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>④ 通常日</h3>
+      <p><strong>登録内容どおり</strong></p>
+      <p>保護者が設定した時間・内容で予約を作成します。</p>
+    </div>
+  </div>
 
-システムでは、
-それぞれの情報が独立しているのではなく、
-順番につながりながら活用されます。
+  <p>
+    この4つのルールは、園側に確認いただき、
+    <strong>現在の運用に合っていることを確認済み</strong>です。
+  </p>
+</section>
 
-</p>
+<section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
+  <h2>🌸 今回の更新</h2>
 
-<pre>
+  <p>
+    Version 2.0の設計に基づき、
+    <strong>園児情報・園の予定・長期休暇に加えて、
+    園で管理する原本から必要な情報を準備し、現在どの予約を受け付けるかを自動的に切り替える仕組み</strong>
+    を整えました。
+  </p>
 
-園児情報
+  <p>
+    あわせて、
+    <strong>個人情報を必要以上に公開データへ含めないための管理方法</strong>
+    についても追記しています。
+  </p>
 
-  ↓
+  <p style="margin-bottom: 0;">
+    この下の「園の情報を、そのままインターネットに置くわけではありません」から、
+    今回の更新内容をご確認いただけます。
+  </p>
+</section>
 
-予約情報
+<section class="card">
+  <h2>🌸 園の情報を、そのままインターネットに置くわけではありません</h2>
 
-  ↓
+  <p>
+    園で管理している園児名簿や年間予定表を<strong>「原本」</strong>として扱い、
+    予約システムでは、そこから<strong>必要な情報だけを自動的に取り出して利用</strong>します。
+  </p>
 
+  <div style="background: var(--color-hover); padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; text-align: center; line-height: 1.8;">
+    <strong>【基本の流れ】</strong>
+    <pre style="margin: 0.8rem 0 0; white-space: pre-wrap; font-family: monospace; color: var(--color-dark);">
+園で管理する原本
+      ↓
+必要な情報だけを自動的に取り出す
+      ↓
+予約システムで利用
+    </pre>
+  </div>
+
+  <p>
+    先生方が日常的に難しいデータファイルを編集する必要はありません。
+    原本を更新したあと、システム側で必要なデータを作り直す仕組みにしています。
+  </p>
+</section>
+
+<section class="card">
+  <h2>📂 現在整備している4つの情報</h2>
+
+  <p>
+    Version 2.0では、まず予約システムの土台となる情報を4つに分けて整備しています。
+    下に示すファイル名は、<strong>システム内部で使うデータ名</strong>です。
+  </p>
+
+  <div class="grid">
+
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>① 予約に必要な園児情報を準備する</h3>
+      <p>
+        園が管理している園児名簿から、
+        予約画面で必要な情報だけを取り出します。
+      </p>
+      <p>
+        住所・電話番号・保護者メールアドレスなど、
+        予約画面に必要のない情報は含めません。
+      </p>
+      <p style="margin-bottom: 0;">
+        <strong>システム上のデータ名：</strong><code>children.json</code>
+      </p>
+    </div>
+
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>② 園の年間予定をシステムが判断できる形にする</h3>
+      <p>
+        長期休暇・預かりなしのイベント・午前保育などを、
+        園の予定表から整理します。
+      </p>
+      <p>
+        これを使って、システムが「今日はどのルールで予約を作るか」を判断します。
+      </p>
+      <p style="margin-bottom: 0;">
+        <strong>システム上のデータ名：</strong><code>schedule.json</code>
+      </p>
+    </div>
+
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>③ 長期休暇の日を自動的に一覧にする</h3>
+      <p>
+        例えば「夏休みは7月18日から8月30日」と登録すれば、
+        その期間の日付をシステムが1日ずつ自動的に作ります。
+      </p>
+      <p>
+        先生方が長期休暇の日付を1日ずつ入力する必要はありません。
+      </p>
+      <p style="margin-bottom: 0;">
+        <strong>システム上のデータ名：</strong><code>holidays.json</code>
+      </p>
+    </div>
+
+    <div class="menu-card" style="transform: none; background: var(--color-card);">
+      <h3>④ 今どの予約を受け付けるかを自動で切り替える</h3>
+      <p>
+        園の予定をもとに、現在が通常保育期間なのか長期休暇期間なのかをシステムが判断します。
+      </p>
+      <p>
+        例えば夏休み期間中は、通常保育の受付を止め、夏休みの予約を受け付ける状態へ自動的に切り替えます。
+      </p>
+      <p style="margin-bottom: 0;">
+        <strong>システム上のデータ名：</strong><code>portal.json</code>
+      </p>
+    </div>
+
+  </div>
+
+  <p>
+    この自動作成を行うPythonの小さなプログラムを、
+    開発上は<strong>Generator（ジェネレーター）</strong>と呼んでいます。
+  </p>
+
+  <div style="background: #fffdf5; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #e6dfc8; margin: 1rem 0;">
+    <strong>現在の確認状況</strong>
+    <p style="margin-bottom: 0;">
+      ①園児情報、②園の予定、③長期休暇日一覧、④予約受付状態について、
+      自動生成し、実際のデータで内容を確認するところまで完了しています。
+    </p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>🔐 個人情報を守るためのデータ分離</h2>
+
+  <p>
+    本システムはインターネットを利用するため、
+    情報管理上のリスクを完全にゼロにすることはできません。
+    そのためVersion 2.0では、
+    <strong>必要な情報だけを使い、用途の異なる情報を分けて管理する</strong>
+    ことを基本方針とします。
+  </p>
+
+  <div style="background: #fffdf5; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #e6dfc8; margin: 1rem 0;">
+    <strong>【大切な考え方】</strong>
+    <p>
+      園児DBに登録されているすべての情報を、
+      公開するJSONへそのまま出すことはしません。
+    </p>
+    <p style="margin-bottom: 0;">
+      例えば <code>children.json</code> には、
+      予約画面で必要な園児情報だけを使用し、
+      <strong>住所・電話番号・保護者メールアドレスなどは含めません。</strong>
+    </p>
+  </div>
+
+  <p>
+    また、園児氏名と保護者のメールアドレスなど、
+    用途の異なる個人情報を一つの公開ファイルにまとめて保持せず、
+    <strong>child_idを共通キーとして必要な処理のときだけ関連付ける</strong>
+    方向で設計します。
+  </p>
+
+  <pre style="background: var(--color-hover); padding: 1.5rem; border-radius: 0.5rem; font-family: monospace; line-height: 1.6; color: var(--color-dark); overflow-x: auto;">
+【予約画面用】
+children.json
+  child_id
+  class
+  class_code
+  no
+  name
+        │
+        │ child_idで関連付け
+        ↓
+【通知等に必要な情報】
+  child_id
+  email_01
+  email_02
+  </pre>
+
+  <p>
+    これは「個人情報ではなくする」という意味ではなく、
+    <strong>データの最小化と分離によって、万一の場合の影響範囲をできるだけ限定する</strong>
+    ための設計です。
+  </p>
+
+  <p>
+    今後も、公開領域・園と開発者が扱う非公開の開発領域・個人情報を扱うデータ領域を
+    役割ごとに分けながら、園の運用を必要以上に複雑にしない方法を検討します。
+  </p>
+</section>
+
+<section class="card">
+  <h2>🔗 予約データができるまで</h2>
+  <p>Version 2.0では、予約情報が次の順序で作られます。</p>
+
+  <pre style="background: var(--color-hover); padding: 1.5rem; border-radius: 0.5rem; font-family: monospace; line-height: 1.6; color: var(--color-dark); overflow-x: auto;">
+一括登録条件
+    ＋
+園の予定データ
+    ↓
+システムが4つのルールで判定
+    ↓
+利用可能日だけ
+日別予約データを生成
+    ↓
+必要な日だけ変更・キャンセル
+    ↓
 利用実績
-
-  ↓
-
+    ↓
 請求情報
+  </pre>
 
-</pre>
+  <p>
+    日別予約を直接入力した場合も、
+    最終的には同じ<strong>「日別予約データ」</strong>として扱います。
+  </p>
 
-<p>
-
-このように情報を関連付けることで、
-一度登録した内容をさまざまな場面で活用できます。
-
-</p>
-
+  <p>
+    これにより、
+    <strong>日別予約と一括登録という2つの入口を持ちながら、
+    園側では同じ形式で予約を管理</strong>できます。
+  </p>
 </section>
-
-<!-- =====================================
- 安心・確実なデータ管理（JSONについて）
-===================================== -->
 
 <section class="card">
+  <h2>💾 園児ごとの「デジタルの予約カード」で管理</h2>
+  <p>
+    Version 2.0では、園児ごとの予約データを、
+    大きなデータベースにまとめて保存するのではなく、
+    <strong>園児一人ひとりの独立したJSONファイル</strong>として管理する考え方を基本とします。
+  </p>
 
-<h2>
+  <div style="background: var(--color-hover); padding: 1.25rem; border-radius: 0.5rem; margin: 1rem 0; border-left: 5px solid var(--color-main);">
+    <strong>【園児ごとのデジタルの予約カード】</strong>
+    <p style="margin-bottom: 0;">
+      園DX全体で園児を識別する共通キー <strong>child_id</strong> を中心に、
+      その園児の予約・利用実績などを個別に扱います。
+    </p>
+  </div>
 
-💡 データの保存方法と、3つの安心メリット
-
-</h2>
-
-<p>
-
-この新しいシステム（Version 2.0）では、園児のみなさんの予約データを、インターネット上の複雑な「巨大なデータベース（倉庫）」ではなく、<strong>「1枚の決まった形式の電子カルテ（JSONファイル）」</strong>として個別に大切に保存します。
-
-</p>
-
-<div class="feature-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
-
-<div class="feature-box" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-
-<h3>🛡️ 1. 壊れにくく、ずっと残る</h3>
-
-<p>
-
-複雑なプログラムを動かさないため、「原因不明のエラーでデータが急に消えてしまう」といったトラブルが原理的に起きにくく、非常に安全です。
-
-</p>
-
-</div>
-
-<div class="feature-box" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-
-<h3>⚡ 2. スマホでの表示がパッと速い</h3>
-
-<p>
-
-遠くの倉庫にデータを探しに行く通信の手間がないため、先生方がスマホやパソコンで予約画面を開いたとき、一瞬でスムーズに表示されます。
-
-</p>
-
-</div>
-
-<div class="feature-box" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-
-<h3>💰 3. 管理コストはずっとゼロ</h3>
-
-<p>
-
-維持費がかかる専門のデータサーバーをレンタルする必要がありません。園の予算を圧迫せず、何年でも無料で安心して使い続けることができます。
-
-</p>
-
-</div>
-
-</div>
-
+  <p>
+    園児ごとに分けて管理することで、
+    必要なデータだけを個別に確認・更新しやすくし、
+    システム全体をできるだけシンプルに保ちます。
+  </p>
 </section>
-
-<!-- =====================================
- 情報管理で大切にしていること
-===================================== -->
 
 <section class="card">
+  <h2>📊 日別予約から利用実績・請求へ</h2>
+  <p>
+    作成された日別予約データは、
+    その後の園側の確認・利用実績・請求に引き継がれます。
+  </p>
 
-<h2>
+  <pre style="background: var(--color-hover); padding: 1.5rem; border-radius: 0.5rem; font-family: monospace; line-height: 1.6; color: var(--color-dark); overflow-x: auto;">
+日別予約データ
+    ↓
+園の集計画面
+    ↓
+実際の利用実績
+    ↓
+料金計算
+    ↓
+請求書作成
+  </pre>
 
-🌱 情報管理で大切にしていること
-
-</h2>
-
-<p>
-
-情報を管理する目的は、
-データを増やすことではありません。
-
-先生方が必要な情報を、
-必要な時にすぐ確認できることを目指しています。
-
-</p>
-
-<ul>
-
-<li>同じ内容を何度も入力しない。</li>
-
-<li>入力ミスを減らす。</li>
-
-<li>必要な情報をすぐに確認できる。</li>
-
-<li>予約から請求まで、一つの流れで活用する。</li>
-
-<li>安心して長く利用できる仕組みを目指す。</li>
-
-</ul>
-
+  <p>
+    予約時に入力した情報をできるだけ再利用することで、
+    同じ内容を何度も転記する作業を減らし、
+    入力ミスや集計ミスの防止につなげます。
+  </p>
 </section>
-
-<!-- =====================================
- 運用イメージ
-===================================== -->
 
 <section class="card">
-
-<h2>
-
-📊 運用イメージ
-
-</h2>
-
-<p>
-
-園児や保護者の情報を登録すると、
-その情報は予約・利用実績・請求へと引き継がれます。
-
-</p>
-
-<p>
-
-一つひとつの情報がつながることで、
-日々の業務をより効率よく進められるようになります。
-
-</p>
-
-<p>
-
-また、
-将来新しい機能を追加する場合でも、
-既に登録されている情報を活用できるため、
-無理なくシステムを成長させることができます。
-
-</p>
-
+  <h2>🌱 情報管理で大切にしていること</h2>
+  <ul>
+    <li>保護者は同じ内容を何度も入力しない。</li>
+    <li>園側は一括登録か日別予約かを意識せず、日ごとの予約として確認できる。</li>
+    <li>園の予定をシステムが自動的に確認する。</li>
+    <li>必要な日だけ変更・キャンセルできる。</li>
+    <li>予約から利用実績・請求まで同じ情報を活用する。</li>
+    <li>園児DBの全項目を公開JSONへ出さず、用途に必要な最小限の情報だけを利用する。</li>
+    <li>園児情報と保護者連絡先など、用途の異なる個人情報は分離して管理する。</li>
+    <li>必要なデータだけを個別に更新できる仕組みを目指す。</li>
+  </ul>
 </section>
 
-<!-- =====================================
- 次のページ
-===================================== -->
+<section class="card" style="text-align: center;">
+  <h2>📘 次の開発段階</h2>
 
-<section class="card">
+  <div style="background: #fffaf0; padding: 1.5rem; border-radius: 0.5rem; border: 2px solid #e6d5b8; margin: 1rem 0 1.5rem; text-align: left;">
+    <h3 style="margin-top: 0;">📌 データ基盤①〜④の実装を確認しました</h3>
+    <p>
+      現在までに、
+      <strong>園児情報・園の予定・長期休暇日一覧・予約受付状態</strong>
+      について、自動生成と実データによる確認まで完了しています。
+    </p>
+    <p>
+      ④では、園の予定をもとに通常保育期間と長期休暇期間を判定し、
+      <strong>トップ画面でどの予約を受け付けるかを自動的に切り替える</strong>
+      仕組みを新しいデータ構造へ対応させました。
+    </p>
+    <p style="margin-bottom: 0;">
+      次は、<strong>⑤ 日別予約データ</strong>の新しい設計へ進みます。
+      その後、料金マスタ、利用実績、月次集計、臨時徴収、請求へと順番に設計・実装を進めます。
+    </p>
+  </div>
 
-<h2>
+  <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <a href="02_system_architecture.html"
+       class="menu-card"
+       style="display: inline-block; padding: 0.8rem 2rem; background: var(--color-dark); color: #fff;">
+      ◀ 02 システムの流れへ戻る
+    </a>
 
-📘 次のページ
-
-</h2>
-
-<p>
-
-ここでは、
-予約システムを支える情報（データ）の管理についてご紹介しました。
-
-</p>
-
-<p>
-
-次のページでは、
-予約システムで利用する画面や機能について、
-分かりやすくご紹介します。
-
-</p>
-
-<p>
-
-<a href="04_screen_design.html">
-
-▶ 04 画面設計へ（🚧 準備中）
-
-</a>
-
-</p>
-
+    <div class="menu-card"
+         style="display: inline-block; padding: 0.8rem 2rem; opacity: 0.5; cursor: default; pointer-events: none;">
+      ▶ 04 画面設計へ（現在準備中）
+    </div>
+  </div>
 </section>
-
-<!-- =====================================
- ページナビ
-===================================== -->
-
-<nav class="page-nav">
-
-<a href="02_system_architecture.html">
-    
-⬅ 02 システムの流れ
-
-</a>
-
-<a href="04_screen_design.html">
-
-04 画面設計 ➡（🚧 準備中）
-
-</a>
-
-</nav>
 
 </main>
 
@@ -414,7 +499,7 @@ Version 2.0
 
 Version 2.0<br>
 
-Last Update 2026-07-05
+Last Update 2026-08-18
 
 </p>
 

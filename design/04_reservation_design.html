@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>04 日別予約データ | Sumire Lab</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;background:#f5f7fa;color:#333}
+header{background:#fff;padding:24px;border-bottom:1px solid #ddd}
+main{max-width:1100px;margin:0 auto;padding:24px}
+.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+h1,h2{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+label{display:block;font-weight:600;margin-bottom:6px}
+input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccc;border-radius:8px}
+button{padding:10px 14px;border:0;border-radius:8px;background:#333;color:#fff;cursor:pointer}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;vertical-align:top;font-size:14px}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#eee;font-size:12px}
+pre{white-space:pre-wrap;background:#f6f8fa;padding:10px;border-radius:8px;font-size:12px}
+.note{background:#fff9e8;border:1px solid #e2c66d;padding:14px;border-radius:10px}
+.small{font-size:13px;color:#666}
+</style>
+</head>
+<body>
+<header>
+<h1>📋 04 日別予約データ</h1>
+<p>現在の予約と、変更・取消などの履歴を分けて管理するVersion 2.0の設計をご紹介します。</p>
+</header>
+<main>
+<section class="card"><h2>🌸 なぜ「現在の予約」と「履歴」を分けるのか</h2><p>園では、保護者との間で「予約した」「取り消した」「変更した」といった確認が必要になることがあります。</p><p>そこでVersion 2.0では、いま有効な予約内容はシンプルに管理しながら、新規予約・変更・取消などの操作履歴は別に残す設計とします。</p><div class="note"><strong>現在の予約：</strong> 園児ごと・利用日ごとの最新状態を確認<br/><strong>予約LOG：</strong> 新規・変更・取消・園側修正の履歴を時系列で確認</div></section>
+<section class="card">
+<h2>📅 現在の予約</h2><p>日別予約でも一括登録でも、システム内部では「1園児・1日・1予約」を基本単位として管理します。変更や取消があった場合も、その日の予約を更新するため、現在の状態を簡単に確認できます。</p>
+<table>
+<thead><tr><th>child_id</th><th>利用日</th><th>時間</th><th>状態</th><th>入力方法</th></tr></thead>
+<tbody id="reservationBody"></tbody>
+</table>
+</section>
+<section class="card">
+<h2>🔎 予約履歴（LOG）を検索</h2><p>保護者との確認が必要になったとき、園児・利用日・操作種別などから過去の操作を探せるようにします。</p>
+<div class="grid">
+<div>
+<label>child_id</label>
+<input id="childFilter" placeholder="例：251T01"/>
+</div>
+<div>
+<label>利用日</label>
+<input id="dateFilter" type="date"/>
+</div>
+<div>
+<label>操作種別</label>
+<select id="actionFilter">
+<option value="">すべて</option>
+<option value="create">新規</option>
+<option value="update">変更</option>
+<option value="cancel">取消</option>
+<option value="admin_edit">園側修正</option>
+</select>
+</div>
+<div style="display:flex;align-items:end">
+<button onclick="renderLogs()">検索</button>
+</div>
+</div>
+</section>
+<section class="card">
+<h2>📖 予約履歴の確認イメージ</h2>
+<table>
+<thead>
+<tr><th>受付日時</th><th>child_id</th><th>利用日</th><th>操作</th><th>操作者</th><th>変更内容</th></tr>
+</thead>
+<tbody id="logBody"></tbody>
+</table>
+<div style="margin-top:1rem; padding:1rem 1.25rem; background:#fff9e8; border:2px solid #e2c66d; border-radius:10px;">
+  <strong>⚠️ 開発用イメージ（本番画面とは異なります）</strong>
+  <p style="margin:0.6rem 0 0;">
+    現在はデータ構造を説明するため、<code>child_id</code> を表示しています。
+    <strong>本番画面では、先生方が child_id を確認する必要はありません。</strong>
+  </p>
+  <p style="margin:0.6rem 0 0;">
+    園児情報から「園児氏名・クラス」を表示し、
+    先生方が園児を名前から探しやすい画面にする予定です。
+  </p>
+</div>
+</section>
+<section class="card">
+<h2>💡 Version 2.0での基本方針</h2>
+<ul>
+<li><strong>「child_id × 利用日」</strong>を基本に、1園児・1日・1予約として管理します。</li>
+<li>変更・取消は、その日の予約を更新するため、現在の予約データを複雑にしません。</li>
+<li>新規・変更・取消・園側修正は、確認用の予約LOGとして残します。</li>
+<li>LOGは年度単位で管理・保管することで、データが際限なく増え続けないようにします。</li>
+</ul>
+</section><section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
+<h2>🛠️ 現在の開発状況</h2>
+<p>このページは、日別予約データと予約LOGの考え方を確認するための<strong>試作段階</strong>です。</p>
+<p>利用時間の持ち方、料金との関連、実際の保存方法などは、今後の料金マスタ・利用実績・月次集計の設計とあわせて調整します。</p>
+<p style="margin-bottom:0;">まずは、園で実際に必要となる<strong>「現在の予約確認」と「予約履歴検索」</strong>が分かりやすく使えることを優先して設計を進めます。</p>
+</section><section class="card" style="text-align:center;">
+<h2>📘 前のページ</h2>
+<p>予約システムで使用する情報全体の考え方は、「03 情報（データ）の管理」でご紹介しています。</p>
+<p><a class="menu-card" href="03_data_design.html" style="display:inline-block;padding:0.8rem 2rem;background:#6f42c1;color:#fff;border-radius:0.5rem;text-decoration:none;">◀ 03 情報（データ）の管理へ</a></p>
+</section></main>
+<script>
+const reservations = [
+  {
+    reservation_id:"251T01_2026-09-01",
+    child_id:"251T01",
+    date:"2026-09-01",
+    time_frame:"16:00-17:00",
+    status:"active",
+    created_via:"batch"
+  },
+  {
+    reservation_id:"251T02_2026-09-03",
+    child_id:"251T02",
+    date:"2026-09-03",
+    time_frame:"15:00-16:30",
+    status:"cancelled",
+    created_via:"single"
+  }
+];
+
+const logs = [
+  {logged_at:"2026-08-18 15:30",child_id:"251T01",date:"2026-09-01",action:"create",actor:"parent",detail:"16:00-18:00 で新規予約"},
+  {logged_at:"2026-08-20 18:42",child_id:"251T01",date:"2026-09-01",action:"update",actor:"parent",detail:"16:00-18:00 → 16:00-17:00"},
+  {logged_at:"2026-08-19 09:10",child_id:"251T02",date:"2026-09-03",action:"create",actor:"parent",detail:"15:00-16:30 で新規予約"},
+  {logged_at:"2026-08-21 07:55",child_id:"251T02",date:"2026-09-03",action:"cancel",actor:"parent",detail:"予約を取消"}
+];
+
+function actionLabel(a){
+  return {create:"新規",update:"変更",cancel:"取消",admin_edit:"園側修正"}[a] || a;
+}
+
+function renderReservations(){
+  document.getElementById("reservationBody").innerHTML = reservations.map(r => `
+    <tr>
+      <td>${r.child_id}</td>
+      <td>${r.date}</td>
+      <td>${r.time_frame}</td>
+      <td><span class="badge">${r.status}</span></td>
+      <td>${r.created_via === "batch" ? "一括" : "日別"}</td>
+    </tr>
+  `).join("");
+}
+
+function renderLogs(){
+  const child = document.getElementById("childFilter").value.trim();
+  const date = document.getElementById("dateFilter").value;
+  const action = document.getElementById("actionFilter").value;
+
+  const filtered = logs.filter(l =>
+    (!child || l.child_id.includes(child)) &&
+    (!date || l.date === date) &&
+    (!action || l.action === action)
+  );
+
+  document.getElementById("logBody").innerHTML = filtered.length ? filtered.map(l => `
+    <tr>
+      <td>${l.logged_at}</td>
+      <td>${l.child_id}</td>
+      <td>${l.date}</td>
+      <td><span class="badge">${actionLabel(l.action)}</span></td>
+      <td>${l.actor === "parent" ? "保護者" : "園"}</td>
+      <td>${l.detail}</td>
+    </tr>
+  `).join("") : `<tr><td colspan="6">該当するLOGはありません。</td></tr>`;
+}
+
+renderReservations();
+renderLogs();
+</script>
+</body>
+</html>
