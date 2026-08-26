@@ -117,8 +117,8 @@ Version 2.0
   <div class="grid">
     <div class="menu-card" style="transform: none; background: var(--color-card);">
       <h3>① 長期休暇</h3>
-      <p><strong>すみれクラブなし</strong></p>
-      <p>対象日の予約は作成しません。</p>
+      <p><strong>長期休暇用の予約として扱います</strong></p>
+      <p>通常保育の予約対象から外し、長期休暇用の予約として受け付けます。</p>
     </div>
 
     <div class="menu-card" style="transform: none; background: var(--color-card);">
@@ -262,8 +262,8 @@ Version 2.0
   </div>
 
   <p>
-    この自動作成を行うPythonの小さなプログラムを、
-    開発上は<strong>Generator（ジェネレーター）</strong>と呼んでいます。
+    これらの情報は、園の予定をもとに<strong>システムが自動的に作成・更新</strong>します。
+        先生方が日付や受付状態を一つずつ設定する必要はありません。
   </p>
 
   <div style="background: #fffdf5; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #e6dfc8; margin: 1rem 0;">
@@ -289,13 +289,15 @@ Version 2.0
   <div style="background: #fffdf5; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #e6dfc8; margin: 1rem 0;">
     <strong>【大切な考え方】</strong>
     <p>
-      園児DBに登録されているすべての情報を、
-      公開するJSONへそのまま出すことはしません。
+      システムでは、予約に必要な情報を、<strong>JSON（システムが読み書きするためのデータファイル）</strong>として利用します。</p><p>ただし、園児DBに登録されているすべての情報を、そのまま予約システムで使用することはしません。
     </p>
     <p style="margin-bottom: 0;">
-      例えば <code>children.json</code> には、
-      予約画面で必要な園児情報だけを使用し、
-      <strong>住所・電話番号・保護者メールアドレスなどは含めません。</strong>
+      例えば <code>children.json</code> には、<strong>予約に必要な園児情報だけ</strong>を取り出して使用し、<strong>住所・電話番号・保護者メールアドレスなどは含めません。</strong>
+      </p>
+      <p style="margin-bottom: 0;">
+        つまり、予約システムでは、<strong>必要な情報だけを必要な場所で使用する</strong>ことで、
+        個人情報をできるだけ広げない設計にしています。
+
     </p>
   </div>
 
@@ -447,8 +449,8 @@ children.json
       仕組みを新しいデータ構造へ対応させました。
     </p>
     <p style="margin-bottom: 0;">
-      次は、<strong>⑤ 日別予約データ</strong>の新しい設計へ進みます。
-      その後、料金マスタ、利用実績、月次集計、臨時徴収、請求へと順番に設計・実装を進めます。
+      <strong>⑤ 日別予約データの設計まで進みました。</strong>次は「料金設定の仕組み」の設計へ進みます。
+      その後、利用実績、月次集計、臨時徴収、請求へと順番に設計・実装を進めます。
     </p>
   </div>
 
@@ -459,10 +461,7 @@ children.json
       ◀ 02 システムの流れへ戻る
     </a>
 
-    <div class="menu-card"
-         style="display: inline-block; padding: 0.8rem 2rem; opacity: 0.5; cursor: default; pointer-events: none;">
-      ▶ 04 画面設計へ（現在準備中）
-    </div>
+    <a class="menu-card" href="04_reservation_design.html" style="display:inline-block;padding:0.8rem 2rem;background:#6f42c1;color:#fff;border-radius:0.5rem;text-decoration:none;">04 日別予約データへ ▶</a>
   </div>
 </section>
 
@@ -499,7 +498,7 @@ children.json
 
 Version 2.0<br>
 
-Last Update 2026-08-18
+Last Update 2026-08-26
 
 </p>
 

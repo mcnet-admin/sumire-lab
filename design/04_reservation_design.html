@@ -29,16 +29,90 @@ pre{white-space:pre-wrap;background:#f6f8fa;padding:10px;border-radius:8px;font-
 <p>現在の予約と、変更・取消などの履歴を分けて管理するVersion 2.0の設計をご紹介します。</p>
 </header>
 <main>
-<section class="card"><h2>🌸 なぜ「現在の予約」と「履歴」を分けるのか</h2><p>園では、保護者との間で「予約した」「取り消した」「変更した」といった確認が必要になることがあります。</p><p>そこでVersion 2.0では、いま有効な予約内容はシンプルに管理しながら、新規予約・変更・取消などの操作履歴は別に残す設計とします。</p><div class="note"><strong>現在の予約：</strong> 園児ごと・利用日ごとの最新状態を確認<br/><strong>予約LOG：</strong> 新規・変更・取消・園側修正の履歴を時系列で確認</div></section>
+<section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
+<h2><span aria-hidden="true" style="display:inline-block;width:0.9em;height:0.9em;background:#6f42c1;border-radius:50%;margin-right:0.45em;vertical-align:-0.05em;"></span>Ver.01から、予約方法をより使いやすく</h2>
+<p>
+    Ver.01で確認いただいた<strong>「1日ずつ予約する日別予約」</strong>は、
+    Ver.2.0でもこれまでどおり利用できます。
+    そのうえで、同じ利用時間の日が多い場合に便利な<strong>「一括登録」</strong>を追加します。
+  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Ver.01</th>
+<th>Ver.2.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>日別予約</strong></td>
+<td>1日ずつ予約</td>
+<td>これまでどおり利用できます</td>
+</tr>
+<tr>
+<td><strong>一括登録</strong></td>
+<td>―</td>
+<td>同じ条件の日をまとめて登録できます</td>
+</tr>
+<tr>
+<td><strong>登録後の変更</strong></td>
+<td>日別に対応</td>
+<td>一括登録した場合も、必要な日だけ変更できます</td>
+</tr>
+<tr>
+<td><strong>取消</strong></td>
+<td>日別に対応</td>
+<td>一括登録した場合も、必要な日だけ取消できます</td>
+</tr>
+<tr>
+<td><strong>園側での確認</strong></td>
+<td>日別</td>
+<td>一括登録した場合も、1日ごとの予約として確認できます</td>
+</tr>
+</tbody>
+</table>
+<div class="note" style="margin-top:1rem;">
+<strong>Ver.01の日別予約をなくすのではありません。</strong>
+<p style="margin-bottom:0;">
+      日別予約を残したまま「一括登録」を追加することで、
+      保護者は利用の仕方に合わせて予約方法を選べます。
+      一括登録した場合も、園側ではこれまでと同じように1日ごとの予約として確認できます。
+    </p>
+</div>
+</section><section class="card"><h2>🌸 なぜ「現在の予約」と「履歴」を分けるのか</h2><div>
+<p><strong>一括登録した予約も、あとから1日ずつ変更・取消できます。</strong></p>
+<p>
+    一括登録は、複数の日をまとめて申し込むための便利な入力方法です。
+    一括登録した場合も、システムでは予約を<strong>1日ごとに分けて管理</strong>します。
+  </p>
+<div class="note">
+<strong>入力は一括でも、予約は日別に管理します。</strong>
+<pre style="margin:0.8rem 0 0;">【一括登録】
+9/1・9/2・9/3・9/4・9/5 をまとめて予約
+                ↓
+        システムでは日別に管理
+                ↓
+  9/1   9/2   9/3   9/4   9/5
+   ○     ○     ○     ○     ○
+                ↓
+        9/3だけ時間変更
+        9/5だけ取消</pre>
+</div>
+<p style="margin-bottom:1rem;">
+    日別予約も一括登録も、登録後は同じように1日単位で管理するため、
+    <strong>変更や取消が必要になった日だけを修正</strong>できます。
+  </p>
+</div><p>そこでVersion 2.0では、いま有効な予約内容はシンプルに管理しながら、新規予約・変更・取消などの操作履歴は別に残す設計とします。</p><div class="note"><strong>現在の予約：</strong> 園児ごと・利用日ごとの最新状態を確認<br/><strong>予約履歴：</strong> 新規・変更・取消・園側修正の履歴を時系列で確認</div></section>
 <section class="card">
-<h2>📅 現在の予約</h2><p>日別予約でも一括登録でも、システム内部では「1園児・1日・1予約」を基本単位として管理します。変更や取消があった場合も、その日の予約を更新するため、現在の状態を簡単に確認できます。</p>
+<h2>📅 現在の予約</h2><p><strong>一括登録した場合も、ここでは1日ごとの予約として表示されます。</strong>必要な日だけ変更・取消できます。</p>
 <table>
 <thead><tr><th>child_id</th><th>利用日</th><th>時間</th><th>状態</th><th>入力方法</th></tr></thead>
 <tbody id="reservationBody"></tbody>
 </table>
 </section>
 <section class="card">
-<h2>🔎 予約履歴（LOG）を検索</h2><p>保護者との確認が必要になったとき、園児・利用日・操作種別などから過去の操作を探せるようにします。</p>
+<h2>🔎 予約履歴を検索</h2><p>保護者との確認が必要になったとき、園児・利用日・操作種別などから過去の操作を探せるようにします。</p>
 <div class="grid">
 <div>
 <label>child_id</label>
@@ -86,10 +160,10 @@ pre{white-space:pre-wrap;background:#f6f8fa;padding:10px;border-radius:8px;font-
 <section class="card">
 <h2>💡 Version 2.0での基本方針</h2>
 <ul>
-<li><strong>「child_id × 利用日」</strong>を基本に、1園児・1日・1予約として管理します。</li>
+<li><strong>予約は1園児・1日ごとに管理します。</strong>一括登録した場合も、登録後は1日ごとの予約として管理するため、必要な日だけ変更・取消できます。</li>
 <li>変更・取消は、その日の予約を更新するため、現在の予約データを複雑にしません。</li>
-<li>新規・変更・取消・園側修正は、確認用の予約LOGとして残します。</li>
-<li>LOGは年度単位で管理・保管することで、データが際限なく増え続けないようにします。</li>
+<li>新規・変更・取消・園側修正は、確認用の予約履歴として残します。</li>
+<li>履歴は年度単位で管理・保管することで、データが際限なく増え続けないようにします。</li>
 </ul>
 </section><section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
 <h2>🟣 園側との確認で、利用時間と料金の基本ルールが明確になりました</h2>
@@ -165,12 +239,61 @@ pre{white-space:pre-wrap;background:#f6f8fa;padding:10px;border-radius:8px;font-
     今回確認したルールをもとに、次の開発段階で料金マスタを設計します。
     単純な「利用時間 × 一律単価」ではなく、<strong>園で定められた時間枠と料金ルールをそのまま反映</strong>します。
   </p>
+</section><section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
+<h2>🟣 キャンセル料の現在の運用を確認しました</h2>
+<p>
+    園側への確認により、キャンセル料は利用区分によって次のように扱うことを確認しました。
+  </p>
+<table>
+<thead>
+<tr><th>利用区分</th><th>キャンセル料</th><th>変更の扱い</th></tr>
+</thead>
+<tbody>
+<tr><td>通常保育</td><td><strong>なし</strong></td><td>通常の変更ルールに従います</td></tr>
+<tr><td>午前保育</td><td><strong>なし</strong></td><td>通常の変更ルールに従います</td></tr>
+<tr><td>長期休暇</td><td><strong>利用日の7日前から、予約料金の全額</strong></td><td><strong>時間の変更は前日まで受付</strong></td></tr>
+</tbody>
+</table>
+<div class="note" style="margin-top:1rem;">
+<strong>大切な点</strong>
+<p style="margin-bottom:0;">
+      長期休暇では、<strong>「キャンセル」と「時間変更」は別のルール</strong>として扱います。
+      キャンセル料が発生する期間に入っていても、時間の変更は前日まで受け付けます。
+    </p>
+</div>
+<p style="margin-top:1rem;margin-bottom:0;">
+    システムでは、取消時に利用日と取消日を確認し、キャンセル料の有無と金額を自動判定できるように設計します。
+  </p>
+</section><section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
+<h2>🟣 将来、園児によって料金が異なる場合にも対応できるようにします</h2>
+<p>
+    園側から、来年度以降、制度の変更により、
+    <strong>「就労等の認定を受けている園児」と「その他の園児」で料金が異なる可能性</strong>
+    があることを共有いただきました。
+  </p>
+<p>
+    現時点では料金変更は決まっていませんので、<strong>今年度は現在の料金で運用</strong>します。
+    ただし、将来制度が決まったときに大きくシステムを作り直さなくてもよいよう、
+    あらかじめ変更に対応できる仕組みにしておきます。
+  </p>
+<div class="note">
+<strong>例えば、将来このような変更にも対応できます</strong>
+<p style="margin:0.7rem 0 0;">
+      同じ利用時間でも、園児の認定状況によって料金が異なる制度になった場合、
+      <strong>その園児に合った料金をシステムが選んで計算</strong>できるようにします。
+    </p>
+</div>
+<p>
+    また、翌年度に料金そのものが変更された場合も、
+    プログラムを作り直すのではなく、<strong>料金設定を変更して対応</strong>できるようにします。
+  </p>
+<p style="margin-bottom:0;">
+    このように、<strong>今年度の現在の運用を大切にしながら、将来の制度変更にも対応しやすいシステム</strong>
+    として設計を進めます。
+  </p>
 </section><section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
 <h2>🛠️ 現在の開発状況</h2>
-<p>このページでは、日別予約データと予約LOGの基本設計に加え、<strong>園側に確認した利用時間・料金ルール</strong>まで整理しました。</p>
-<p>利用時間と料金の基本ルールは確認できたため、次はこれらを<strong>料金マスタとして分離して管理する設計</strong>へ進みます。</p>
-<p style="margin-bottom:0;">料金改訂があった場合にもプログラム本体をできるだけ変更せず、<strong>料金設定の変更で対応できる仕組み</strong>を目指します。</p>
-</section><section class="card" style="text-align:center;">
+<p>このページでは、日別予約の考え方と、<strong>予約の変更・取消などの履歴を残して確認できる仕組み</strong>に加え、園側に確認した利用時間・料金・キャンセル料のルールまで整理しました。</p><p>さらに、将来の制度変更を見据えて、<strong>園児の認定状況によって料金が異なる場合にも対応できる仕組み</strong>を準備しておきます。</p><p>例えば、将来「就労等の認定を受けている園児」と「その他の園児」で料金が異なる制度になった場合も、<strong>園児ごとの認定状況に応じて、それぞれの料金を適用</strong>できるようにします。</p><p>また、翌年度などに料金が変更された場合にも、プログラムそのものを作り直すのではなく、<strong>料金設定を変更することで対応できる仕組み</strong>にします。</p><p style="margin-bottom:0;">次は、このような将来の変更にも対応できる<strong>「料金設定の仕組み」</strong>を具体的に設計していきます。</p></section><section class="card" style="text-align:center;">
 <h2>📘 前のページ</h2>
 <p>予約システムで使用する情報全体の考え方は、「03 情報（データ）の管理」でご紹介しています。</p>
 <p><a class="menu-card" href="03_data_design.html" style="display:inline-block;padding:0.8rem 2rem;background:#6f42c1;color:#fff;border-radius:0.5rem;text-decoration:none;">◀ 03 情報（データ）の管理へ</a></p>
@@ -238,7 +361,7 @@ function renderLogs(){
       <td>${l.actor === "parent" ? "保護者" : "園"}</td>
       <td>${l.detail}</td>
     </tr>
-  `).join("") : `<tr><td colspan="6">該当するLOGはありません。</td></tr>`;
+  `).join("") : `<tr><td colspan="6">該当する履歴はありません。</td></tr>`;
 }
 
 renderReservations();
