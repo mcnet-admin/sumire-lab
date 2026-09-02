@@ -61,34 +61,39 @@
     <p>予約システム本体の開発進捗に合わせて、現在の状況をタイムリーにお知らせしています。</p>
     <div class="progress-container">
       <div class="progress-bar">
-        <div class="progress" style="width: 70%;"></div>
+        <div class="progress" style="width: 80%;"></div>
       </div>
-      <p>システム開発進捗 70％　｜　現在：料金設定の設計へ</p>
+      <p>システム開発進捗 80％　｜　現在：基本通信・予約受付の動作確認完了 → 料金設定の実装へ</p>
     </div>
   </section>
 
 
   <section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
-    <h2>🌸 Ver.2.0 設計更新のお知らせ</h2>
-    <p>保護者の方が毎日の予約をより簡単に行えるよう、<strong>「日別予約」＋「一括登録」</strong>の仕組みを設計しています。</p>
-    <p><strong>4つの予約生成ルールについて園側の確認が完了しました。</strong>これを受けて、「03 情報（データ）の管理」もVer.2.0の新しい設計内容に更新しています。</p>
-    <p>01 → 02 → 03 → 04 の順にご覧いただくと、予約方法からデータ管理、日別予約と予約履歴までの流れをご確認いただけます。</p>
+    <h2>🌸 Ver.2.0 基本動作確認のお知らせ</h2>
+    <p>予約画面とGoogle側の園児情報をつなぎ、<strong>クラス・園児名の表示から予約受付、確認メール送信までの基本動作を確認しました。</strong></p>
+    <p>園児情報は、予約に必要な情報だけを予約画面に表示し、メールアドレスなどは園側で管理する仕組みとしています。</p>
+    <p>これまでの設計内容に加えて、今回の実装・動作確認の内容を<strong>「05 システム実装・動作確認」</strong>としてご紹介しています。内容が増えたため、<strong>「05-00 システムの概要」「05-01 予約画面と操作方法」「05-02 データ管理と安全性」</strong>の3ページに分けました。</p>
+    <p>01 → 02 → 03 → 04 → 05-00 の順にご覧いただくと、予約方法からデータ管理、予約設計、実際の動作確認までの流れをご確認いただけます。05-00から、予約画面の説明やデータ管理の詳しい説明へ進めます。</p>
     <div style="margin-top: 1.2rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
-      <a href="design/01_system_overview.html" class="menu-card" style="flex: 1 1 240px;">
+      <a href="./design/01_system_overview.html" class="menu-card" style="flex: 1 1 240px;">
         <h3>📘 01 システム概要を見る</h3>
         <p>今回の予約方法の改訂イメージをご確認ください。</p>
       </a>
-      <a href="design/02_system_architecture.html" class="menu-card" style="flex: 1 1 240px;">
+      <a href="./design/02_system_architecture.html" class="menu-card" style="flex: 1 1 240px;">
         <h3>🖥️ 02 システムの流れを見る</h3>
         <p>予約生成の4つのルールをご確認ください。</p>
       </a>
-      <a href="design/03_data_design.html" class="menu-card" style="flex: 1 1 240px;">
+      <a href="./design/03_data_design.html" class="menu-card" style="flex: 1 1 240px;">
         <h3>📋 03 情報の管理を見る</h3>
         <p>一括登録から日別予約データができる流れをご確認ください。</p>
       </a>
-      <a href="design/04_reservation_design.html" class="menu-card" style="flex: 1 1 240px; border: 2px solid #6f42c1;">
+      <a href="./design/04_reservation_design.html" class="menu-card" style="flex: 1 1 240px; border: 2px solid #6f42c1;">
         <h3>🟣 04 日別予約データを見る</h3>
         <p>Ver.01の日別予約を残しながら、<strong>一括登録にも対応</strong>します。一括登録した予約も1日ごとに管理するため、<strong>必要な日だけ変更・取消できます。</strong>あわせて、利用時間・料金・キャンセルの考え方も整理しています。</p>
+      </a>
+      <a href="./design/05_implementation_test_00.html" class="menu-card" style="flex: 1 1 240px; border: 2px solid #2e7d32;">
+        <h3>🛠️ 05 システム実装・動作確認を見る</h3>
+        <p>まず<strong>05-00「システムの概要」</strong>からご覧ください。日別予約・一括登録・変更・取消・確認メールまでの到達点をまとめています。</p>
       </a>
     </div>
   </section>
@@ -98,21 +103,25 @@
     <p>システム開発の内容を、テーマごとにご紹介しています。</p>
 
     <div class="grid">
-      <a href="design/01_system_overview.html" class="menu-card">
+      <a href="./design/01_system_overview.html" class="menu-card">
         <h3>📘 01 システム概要</h3>
         <p>開発の目的と背景をご紹介します。</p>
       </a>
-      <a href="design/02_system_architecture.html" class="menu-card">
+      <a href="./design/02_system_architecture.html" class="menu-card">
         <h3>🖥️ 02 システムの流れ</h3>
         <p>予約から請求までの流れをご紹介します。</p>
       </a>
-      <a href="design/03_data_design.html" class="menu-card">
+      <a href="./design/03_data_design.html" class="menu-card">
         <h3>📋 03 情報（データ）の管理</h3>
         <p>予約システムで管理する情報と、日別予約データができる流れをご紹介します。</p>
       </a>
-      <a href="design/04_reservation_design.html" class="menu-card" style="border: 2px solid #6f42c1;">
+      <a href="./design/04_reservation_design.html" class="menu-card" style="border: 2px solid #6f42c1;">
         <h3>🟣 04 日別予約データ</h3>
         <p>現在の予約と、変更・取消などの予約履歴の管理方法をご紹介します。</p>
+      </a>
+      <a href="./design/05_implementation_test_00.html" class="menu-card" style="border: 2px solid #2e7d32;">
+        <h3>🛠️ 05 システム実装・動作確認</h3>
+        <p>05-00を入口に、予約画面と操作方法、データ管理と安全性を3ページに分けてご紹介します。</p>
       </a>
     </div>
   </section>
@@ -123,7 +132,7 @@
   <p>先生方の時間を、子どもたちの笑顔へ。</p>
   <p>園のDXを支える開発記録</p>
   <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br>Last Update 2026-08-26</p>
+  <p>Version 2.0<br>Last Update 2026-09-01</p>
 </footer>
 
 </body>
