@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>05-02 データ管理と安全性（システム担当者向け） | Sumire Lab</title>
+<style>
+:root{
+  --purple:#6f42c1;
+  --purple-bg:#fbf8ff;
+  --gold:#e2c66d;
+  --gold-bg:#fff9e8;
+  --green:#2e7d32;
+  --green-bg:#f3fbf4;
+  --dark:#333;
+}
+*{box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+  margin:0;background:#f5f7fa;color:#333;line-height:1.75
+}
+header{background:#fff;padding:24px;border-bottom:1px solid #ddd}
+header h1{margin:0 0 8px}
+header p{margin:0}
+main{max-width:1100px;margin:0 auto;padding:24px}
+.card{
+  background:#fff;border-radius:14px;padding:20px;margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05)
+}
+h1,h2,h3{margin-top:0}
+h2{line-height:1.45}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:14px
+}
+.box{
+  border:1px solid #ddd;border-radius:12px;padding:16px;background:#fff
+}
+.box h3{font-size:1rem;margin-bottom:8px}
+.note{
+  background:var(--gold-bg);border:1px solid var(--gold);
+  padding:14px;border-radius:10px
+}
+.success{
+  background:var(--green-bg);border:2px solid #81c784;
+  padding:16px;border-radius:12px
+}
+.purple{
+  border:2px solid var(--purple);background:var(--purple-bg)
+}
+.data-stage{
+  border:2px solid #d7c06b;
+  background:#fffdf5;
+}
+.stage-card{
+  border:1px solid #d9d9d9;
+  border-radius:12px;
+  padding:16px;
+  background:#fff;
+  margin:14px 0;
+}
+.stage-card h3{margin-bottom:8px}
+.data-sample{
+  overflow-x:auto;
+  margin:12px 0;
+}
+.data-sample table{min-width:680px}
+.emphasis{
+  background:#fff4c7;
+  border-left:5px solid #d5a300;
+  padding:14px 16px;
+  border-radius:8px;
+  margin:14px 0;
+}
+.privacy-summary{
+  background:var(--green-bg);
+  border:2px solid #81c784;
+  padding:16px;
+  border-radius:12px;
+  margin-top:16px;
+}
+.screen-shot{
+  margin:18px 0;
+  padding:12px;
+  background:#f8faf8;
+  border:1px solid #d8e5d8;
+  border-radius:12px;
+}
+.screen-shot img{
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:8px;
+  border:1px solid #ddd;
+}
+.screen-shot figcaption{
+  margin-top:10px;
+  font-size:14px;
+  line-height:1.7;
+  color:#555;
+}
+.flow{
+  display:flex;align-items:stretch;justify-content:center;gap:10px;
+  flex-wrap:wrap;margin:18px 0
+}
+.flow .step{
+  min-width:180px;flex:1 1 180px;max-width:240px;
+  background:#fff;border:1px solid #d8d8d8;border-radius:12px;
+  padding:14px;text-align:center
+}
+.flow .arrow{
+  align-self:center;font-size:1.5rem;font-weight:700;color:#777
+}
+.badge{
+  display:inline-block;padding:3px 9px;border-radius:999px;
+  background:#eee;font-size:12px
+}
+.badge.ok{background:#e7f5e9;color:#256029;font-weight:700}
+table{width:100%;border-collapse:collapse}
+th,td{
+  padding:10px;border-bottom:1px solid #eee;text-align:left;
+  vertical-align:top;font-size:14px
+}
+th{background:#fafafa}
+.small{font-size:13px;color:#666}
+code{
+  background:#f1f3f5;padding:2px 5px;border-radius:4px;
+  overflow-wrap:anywhere
+}
+.menu-card{
+  display:inline-block;padding:.8rem 2rem;background:var(--purple);
+  color:#fff;border-radius:.5rem;text-decoration:none
+}
+footer{
+  text-align:center;padding:24px;color:#666;font-size:13px
+}
+
+.timeline-date{
+  display:inline-block;margin-bottom:8px;padding:4px 10px;border-radius:999px;
+  background:#eef4ff;color:#35516f;font-size:13px;font-weight:700
+}
+.check-list{margin:10px 0 0;padding-left:1.25em}
+.check-list li{margin:5px 0}
+.architecture{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;
+  margin:14px 0
+}
+.architecture .step{
+  border:1px solid #d8d8d8;border-radius:10px;background:#fff;padding:12px;text-align:center
+}
+.architecture .step strong{display:block;margin-bottom:4px}
+
+.security-box{
+  margin:16px 0;padding:16px;border-radius:12px;
+  background:#f5f9ff;border:2px solid #9fb8d8;color:#334a63
+}
+.security-box h4{margin:0 0 8px;color:#29466f;font-size:1rem}
+.security-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:10px;margin-top:12px
+}
+.security-item{
+  background:#fff;border:1px solid #ccd9e8;border-radius:10px;padding:12px
+}
+.security-item strong{display:block;color:#29466f;margin-bottom:4px}
+.privacy-levels{display:grid;gap:10px;margin-top:14px}
+.privacy-level{background:#fff;border:1px solid #cfe3d2;border-radius:10px;padding:13px}
+.privacy-level .tag{display:inline-block;margin-bottom:6px;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700;background:#eef6ef;color:#2e6b38}
+.privacy-level.cloud .tag{background:#eef4ff;color:#35516f}
+.privacy-level.record .tag{background:#f4f4f4;color:#555}
+@media(max-width:700px){
+  main{padding:14px}
+  header{padding:18px}
+  .flow .arrow{width:100%;transform:rotate(90deg);text-align:center}
+}
+
+
+.page-nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px;padding:10px;background:#fff;border:1px solid #ddd;border-radius:12px;position:sticky;top:8px;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.page-nav a{flex:1 1 180px;text-align:center;text-decoration:none;color:#35516f;background:#f7f9fc;border:1px solid #d7e2ef;border-radius:9px;padding:9px 10px;font-weight:700;font-size:14px}
+.page-nav a.current{background:#35516f;color:#fff;border-color:#35516f}
+.branch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:16px 0}
+.branch-card{display:block;text-decoration:none;color:inherit;border:2px solid #d7e2ef;background:#f8fbff;border-radius:14px;padding:18px}
+.branch-card strong{display:block;font-size:1.1rem;color:#29466f;margin-bottom:6px}
+.branch-card .arrow-link{margin-top:10px;color:#35516f;font-weight:800}
+.timeline{display:grid;gap:12px;margin:14px 0}
+.timeline-item{border-left:5px solid #6f42c1;background:#fbf8ff;border-radius:10px;padding:13px 15px}
+.timeline-item strong{display:block;margin-bottom:3px}
+.compact-table td:first-child{white-space:nowrap;font-weight:700}
+.page-intro{background:#f8fafc;border:1px solid #dce3ea;border-radius:12px;padding:14px 16px;margin-bottom:18px}
+.flow-title{text-align:center;font-weight:800;color:#35516f;margin:14px 0 6px}
+.shot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:16px 0}
+.shot-card{border:1px solid #d8e5d8;background:#f8faf8;border-radius:12px;padding:10px}
+.shot-card img{display:block;width:100%;height:auto;border:1px solid #ddd;border-radius:8px}
+.shot-card figcaption{font-size:13px;color:#555;line-height:1.6;margin-top:8px}
+@media(max-width:700px){.page-nav{position:static}.page-nav a{flex-basis:100%}}
+
+
+.audience{margin:0 0 18px;padding:12px 15px;border-radius:12px;border:1px solid #cfe0d2;background:#f4fbf5;color:#35583c;line-height:1.65}
+.audience.detail{border-color:#d7e2ef;background:#f7faff;color:#35516f}
+.role-tag{display:inline-block;margin-bottom:6px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:800;background:#e7f5e9;color:#256029}
+.audience.detail .role-tag{background:#eaf0f8;color:#35516f}
+.simple-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+.simple-flow .step{border:1px solid #d9e3dc;border-radius:12px;background:#fff;padding:14px;text-align:center;line-height:1.55}
+.simple-flow .step strong{display:block;color:#2e6b38;margin-bottom:4px}
+.staff-point{background:#f4fbf5;border-left:5px solid #4f9b58;padding:13px 15px;border-radius:9px;margin:12px 0;line-height:1.65}
+.detail-link{font-size:13px;color:#667;margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+<h1>🔐 05-02 データ管理と安全性</h1>
+<p>園スタッフのうち、システムの設定・管理を担当する方や、個人情報の扱いを詳しく確認したい方向けのページです。</p>
+</header>
+<main>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05-00 まず全体像</a><a href="05_implementation_test_01.html">05-01 予約画面を見る</a><a class="current" href="05_implementation_test_02.html">05-02 データ管理を詳しく</a></nav>
+<div class="audience detail"><span class="role-tag">システム担当者向け</span><br/><strong>園スタッフのみなさんが、このページをすべて読む必要はありません。</strong><br/>ここでは、システム担当者が園児情報をどこに保存し、誰がアクセスできるのかを確認できるよう、詳しく残しています。</div>
+<section class="card"><h2>最初に、安心のポイントだけ</h2><div class="staff-point"><strong>① 園児情報の原本は園内PCに残します。</strong></div><div class="staff-point"><strong>② Google側には予約に必要な情報だけを置き、保存先はマクリン幼稚園スタッフ（@mclean.ed.jp）にアクセスを限定します。</strong></div><div class="staff-point"><strong>③ 保護者が使う予約画面から、Googleスプレッドシートそのものを直接見ることはできません。</strong></div><p class="detail-link">以下は、この3点を技術面も含めて詳しく説明した記録です。</p></section><section class="card data-stage">
+<h2>🔐 園児データは「3つの段階」に分けて扱います</h2>
+<p>
+    園児情報をどのように扱うかは、今回のVersion 2.0で特に慎重に確認してきた点です。
+    今回は実際の園児情報ではなく、<strong>ダミーデータを入れた <code>testDB.xlsx</code></strong> を使い、
+    「どこに、どの情報を置くのか」を実際のシステムで確認しました。
+  </p>
+<p>
+    以下では、説明だけではなく、<strong>①ローカルの元データ、②Google側の園児マスタ、
+    ③Google側の予約記録</strong>を、実際のTESTと同じ項目構成で示します。
+    どの段階で、どの情報を持っているのかを具体的に確認できます。
+  </p>
+<div class="emphasis">
+<strong>今回確認できた大切な点</strong><br/>
+    園児DBの原本をそのままGoogle側へ置く必要はありません。
+    <strong>原本は園のローカルPCに残し、予約システムの運用に必要な最低限の項目だけをGoogle側で扱う</strong>
+    仕組みで、予約受付から確認メール送信まで動作することを確認しました。
+  </div>
+<div class="stage-card">
+<h3>① 園のローカルPC ― 園児情報の原本</h3>
+<p>
+      今回のTESTでは <code>testDB.xlsx</code> を使用しました。
+      本番では園が管理する <code>園児DB.xlsx</code> が原本となり、
+      <strong>原本そのものは園のローカルPCで管理します。</strong>
+</p>
+<div class="note" style="margin:14px 0;">
+<strong>04から <code>child_id</code> の表記が変わっている理由</strong><br/>
+04「日別予約データ」では、設計・試作段階のサンプルとして
+<code>251T01</code> などを使用していました。<br/>
+実装TESTでは、本番の園児情報と混同しないことを優先し、
+<strong>TEST専用の <code>test001</code>〜<code>test007</code></strong> に切り替えています。<br/>
+これは識別方法を変更したのではなく、<strong>開発段階に応じてTEST用の識別子へ置き換えたもの</strong>です。
+</div>
+<p><strong>TESTで使用した <code>testDB.xlsx</code> の園児情報</strong></p>
+<div class="data-sample">
+<table>
+<thead>
+<tr>
+<th>child_id</th><th>class</th><th>no</th><th>name</th>
+<th>email_01</th><th>email_02</th><th>active</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>test001</td><td>TP1</td><td>1</td><td>テスト園児001</td>
+<td>テスト用メール</td><td>―</td><td>TRUE</td>
+</tr>
+<tr>
+<td>test002</td><td>HY1</td><td>1</td><td>テスト園児002</td>
+<td>テスト用メール</td><td>―</td><td>TRUE</td>
+</tr>
+<tr>
+<td>…</td><td>…</td><td>…</td><td>…</td>
+<td>…</td><td>…</td><td>…</td>
+</tr>
+<tr>
+<td>test007</td><td>HK2</td><td>1</td><td>テスト園児007</td>
+<td>テスト用メール</td><td>―</td><td>TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="small" style="margin-bottom:0;">
+      ※今回はダミー園児7名によるTESTです。メールアドレスそのものは開発記録には掲載しません。
+    </p>
+</div>
+<div style="text-align:center;font-size:1.6rem;font-weight:700;color:#777;">↓</div>
+<p style="text-align:center;"><strong>予約運用に必要な項目だけを取り出す</strong></p>
+<div class="stage-card">
+<h3>② Google側 ― 予約用園児マスタ「children」</h3>
+<p>
+      園が管理するGoogleスプレッドシート <strong>Sumire Lab TEST DB</strong> には、
+      園児DB全体をコピーするのではなく、予約システムを動かすために必要な
+      <strong>7項目だけ</strong>を保存してTESTしました。
+      この中には最低限必要な個人情報として<strong>園児名と保護者メールアドレス</strong>も含まれます。
+      ただし、Googleスプレッドシートそのものを保護者が開いて閲覧する仕組みではありません。
+    </p>
+<div class="note" style="margin:14px 0;">
+<strong>「制限なし」で公開しているのは、予約を受け付ける入口です。</strong><br/>
+      保護者が自宅のスマートフォンやPCから利用できるよう、予約画面とApps ScriptのWebアプリは
+      ログインを求めない「制限なし」の入口として動かします。
+      一方、園児名や保護者メールアドレスを保存する<strong>Googleスプレッドシート自体は一般公開しません。</strong>
+      予約画面を開けることと、園児情報の保存先を閲覧できることは別の権限として管理しています。
+    </div>
+<div class="security-box">
+<h4>🔒 Google側に置く個人情報は、マクリン幼稚園スタッフだけが直接アクセスできます</h4>
+<p style="margin:0;">
+        予約運用に必要なため、<strong>園児名・保護者メールアドレス</strong>はGoogle上の
+        <code>children</code> に保存します。つまり、必要最小限の個人情報をネットワーク上に置く設計です。
+        その代わり、保存先のGoogleスプレッドシートは、<strong>マクリン幼稚園のGoogle環境
+        （<code>@mclean.ed.jp</code>）のスタッフにアクセスを限定</strong>して管理します。
+      </p>
+<div class="security-grid">
+<div class="security-item">
+<strong>保護者</strong>
+          予約フォームは利用できますが、Googleスプレッドシートを直接開くことはできません。
+        </div>
+<div class="security-item">
+<strong>マクリン幼稚園スタッフ</strong>
+<code>@mclean.ed.jp</code> の組織内アカウントで、共有設定により許可された範囲だけアクセスします。
+        </div>
+<div class="security-item">
+<strong>Google側の保存先</strong>
+          「リンクを知っている全員」ではなく、<strong>マクリン幼稚園組織内に限定</strong>した共有設定で管理します。
+        </div>
+</div>
+<p class="small" style="margin:12px 0 0;">
+        ※2026年9月1日、TEST用Spreadsheetの共有設定が「マクリン幼稚園」組織内の閲覧に限定されていることを確認しました。
+        管理者メールアドレスそのものは、この開発記録には掲載しません。
+      </p>
+</div>
+<div aria-label="予約画面とGoogle側データのつながり" class="flow">
+<div class="step">
+<strong>① 保護者の予約画面</strong><br/>
+<span class="small">保護者が利用するため<br/><strong>制限なし</strong>で公開</span>
+</div>
+<div class="arrow">→</div>
+<div class="step">
+<strong>② Apps Script</strong><br/>
+<span class="small">Google上で動く<br/><strong>中継・処理プログラム</strong></span>
+</div>
+<div class="arrow">→</div>
+<div class="step">
+<strong>③ Google Spreadsheet</strong><br/>
+<span class="small">children / reservations<br/>園側でデータを管理</span>
+</div>
+</div>
+<div class="success" style="margin:14px 0;">
+<strong>Apps Scriptとは？ ― 公開画面と非公開データの間に入る中継・処理プログラム</strong><br/>
+      Google上で動くプログラムで、保護者の予約画面から送られた内容を受け取り、
+      園児情報との照合、予約の登録・変更・取消、確認メールの送信などを行います。
+      保護者がGoogleスプレッドシートを直接操作するのではなく、<strong>Apps Scriptが必要な処理だけをGoogle側で実行</strong>します。
+      そのため、予約フォームを「制限なし」で利用できるようにしても、保存先のSpreadsheetまで一般公開する必要はありません。
+    </div>
+<p class="small">
+      園児一覧を予約画面へ表示するときも、childrenの7項目をすべて返しているわけではありません。
+      現在のTESTでは、Apps Scriptから予約画面へ返すのは
+      <code>child_id</code>・<code>class</code>・<code>no</code>・<code>name</code> の4項目です。
+      <strong>保護者メールアドレス（email_01 / email_02）は予約画面へ返さず、Google側で確認メールを送るときに使用します。</strong>
+</p>
+<p><strong>Google側に保存している園児情報（TEST時）</strong></p>
+<div class="data-sample">
+<table>
+<thead>
+<tr>
+<th>child_id</th><th>class</th><th>no</th><th>name</th>
+<th>email_01</th><th>email_02</th><th>active</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>test001</td><td>TP1</td><td>1</td><td>テスト園児001</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+<tr><td>test002</td><td>HY1</td><td>1</td><td>テスト園児002</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+<tr><td>test003</td><td>HY2</td><td>1</td><td>テスト園児003</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+<tr><td>test004</td><td>KT1</td><td>1</td><td>テスト園児004</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+<tr><td>test005</td><td>KT2</td><td>1</td><td>テスト園児005</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+<tr><td>test006</td><td>HK1</td><td>1</td><td>テスト園児006</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+<tr><td>test007</td><td>HK2</td><td>1</td><td>テスト園児007</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+</tbody>
+</table>
+</div>
+<p class="small">
+      ※実際のTESTでは確認メール送信用のテストメールアドレスを登録していますが、
+      開発記録ではメールアドレスそのものは表示していません。
+      システム上では、この園児情報を <code>children</code> シートで管理しています。
+    </p>
+<div class="note">
+<strong><code>active</code> とは</strong><br/>
+      現在、その園児を予約画面に表示するかどうかを判定する項目です。<br/>
+<strong>TRUE</strong> ＝ 現在在籍しており、予約対象として表示する園児<br/>
+<strong>FALSE</strong> ＝ 転出などにより、予約画面には表示しない園児<br/><br/>
+      転出した園児を削除してしまうと、過去の予約・利用・請求履歴とのつながりが切れるため、
+      園児情報は削除せず、<code>active = FALSE</code> に切り替えて残す方針です。
+    </div>
+<p><strong>なぜ、この7項目をGoogle側に置くのか</strong></p>
+<div class="data-sample">
+<table>
+<thead>
+<tr><th>項目</th><th>Google側に置く理由</th></tr>
+</thead>
+<tbody>
+<tr><td><code>child_id</code></td><td>園児をシステム上で識別するため</td></tr>
+<tr><td><code>class</code></td><td>クラスから園児を選択するため</td></tr>
+<tr><td><code>no</code></td><td>出席番号・並び順などに使用するため</td></tr>
+<tr><td><code>name</code></td><td>保護者が園児を確認・選択するため</td></tr>
+<tr><td><code>email_01</code></td><td>予約確認メールを送信するため</td></tr>
+<tr><td><code>email_02</code></td><td>必要に応じて第2連絡先へ送信するため</td></tr>
+<tr><td><code>active</code></td><td>現在予約できる園児かを判定するため</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<strong>ここがポイントです ― 情報を2段階で絞ります。</strong><br/>
+      園児名も保護者メールアドレスも個人情報です。そのため「Google側には個人情報を置かない」という設計ではありません。
+      ① 園内の園児DBからGoogle側へは<strong>予約運用に必要な7項目だけ</strong>、
+      ② Google側から保護者の予約画面へは<strong>さらに必要な4項目だけ</strong>、という二段階で情報を絞ります。
+      メールアドレスは画面表示には使わず、Google側で確認メールを送信するときだけ参照します。
+    </div>
+</div>
+<div style="text-align:center;font-size:1.6rem;font-weight:700;color:#777;">↓</div>
+<p style="text-align:center;"><strong>予約記録は child_id で保存 ／ 表示・通知するときに children から園児名を参照</strong></p>
+<div class="stage-card">
+<h3>③ Google側 ― 実際の予約記録「reservations」</h3>
+<p>
+      保護者から予約が送信されると、予約記録には園児名やメールアドレスを繰り返し保存せず、
+      <strong><code>child_id</code> を使って園児を識別</strong>します。
+    </p>
+<p><strong>Google側に保存された予約記録（TEST時）</strong></p>
+<div class="data-sample">
+<table>
+<thead>
+<tr><th>child_id</th><th>date</th><th>end_time</th><th>received_at</th></tr>
+</thead>
+<tbody>
+<tr><td>TEST001</td><td>2026-09-01</td><td>16:30</td><td>2026/08/26 15:22:05</td></tr>
+<tr><td>TEST001</td><td>2026-09-01</td><td>16:30</td><td>2026/08/28 13:28:05</td></tr>
+<tr><td>test007</td><td>2026-08-29</td><td>17:00</td><td>2026/08/28 15:10:17</td></tr>
+</tbody>
+</table>
+</div>
+<p class="small">
+      ※上段には開発途中の接続TEST記録も含まれています。最新の一連のTESTでは
+      <code>test007</code> の予約が記録されています。
+    </p>
+<p>
+<strong>この予約記録には「園児名」も「メールアドレス」もありません。</strong>
+      予約を表示したり確認メールを送ったりするときに、<code>child_id</code> をキーとして
+      <code>children</code> を照合し、その時点で園児名・メールアドレスを取得します。
+    </p>
+<div aria-label="child_idから園児名を参照する流れ" class="flow">
+<div class="step">
+<strong>① 予約画面</strong><br/>
+<span class="small">childrenから<br/>クラス・園児名を表示</span>
+</div>
+<div class="arrow">→</div>
+<div class="step">
+<strong>② 予約保存</strong><br/>
+<span class="small">reservationsには<br/><code>child_id</code>で記録</span>
+</div>
+<div class="arrow">→</div>
+<div class="step">
+<strong>③ 表示・メール時</strong><br/>
+<span class="small"><code>child_id</code>でchildrenを照合</span>
+</div>
+<div class="arrow">→</div>
+<div class="step">
+<strong>④ 園児名を取得</strong><br/>
+<span class="small">園児名・送信先を<br/>必要な時だけ参照</span>
+</div>
+</div>
+<div class="note" style="margin-top:14px;">
+<strong>「園児名はどこで分かるのか」</strong><br/>
+      園児名をreservationsへ重複保存するのではなく、<strong>必要な画面表示やメール作成の段階で
+      child_idからchildrenを引く</strong>構成です。園児名が変わった場合も、予約記録そのものを書き換える必要はありません。
+    </div>
+</div>
+<div class="privacy-summary">
+<strong>3段階で、扱う個人情報を絞っています</strong>
+<div class="privacy-levels">
+<div class="privacy-level">
+<span class="tag">① 園内・原本</span><br/>
+<strong>ローカルの園児DB ― 個人情報を含む原本</strong><br/>
+        園児情報の原本は園のローカルPCに残します。予約システムのために原本全体をクラウドへ移すことはしません。
+      </div>
+<div style="text-align:center;font-weight:700;color:#667;">↓　予約運用に必要な情報だけ</div>
+<div class="privacy-level cloud">
+<span class="tag">② Google側・限定保存</span><br/>
+<strong><code>children</code> ― 必要最小限の個人情報あり</strong><br/>
+        予約に必要な7項目を保存し、その中には園児名・保護者メールアドレスを含みます。
+        ただし、Spreadsheetの共有範囲は<strong>マクリン幼稚園スタッフ（<code>@mclean.ed.jp</code>）に限定</strong>します。
+        保護者はSpreadsheetを直接閲覧せず、メールアドレスも予約画面へ返しません。
+      </div>
+<div style="text-align:center;font-weight:700;color:#667;">↓　予約記録では <code>child_id</code> で識別</div>
+<div class="privacy-level record">
+<span class="tag">③ Google側・予約記録</span><br/>
+<strong><code>reservations</code> ― 園児名・メールアドレスなどの直接識別情報を持たない</strong><br/>
+        予約記録には <code>child_id</code>、利用日、利用時間などを保存します。
+        必要な表示やメール送信のときだけ、Apps Scriptが <code>child_id</code> を使って <code>children</code> を照合します。
+      </div>
+</div>
+<p style="margin:14px 0 0;">
+      この設計では、「クラウドに個人情報を一切置かない」のではなく、
+      <strong>置く情報を必要最小限にし、保存先へのアクセスを園スタッフに限定し、
+      予約記録には園児名・メールアドレスを重複保存しない</strong>ことで、扱う個人情報の範囲を小さくしています。
+    </p>
+</div>
+</section><section class="card">
+<h2>🗂️ 本番では、この仕組みを年度運用につなげます</h2>
+<p>
+    園児情報の原本と、予約システムで使用する情報を分けて管理します。
+    原本をそのままインターネット上へ置くことはしません。
+  </p>
+<div class="grid">
+<div class="box">
+<h3>① 園児DB.xlsx</h3>
+<p>
+        園が保有する元データ。<br/>
+<strong>園のローカルPCで管理</strong>し、公開しません。
+      </p>
+</div>
+<div class="box">
+<h3>② 年度当初</h3>
+<p>
+        Generatorで予約に必要な項目だけを抽出し、
+        Google側の<strong>予約用園児マスタ</strong>を作成します。
+      </p>
+</div>
+<div class="box">
+<h3>③ 年度途中</h3>
+<p>
+        転入・転出、クラス変更、メールアドレス変更などを
+        予約用園児マスタへ反映します。
+      </p>
+</div>
+<div class="box">
+<h3>④ 将来の園側管理画面</h3>
+<p>
+        先生方が園児情報の変更を行える
+        <strong>管理画面</strong>を用意する方向で設計します。
+      </p>
+</div>
+</div>
+<div class="note" style="margin-top:14px;">
+<strong>転出した園児は削除しません。</strong><br/>
+<code>active = FALSE</code> として予約対象から外し、
+    過去の予約・利用・請求履歴とのつながりを残す方針です。
+  </div>
+</section><section class="card">
+<h2>🔐 TEST環境と本番環境を分けて開発します</h2>
+<p>
+    開発途中の機能を本番へ直接入れず、TEST環境で確認してから本番へ反映する方針とします。
+  </p>
+<div class="grid">
+<div class="box">
+<h3>TEST</h3>
+<p>
+        TEST用GitHub Pages、TEST用Apps Script、TEST用Spreadsheetを使って
+        接続や予約処理を確認します。
+      </p>
+</div>
+<div class="box">
+<h3>本番</h3>
+<p>
+        動作確認が終わった機能だけを本番環境へ反映します。
+        開発用データを本番データと混在させません。
+      </p>
+</div>
+</div>
+</section>
+<section class="card">
+<h2>🧩 データ管理・安全性に関する技術メモ</h2>
+<table class="compact-table"><tbody>
+<tr><td>予約画面</td><td>GitHub Pages。保護者が利用する入口として公開。</td></tr>
+<tr><td>Apps Script</td><td>Google上で動く中継・処理プログラム。園児照合、予約処理、メール送信を担当。</td></tr>
+<tr><td>Google Spreadsheet</td><td><code>children</code> と <code>reservations</code> を分離。Spreadsheet自体は一般公開しない。</td></tr>
+<tr><td>アクセス制限</td><td>Google側の保存先はマクリン幼稚園組織内（<code>@mclean.ed.jp</code>）に限定。</td></tr>
+<tr><td>画面へ返す情報</td><td><code>child_id</code>・<code>class</code>・<code>no</code>・<code>name</code> の4項目。保護者メールアドレスは返さない。</td></tr>
+<tr><td>予約記録</td><td><code>reservations</code> には園児名・メールアドレスを重複保存せず、<code>child_id</code> で照合。</td></tr>
+</tbody></table>
+</section>
+<section class="card" style="text-align:center;"><h2>➡️ 予約操作の実動TESTへ</h2><p>一括入力・日別変更・取消の画面とTEST結果は05-01にまとめています。</p><p><a class="menu-card" href="05_implementation_test_01.html">05-01 予約画面を見る →</a></p></section>
+</main>
+<footer>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>園のDXを支える開発記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-09-01</p>
+</footer>
+</body>
+</html>
