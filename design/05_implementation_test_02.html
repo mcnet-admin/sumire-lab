@@ -215,11 +215,41 @@ footer{
 <main>
 <nav class="page-nav"><a href="05_implementation_test_00.html">05-00 まず全体像</a><a href="05_implementation_test_01.html">05-01 予約画面を見る</a><a class="current" href="05_implementation_test_02.html">05-02 データ管理を詳しく</a></nav>
 <div class="audience detail"><span class="role-tag">システム担当者向け</span><br/><strong>園スタッフのみなさんが、このページをすべて読む必要はありません。</strong><br/>ここでは、システム担当者が園児情報をどこに保存し、誰がアクセスできるのかを確認できるよう、詳しく残しています。</div>
-<section class="card"><h2>最初に、安心のポイントだけ</h2><div class="staff-point"><strong>① 園児情報の原本は園内PCに残します。</strong></div><div class="staff-point"><strong>② Google側には予約に必要な情報だけを置き、保存先はマクリン幼稚園スタッフ（@mclean.ed.jp）にアクセスを限定します。</strong></div><div class="staff-point"><strong>③ 保護者が使う予約画面から、Googleスプレッドシートそのものを直接見ることはできません。</strong></div><p class="detail-link">以下は、この3点を技術面も含めて詳しく説明した記録です。</p></section><section class="card data-stage">
+<section class="card"><h2>最初に、安心のポイントだけ</h2><div class="staff-point"><strong>① 園児情報の原本は園内PCに残します。</strong></div><div class="staff-point"><strong>② Google側には予約に必要な情報だけを置き、保存先はマクリン幼稚園スタッフ（@mclean.ed.jp）にアクセスを限定します。</strong></div><div class="staff-point"><strong>③ 保護者が使う予約画面から、Googleスプレッドシートそのものを直接見ることはできません。</strong></div><p class="detail-link">以下は、この3点を技術面も含めて詳しく説明した記録です。</p></section>
+<section class="card" style="border:2px solid #9fb8d8;background:#f5f9ff;">
+<h2>🧭 このシステムのデータ管理の基本原則</h2>
+<p>
+  Version 2.0では、<strong>「公開してよいもの」と「園の業務データ」を保存場所から分けて管理</strong>します。
+</p>
+<div class="grid">
+  <div class="box">
+    <h3>🌐 GitHub</h3>
+    <p><strong>プログラム・公開可能データ</strong></p>
+    <p>
+      保護者が利用する予約画面のHTML・JavaScriptや、
+      <code>schedule.json</code> など公開して問題のないデータを置きます。
+    </p>
+  </div>
+  <div class="box">
+    <h3>🔒 Google Drive / Google Spreadsheet</h3>
+    <p><strong>園児・予約等の業務データ</strong></p>
+    <p>
+      園児情報、保護者連絡先、予約記録など、
+      園の業務に必要なデータを管理します。これらをGitHubへ保存することはありません。
+    </p>
+  </div>
+</div>
+<div class="note" style="margin-top:14px;">
+<strong>変更・取消のときはどうするのか</strong><br/>
+保護者が予約を変更・取消するときは、Google側の予約記録から
+<strong>その処理に必要な予約情報だけをApps Script経由で一時的に予約画面へ返します。</strong><br/>
+予約個票のJSONファイルをGitHubに保存する仕組みではありません。
+</div>
+</section><section class="card data-stage">
 <h2>🔐 園児データは「3つの段階」に分けて扱います</h2>
 <p>
     園児情報をどのように扱うかは、今回のVersion 2.0で特に慎重に確認してきた点です。
-    今回は実際の園児情報ではなく、<strong>ダミーデータを入れた <code>testDB.xlsx</code></strong> を使い、
+    今回は実際の園児情報ではなく、<strong>ダミーデータを入れた <code>testDB02.xlsx</code></strong> を使い、
     「どこに、どの情報を置くのか」を実際のシステムで確認しました。
   </p>
 <p>
@@ -236,7 +266,7 @@ footer{
 <div class="stage-card">
 <h3>① 園のローカルPC ― 園児情報の原本</h3>
 <p>
-      今回のTESTでは <code>testDB.xlsx</code> を使用しました。
+      今回のTESTでは <code>testDB02.xlsx</code> を使用しました。
       本番では園が管理する <code>園児DB.xlsx</code> が原本となり、
       <strong>原本そのものは園のローカルPCで管理します。</strong>
 </p>
@@ -245,10 +275,10 @@ footer{
 04「日別予約データ」では、設計・試作段階のサンプルとして
 <code>251T01</code> などを使用していました。<br/>
 実装TESTでは、本番の園児情報と混同しないことを優先し、
-<strong>TEST専用の <code>test001</code>〜<code>test007</code></strong> に切り替えています。<br/>
+<strong>TEST専用の <code>test001</code>〜<code>test010</code></strong> に切り替えています。<br/>
 これは識別方法を変更したのではなく、<strong>開発段階に応じてTEST用の識別子へ置き換えたもの</strong>です。
 </div>
-<p><strong>TESTで使用した <code>testDB.xlsx</code> の園児情報</strong></p>
+<p><strong>TESTで使用した <code>testDB02.xlsx</code> の園児情報</strong></p>
 <div class="data-sample">
 <table>
 <thead>
@@ -260,25 +290,25 @@ footer{
 <tbody>
 <tr>
 <td>test001</td><td>TP1</td><td>1</td><td>テスト園児001</td>
-<td>テスト用メール</td><td>―</td><td>TRUE</td>
+<td>園内確認用</td><td>園外確認用</td><td>TRUE</td>
 </tr>
 <tr>
 <td>test002</td><td>HY1</td><td>1</td><td>テスト園児002</td>
-<td>テスト用メール</td><td>―</td><td>TRUE</td>
+<td>園内確認用</td><td>園外確認用</td><td>TRUE</td>
 </tr>
 <tr>
 <td>…</td><td>…</td><td>…</td><td>…</td>
 <td>…</td><td>…</td><td>…</td>
 </tr>
 <tr>
-<td>test007</td><td>HK2</td><td>1</td><td>テスト園児007</td>
-<td>テスト用メール</td><td>―</td><td>TRUE</td>
+<td>test010</td><td>KT2</td><td>2</td><td>テスト園児010</td>
+<td>園内確認用</td><td>園外確認用</td><td><strong>FALSE</strong></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p class="small" style="margin-bottom:0;">
-      ※今回はダミー園児7名によるTESTです。メールアドレスそのものは開発記録には掲載しません。
+      ※今回はダミー園児10名によるTESTです。全員に2つの確認用メールアドレスを設定していますが、メールアドレスそのものは開発記録には掲載しません。
     </p>
 </div>
 <div style="text-align:center;font-size:1.6rem;font-weight:700;color:#777;">↓</div>
@@ -365,19 +395,22 @@ footer{
 </tr>
 </thead>
 <tbody>
-<tr><td>test001</td><td>TP1</td><td>1</td><td>テスト園児001</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
-<tr><td>test002</td><td>HY1</td><td>1</td><td>テスト園児002</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
-<tr><td>test003</td><td>HY2</td><td>1</td><td>テスト園児003</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
-<tr><td>test004</td><td>KT1</td><td>1</td><td>テスト園児004</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
-<tr><td>test005</td><td>KT2</td><td>1</td><td>テスト園児005</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
-<tr><td>test006</td><td>HK1</td><td>1</td><td>テスト園児006</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
-<tr><td>test007</td><td>HK2</td><td>1</td><td>テスト園児007</td><td>テスト用メール</td><td>―</td><td>TRUE</td></tr>
+<tr><td>test001</td><td>TP1</td><td>1</td><td>テスト園児001</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test002</td><td>HY1</td><td>1</td><td>テスト園児002</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test003</td><td>HY2</td><td>1</td><td>テスト園児003</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test004</td><td>KT1</td><td>1</td><td>テスト園児004</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test005</td><td>KT2</td><td>1</td><td>テスト園児005</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test006</td><td>HK1</td><td>1</td><td>テスト園児006</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test007</td><td>HK2</td><td>1</td><td>テスト園児007</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test008</td><td>HY2</td><td>2</td><td>テスト園児008</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr><td>test009</td><td>KT1</td><td>2</td><td>テスト園児009</td><td>園内確認用</td><td>園外確認用</td><td>TRUE</td></tr>
+<tr style="background:#fff9e8;"><td>test010</td><td>KT2</td><td>2</td><td>テスト園児010</td><td>園内確認用</td><td>園外確認用</td><td><strong>FALSE</strong></td></tr>
 </tbody>
 </table>
 </div>
 <p class="small">
-      ※実際のTESTでは確認メール送信用のテストメールアドレスを登録していますが、
-      開発記録ではメールアドレスそのものは表示していません。
+      ※TESTでは、各園児に園内確認用・園外確認用の2つのメールアドレスを設定しています。<br/>
+      開発記録では、実際のメールアドレスそのものは表示していません。
       システム上では、この園児情報を <code>children</code> シートで管理しています。
     </p>
 <div class="note">
@@ -386,7 +419,10 @@ footer{
 <strong>TRUE</strong> ＝ 現在在籍しており、予約対象として表示する園児<br/>
 <strong>FALSE</strong> ＝ 転出などにより、予約画面には表示しない園児<br/><br/>
       転出した園児を削除してしまうと、過去の予約・利用・請求履歴とのつながりが切れるため、
-      園児情報は削除せず、<code>active = FALSE</code> に切り替えて残す方針です。
+      園児情報は削除せず、<code>active = FALSE</code> に切り替えて残す方針です。<br/><br/>
+      <strong>今回のTESTでは、<code>test010</code> をあえて <code>FALSE</code> に設定しました。</strong><br/>
+      10名を登録していても、予約画面には <code>active = TRUE</code> の9名だけが表示され、
+      <code>test010</code> が予約対象として表示されないことを確認するためです。
     </div>
 <p><strong>なぜ、この7項目をGoogle側に置くのか</strong></p>
 <div class="data-sample">
@@ -410,7 +446,7 @@ footer{
       園児名も保護者メールアドレスも個人情報です。そのため「Google側には個人情報を置かない」という設計ではありません。
       ① 園内の園児DBからGoogle側へは<strong>予約運用に必要な7項目だけ</strong>、
       ② Google側から保護者の予約画面へは<strong>さらに必要な4項目だけ</strong>、という二段階で情報を絞ります。
-      メールアドレスは画面表示には使わず、Google側で確認メールを送信するときだけ参照します。
+      保護者メールアドレスは予約画面には表示せず、保護者あての確認メールを送信するときだけGoogle側で使用します。
     </div>
 </div>
 <div style="text-align:center;font-size:1.6rem;font-weight:700;color:#777;">↓</div>
@@ -428,8 +464,8 @@ footer{
 <tr><th>child_id</th><th>date</th><th>end_time</th><th>received_at</th></tr>
 </thead>
 <tbody>
-<tr><td>TEST001</td><td>2026-09-01</td><td>16:30</td><td>2026/08/26 15:22:05</td></tr>
-<tr><td>TEST001</td><td>2026-09-01</td><td>16:30</td><td>2026/08/28 13:28:05</td></tr>
+<tr><td>test001</td><td>2026-09-01</td><td>16:30</td><td>2026/08/26 15:22:05</td></tr>
+<tr><td>test001</td><td>2026-09-01</td><td>16:30</td><td>2026/08/28 13:28:05</td></tr>
 <tr><td>test007</td><td>2026-08-29</td><td>17:00</td><td>2026/08/28 15:10:17</td></tr>
 </tbody>
 </table>
@@ -564,14 +600,65 @@ footer{
 </div>
 </section>
 <section class="card">
+<span class="timeline-date">2026年9月2日</span>
+<h2>📨 すみれクラブ専用のメール送信環境を整えました</h2>
+
+<p>
+  園で実際にTESTしていただく段階に進むため、
+  予約確認メールを<strong>すみれクラブ専用のメールアドレス
+  <code>sumire@mclean.ed.jp</code></strong> から送れるようにしました。
+</p>
+
+<div class="success">
+<strong>予約確認メールが、園の専用アドレスから届くことを確認しました。</strong><br/>
+日別予約を実際に登録し、園外のテスト用メールアドレスにも正常に届くことを確認しています。
+</div>
+
+<h3 style="margin-top:20px;">専用アドレスにした理由</h3>
+
+<div class="simple-flow">
+  <div class="step">
+    <strong>① 園のメールとして分かりやすい</strong>
+    保護者が受け取ったときに、すみれクラブからの連絡だと確認しやすくなります。
+  </div>
+  <div class="step">
+    <strong>② 個人のメールに依存しない</strong>
+    特定の職員個人のメールではなく、園の運用として管理できます。
+  </div>
+  <div class="step">
+    <strong>③ 担当者が変わっても引き継げる</strong>
+    園として継続して利用できる形で管理していきます。
+  </div>
+</div>
+
+<div class="note" style="margin-top:14px;">
+<strong>公開する予約画面と、園児情報を管理する場所はこれまでどおり分けています。</strong><br/>
+保護者は予約画面を利用できますが、園児名や保護者メールアドレスを保存している
+Google Spreadsheetを直接見ることはできません。
+</div>
+
+<div class="emphasis">
+<strong>園側TEST前の確認 ― 主要な動作を確認しました</strong><br/>
+園側TEST用データは<strong>ダミー園児10名（test001〜test010）</strong>で構成しています。<br/>
+このうち9名を予約対象（<code>active = TRUE</code>）、1名を予約対象外（<code>active = FALSE</code>）としてTESTした結果、
+<strong><code>test010</code> が予約画面に表示されないことを確認しました。</strong><br/><br/>
+また、<strong>日別予約・一括登録の両方</strong>を実際に操作し、
+一括登録では対象6日のうち<strong>5日を登録、預かりなしの1日を自動除外</strong>できることを確認しました。<br/>
+確認メールも、設定した<strong>園内・園外の2つのメールアドレスの両方へ届くことを確認済み</strong>です。<br/>
+実園児の情報はまだ使用していません。
+</div>
+</section>
+<section class="card">
 <h2>🧩 データ管理・安全性に関する技術メモ</h2>
 <table class="compact-table"><tbody>
 <tr><td>予約画面</td><td>GitHub Pages。保護者が利用する入口として公開。</td></tr>
-<tr><td>Apps Script</td><td>Google上で動く中継・処理プログラム。園児照合、予約処理、メール送信を担当。</td></tr>
+<tr><td>Apps Script</td><td>Google上で動く中継・処理プログラム。開発・所有と園の運用実行を分け、園児照合、予約処理、メール送信を担当。</td></tr>
 <tr><td>Google Spreadsheet</td><td><code>children</code> と <code>reservations</code> を分離。Spreadsheet自体は一般公開しない。</td></tr>
 <tr><td>アクセス制限</td><td>Google側の保存先はマクリン幼稚園組織内（<code>@mclean.ed.jp</code>）に限定。</td></tr>
 <tr><td>画面へ返す情報</td><td><code>child_id</code>・<code>class</code>・<code>no</code>・<code>name</code> の4項目。保護者メールアドレスは返さない。</td></tr>
 <tr><td>予約記録</td><td><code>reservations</code> には園児名・メールアドレスを重複保存せず、<code>child_id</code> で照合。</td></tr>
+<tr><td>確認メール</td><td>TESTでは <code>sumire@mclean.ed.jp</code> を送信元として、園内・園外の2つの確認用メールアドレスへの到達を確認。</td></tr>
+<tr><td>TEST園児</td><td><code>test001</code>〜<code>test010</code> の10名。<code>active = TRUE</code> 9名、<code>FALSE</code> 1名。<code>test010</code> が予約画面に表示されないことを確認済み。</td></tr>
 </tbody></table>
 </section>
 <section class="card" style="text-align:center;"><h2>➡️ 予約操作の実動TESTへ</h2><p>一括入力・日別変更・取消の画面とTEST結果は05-01にまとめています。</p><p><a class="menu-card" href="05_implementation_test_01.html">05-01 予約画面を見る →</a></p></section>
@@ -589,7 +676,7 @@ footer{
 <p>先生方の時間を、子どもたちの笑顔へ。</p>
 <p>園のDXを支える開発記録</p>
 <p>© McLean Kindergarten</p>
-<p>Version 2.0<br/>Last Update 2026-09-01</p>
+<p>Version 2.0<br/>Last Update 2026-09-08</p>
 </footer>
 </body>
 </html>
