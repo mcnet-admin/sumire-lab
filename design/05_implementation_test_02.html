@@ -213,7 +213,7 @@ footer{
 <p>園スタッフのうち、システムの設定・管理を担当する方や、個人情報の扱いを詳しく確認したい方向けのページです。</p>
 </header>
 <main>
-<nav class="page-nav"><a href="05_implementation_test_00.html">05-00 まず全体像</a><a href="05_implementation_test_01.html">05-01 予約画面を見る</a><a class="current" href="05_implementation_test_02.html">05-02 データ管理を詳しく</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05-00 まず全体像</a><a href="05_implementation_test_01.html">05-01 予約画面を見る</a><a class="current" href="05_implementation_test_02.html">05-02 データ管理を詳しく</a><a href="05_implementation_test_03.html">05-03 集計・請求</a></nav>
 <div class="audience detail"><span class="role-tag">システム担当者向け</span><br/><strong>園スタッフのみなさんが、このページをすべて読む必要はありません。</strong><br/>ここでは、システム担当者が園児情報をどこに保存し、誰がアクセスできるのかを確認できるよう、詳しく残しています。</div>
 <section class="card"><h2>最初に、安心のポイントだけ</h2><div class="staff-point"><strong>① 園児情報の原本は園内PCに残します。</strong></div><div class="staff-point"><strong>② Google側には予約に必要な情報だけを置き、保存先はマクリン幼稚園スタッフ（@mclean.ed.jp）にアクセスを限定します。</strong></div><div class="staff-point"><strong>③ 保護者が使う予約画面から、Googleスプレッドシートそのものを直接見ることはできません。</strong></div><p class="detail-link">以下は、この3点を技術面も含めて詳しく説明した記録です。</p></section>
 <section class="card" style="border:2px solid #9fb8d8;background:#f5f9ff;">
@@ -243,7 +243,7 @@ footer{
 <strong>変更・取消のときはどうするのか</strong><br/>
 保護者が予約を変更・取消するときは、Google側の予約記録から
 <strong>その処理に必要な予約情報だけをApps Script経由で一時的に予約画面へ返します。</strong><br/>
-予約個票のJSONファイルをGitHubに保存する仕組みではありません。
+園児ごとの予約記録をJSONファイルとしてGitHubに保存する仕組みではありません。予約記録はGoogle側で管理し、必要な情報だけをApps Scriptが受け渡します。
 </div>
 </section><section class="card data-stage">
 <h2>🔐 園児データは「3つの段階」に分けて扱います</h2>
@@ -662,11 +662,13 @@ Google Spreadsheetを直接見ることはできません。
 </tbody></table>
 </section>
 <section class="card" style="text-align:center;"><h2>➡️ 予約操作の実動TESTへ</h2><p>一括入力・日別変更・取消の画面とTEST結果は05-01にまとめています。</p><p><a class="menu-card" href="05_implementation_test_01.html">05-01 予約画面を見る →</a></p></section>
+<section class="card" style="text-align:center;"><h2>➡️ 集計・請求処理の設計へ</h2><p>予約後の利用実績、月次集計、請求確定、訂正・調整の運用は05-03にまとめています。</p><p><a class="menu-card" href="05_implementation_test_03.html">05-03 集計・請求処理の設計へ →</a></p></section>
 <section class="card" style="text-align:center;">
 <h2>📘 戻るページ</h2>
-<p>予約画面の説明へ戻る場合は「05-01」、05全体の概要へ戻る場合は「05-00」をご覧ください。</p>
+<p>予約画面の説明へ戻る場合は「05-01」、集計・請求へ進む場合は「05-03」、05全体の概要へ戻る場合は「05-00」をご覧ください。</p>
 <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
 <a class="menu-card" href="05_implementation_test_01.html">◀ 05-01 予約画面と操作方法へ</a>
+<a class="menu-card" href="05_implementation_test_03.html">05-03 集計・請求処理の設計へ ▶</a>
 <a class="menu-card" href="05_implementation_test_00.html">05-00 システムの概要へ戻る</a>
 </div>
 </section>
@@ -676,7 +678,7 @@ Google Spreadsheetを直接見ることはできません。
 <p>先生方の時間を、子どもたちの笑顔へ。</p>
 <p>園のDXを支える開発記録</p>
 <p>© McLean Kindergarten</p>
-<p>Version 2.0<br/>Last Update 2026-09-08</p>
+<p>Version 2.0<br/>Last Update 2026-09-18</p>
 </footer>
 </body>
 </html>

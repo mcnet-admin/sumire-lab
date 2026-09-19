@@ -197,35 +197,52 @@ Version 2.0
   <h2>📂 現在整備している4つの情報</h2>
 
   <p>
-    Version 2.0では、まず予約システムの土台となる情報を4つに分けて整備しています。
-    下に示すファイル名は、<strong>システム内部で使うデータ名</strong>です。
+    Version 2.0では、予約システムの土台となる情報を、役割ごとに分けて管理します。
+    <strong>園児・保護者に関わる業務データ</strong>と、<strong>公開して差し支えない予定データ</strong>を
+    同じ場所にまとめないことが基本です。
   </p>
+
+  <div style="background: #f5f9ff; padding: 1.25rem; border-radius: 0.5rem; border: 2px solid #9fb8d8; margin: 1rem 0 1.5rem;">
+    <strong>💡 JSON（ジェイソン）とは？ ― 「保存場所」ではなく、情報を受け渡す形式です</strong>
+    <p style="margin:0.6rem 0 0;">
+      JSONは、<strong>画面とプログラム、またはシステム同士で情報を受け渡すときに使う形式の一つ</strong>です。
+      園スタッフが日常的にJSONファイルを開いて編集することを想定しているわけではありません。
+    </p>
+    <p style="margin:0.6rem 0 0;">
+      Version 2.0では、<strong>GitHubは「公開してよいプログラムやデータ」を置く公開領域</strong>として使います。
+      例えば、園児の個人情報を含まない予定情報は <code>schedule.json</code> のようなJSON形式で置くことがあります。
+    </p>
+    <p style="margin:0.6rem 0 0;">
+      一方、<strong>園児情報や予約記録などの業務データはGoogle側で管理し、GitHubには保存しません。</strong>
+      必要なときだけ、Apps Scriptが処理に必要な情報を受け渡します。
+    </p>
+  </div>
 
   <div class="grid">
 
     <div class="menu-card" style="transform: none; background: var(--color-card);">
-      <h3>① 予約に必要な園児情報を準備する</h3>
+      <h3>① 予約に必要な園児情報</h3>
       <p>
-        園が管理している園児名簿から、
-        予約画面で必要な情報だけを取り出します。
+        園児情報の原本は園内PCで管理し、予約運用に必要な項目だけを
+        Google Spreadsheetの <code>children</code> で管理します。
       </p>
       <p>
-        住所・電話番号・保護者メールアドレスなど、
-        予約画面に必要のない情報は含めません。
+        Google側には園児名・保護者メールアドレスを含む必要最小限の情報を置きますが、
+        <strong>予約画面へ返すのは child_id・class・no・name など必要な項目だけ</strong>です。
       </p>
       <p style="margin-bottom: 0;">
-        <strong>システム上のデータ名：</strong><code>children.json</code>
+        <strong>Google側のデータ名：</strong><code>children</code>
       </p>
     </div>
 
     <div class="menu-card" style="transform: none; background: var(--color-card);">
       <h3>② 園の年間予定をシステムが判断できる形にする</h3>
       <p>
-        長期休暇・預かりなしのイベント・午前保育などを、
-        園の予定表から整理します。
+        長期休暇・預かりなしのイベント・午前保育などを園の予定表から整理し、
+        システムが「今日はどのルールで予約を作るか」を判断できる形にします。
       </p>
       <p>
-        これを使って、システムが「今日はどのルールで予約を作るか」を判断します。
+        個人情報を含まない公開可能な予定情報として扱います。
       </p>
       <p style="margin-bottom: 0;">
         <strong>システム上のデータ名：</strong><code>schedule.json</code>
@@ -242,7 +259,7 @@ Version 2.0
         先生方が長期休暇の日付を1日ずつ入力する必要はありません。
       </p>
       <p style="margin-bottom: 0;">
-        <strong>システム上のデータ名：</strong><code>holidays.json</code>
+        <strong>システム内部で使用するデータ名：</strong><code>holidays.json</code>
       </p>
     </div>
 
@@ -255,22 +272,22 @@ Version 2.0
         例えば夏休み期間中は、通常保育の受付を止め、夏休みの予約を受け付ける状態へ自動的に切り替えます。
       </p>
       <p style="margin-bottom: 0;">
-        <strong>システム上のデータ名：</strong><code>portal.json</code>
+        <strong>システム内部で使用するデータ名：</strong><code>portal.json</code>
       </p>
     </div>
 
   </div>
 
   <p>
-    これらの情報は、園の予定をもとに<strong>システムが自動的に作成・更新</strong>します。
-        先生方が日付や受付状態を一つずつ設定する必要はありません。
+    先生方がこれらのデータファイルを日常的に編集するのではなく、
+    <strong>園の原本や設定をもとに、システム側で必要な情報を作成・更新する</strong>考え方です。
   </p>
 
   <div style="background: #fffdf5; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #e6dfc8; margin: 1rem 0;">
     <strong>現在の確認状況</strong>
     <p style="margin-bottom: 0;">
-      ①園児情報、②園の予定、③長期休暇日一覧、④予約受付状態について、
-      自動生成し、実際のデータで内容を確認するところまで完了しています。
+      園児情報、園の予定、長期休暇日一覧、予約受付状態について、
+      TEST環境で予約画面とGoogle側データをつなぎながら動作を確認しています。
     </p>
   </div>
 </section>
@@ -279,61 +296,47 @@ Version 2.0
   <h2>🔐 個人情報を守るためのデータ分離</h2>
 
   <p>
-    本システムはインターネットを利用するため、
-    情報管理上のリスクを完全にゼロにすることはできません。
+    本システムはインターネットを利用するため、情報管理上のリスクを完全にゼロにすることはできません。
     そのためVersion 2.0では、
-    <strong>必要な情報だけを使い、用途の異なる情報を分けて管理する</strong>
-    ことを基本方針とします。
+    <strong>「公開してよいもの」と「園の業務データ」を保存場所から分ける</strong>ことを基本方針とします。
   </p>
 
   <div style="background: #fffdf5; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #e6dfc8; margin: 1rem 0;">
     <strong>【大切な考え方】</strong>
     <p>
-      システムでは、予約に必要な情報を、<strong>JSON（システムが読み書きするためのデータファイル）</strong>として利用します。</p><p>ただし、園児DBに登録されているすべての情報を、そのまま予約システムで使用することはしません。
+      <strong>園内PC</strong>には園児情報の原本を残し、<strong>Google側</strong>には予約運用に必要な園児情報・予約記録などの業務データを置きます。
+      <strong>GitHub</strong>には、予約画面のプログラムや <code>schedule.json</code> など、<strong>公開して差し支えないものだけ</strong>を置きます。
     </p>
     <p style="margin-bottom: 0;">
-      例えば <code>children.json</code> には、<strong>予約に必要な園児情報だけ</strong>を取り出して使用し、<strong>住所・電話番号・保護者メールアドレスなどは含めません。</strong>
-      </p>
-      <p style="margin-bottom: 0;">
-        つまり、予約システムでは、<strong>必要な情報だけを必要な場所で使用する</strong>ことで、
-        個人情報をできるだけ広げない設計にしています。
-
+      保護者が予約画面を利用するときは、Apps ScriptがGoogle側のデータを照合し、
+      <strong>その処理に必要な情報だけを一時的に画面へ返します。</strong>
+      つまり、園児情報や予約記録そのものをGitHubへ移して利用する仕組みではありません。
     </p>
   </div>
 
-  <p>
-    また、園児氏名と保護者のメールアドレスなど、
-    用途の異なる個人情報を一つの公開ファイルにまとめて保持せず、
-    <strong>child_idを共通キーとして必要な処理のときだけ関連付ける</strong>
-    方向で設計します。
-  </p>
-
   <pre style="background: var(--color-hover); padding: 1.5rem; border-radius: 0.5rem; font-family: monospace; line-height: 1.6; color: var(--color-dark); overflow-x: auto;">
-【予約画面用】
-children.json
-  child_id
-  class
-  class_code
-  no
-  name
-        │
-        │ child_idで関連付け
-        ↓
-【通知等に必要な情報】
-  child_id
-  email_01
-  email_02
+【園内PC】
+園児DB.xlsx（原本）
+    ↓ 必要な項目だけ
+【Google Spreadsheet】
+children / reservations などの業務データ
+    ↓ Apps Scriptが必要な情報だけ受け渡す
+【保護者の予約画面】
+child_id / class / no / name など
+
+【GitHub】
+予約画面のプログラム / schedule.json など公開可能なもの
   </pre>
 
   <p>
-    これは「個人情報ではなくする」という意味ではなく、
-    <strong>データの最小化と分離によって、万一の場合の影響範囲をできるだけ限定する</strong>
-    ための設計です。
+    保護者メールアドレスはGoogle側の <code>children</code> で管理しますが、予約画面には返しません。
+    確認メールを送るときだけ、Apps ScriptがGoogle側で参照します。
   </p>
 
   <p>
-    今後も、公開領域・園と開発者が扱う非公開の開発領域・個人情報を扱うデータ領域を
-    役割ごとに分けながら、園の運用を必要以上に複雑にしない方法を検討します。
+    これは「個人情報ではなくする」という意味ではなく、
+    <strong>データの最小化・分離・アクセス制限によって、扱う個人情報の範囲を小さくする</strong>
+    ための設計です。
   </p>
 </section>
 
@@ -371,25 +374,24 @@ children.json
 </section>
 
 <section class="card">
-  <h2>💾 園児ごとの「デジタルの予約カード」で管理</h2>
+  <h2>💾 <code>child_id</code> で予約・利用履歴をつなぎます</h2>
   <p>
-    Version 2.0では、園児ごとの予約データを、
-    大きなデータベースにまとめて保存するのではなく、
-    <strong>園児一人ひとりの独立したJSONファイル</strong>として管理する考え方を基本とします。
+    Version 2.0では、予約記録を園児ごとの個別ファイルとして保存するのではなく、
+    <strong>Google Spreadsheetの <code>reservations</code> に、1園児・1日ごとの予約記録として保存</strong>します。
   </p>
 
   <div style="background: var(--color-hover); padding: 1.25rem; border-radius: 0.5rem; margin: 1rem 0; border-left: 5px solid var(--color-main);">
-    <strong>【園児ごとのデジタルの予約カード】</strong>
+    <strong>【園児をつなぐ共通キー】</strong>
     <p style="margin-bottom: 0;">
-      園DX全体で園児を識別する共通キー <strong>child_id</strong> を中心に、
-      その園児の予約・利用実績などを個別に扱います。
+      園DX全体で園児を識別する共通キー <strong>child_id</strong> を使い、
+      園児情報・予約・利用実績・請求を必要な場面で関連付けます。
     </p>
   </div>
 
   <p>
-    園児ごとに分けて管理することで、
-    必要なデータだけを個別に確認・更新しやすくし、
-    システム全体をできるだけシンプルに保ちます。
+    予約記録には園児名や保護者メールアドレスを繰り返し保存せず、
+    表示や通知が必要なときに <code>child_id</code> で <code>children</code> を照合します。
+    これにより、重複する個人情報を増やさず、履歴のつながりも保てます。
   </p>
 </section>
 
@@ -427,7 +429,7 @@ children.json
     <li>園の予定をシステムが自動的に確認する。</li>
     <li>必要な日だけ変更・キャンセルできる。</li>
     <li>予約から利用実績・請求まで同じ情報を活用する。</li>
-    <li>園児DBの全項目を公開JSONへ出さず、用途に必要な最小限の情報だけを利用する。</li>
+    <li>園児DBの全項目を公開領域へ出さず、用途に必要な最小限の情報だけを利用する。</li>
     <li>園児情報と保護者連絡先など、用途の異なる個人情報は分離して管理する。</li>
     <li>必要なデータだけを個別に更新できる仕組みを目指す。</li>
   </ul>
@@ -449,8 +451,9 @@ children.json
       仕組みを新しいデータ構造へ対応させました。
     </p>
     <p style="margin-bottom: 0;">
-      <strong>⑤ 日別予約データの設計まで進みました。</strong>次は「料金設定の仕組み」の設計へ進みます。
-      その後、利用実績、月次集計、臨時徴収、請求へと順番に設計・実装を進めます。
+      <strong>予約画面のTESTと、月次の集計・請求・訂正ルールの確認まで進みました。</strong><br>
+      次は、<strong>予約 → 利用実績 → 月次集計 → 請求確定 → 訂正・調整</strong>をつなぐ
+      データの持ち方と受け渡し方法を設計し、その後に集計プログラムの実装へ進みます。
     </p>
   </div>
 
@@ -498,7 +501,7 @@ children.json
 
 Version 2.0<br>
 
-Last Update 2026-08-26
+Last Update 2026-09-18
 
 </p>
 
