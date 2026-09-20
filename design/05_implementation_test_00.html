@@ -216,8 +216,8 @@ footer{
 <nav class="page-nav"><a class="current" href="05_implementation_test_00.html">05-00 まず全体像</a><a href="05_implementation_test_01.html">05-01 予約画面を見る</a><a href="05_implementation_test_02.html">05-02 データ管理を詳しく</a><a href="05_implementation_test_03.html">05-03 集計・請求</a></nav>
 <div class="audience"><span class="role-tag">園スタッフ向け</span><br/><strong>まず、このページと05-01を読むと、現在の予約システムの使い方と到達点が分かります。</strong><br/>データ管理と安全性は05-02、予約後の集計・請求の設計は05-03に分けています。</div>
 <section class="card purple">
-<h2>🌸 現在、平日版の基本機能は一通り動いています</h2>
-<div class="success"><strong>確認できていること</strong><br/>日別予約／一括登録／予約できない日の自動除外／利用時間の振り分け／変更／取消／確認メール送信まで、TEST環境で一連の動作を確認しています。</div>
+<h2>🌸 現在、平日版・長期休暇版とも基本機能が動いています</h2>
+<div class="success"><strong>確認できていること</strong><br/>平日の日別予約・一括登録、長期休暇の日別予約・一括登録、園予定による対象日判定、Google Spreadsheetへの日別保存、確認メール送信まで、GitHub Pages上のTEST環境で一連の動作を確認しています。</div>
 </section>
 <section class="card">
 <h2>👀 どこを読めばよいか</h2>
@@ -233,7 +233,7 @@ footer{
 <div class="timeline-item"><span class="timeline-date">2026年8月28日</span><strong>日別予約が動作</strong>園児を選び、予約を登録し、確認メールが届くところまで確認しました。</div>
 <div class="timeline-item"><span class="timeline-date">2026年8月31日</span><strong>一括登録が動作</strong>複数日をまとめて入力し、予約できない日を自動で外して登録できることを確認しました。</div>
 <div class="timeline-item"><span class="timeline-date">2026年9月1日</span><strong>変更・取消まで確認</strong>一括登録した予約でも、必要な日だけを日別で変更・取消できることを確認しました。</div>
-<div class="timeline-item"><span class="timeline-date">2026年9月2日</span><strong>運用用メールを「すみれクラブ」に切替</strong>開発・管理用のアカウントと園の運用用アカウントを分け、すみれクラブ専用メールから予約確認メールを送れることを確認しました。園スタッフによるTESTへ進む準備が整いました。</div>
+<div class="timeline-item"><span class="timeline-date">2026年9月2日</span><strong>運用用メールを「すみれクラブ」に切替</strong>開発・管理用のアカウントと園の運用用アカウントを分け、すみれクラブ専用メールから予約確認メールを送れることを確認しました。園スタッフによるTESTへ進む準備が整いました。</div><div class="timeline-item"><span class="timeline-date">2026年9月20日</span><strong>平日版・長期休暇版をGitHub Pages上で統合確認</strong><code>schedule.json</code>、Apps Script Ver.09、TEST用Spreadsheetの接続をそろえ、平日一括5日、長期休暇一括5日、長期休暇の日別予約が正常に保存されることを確認しました。長期休暇の17:00以降は「～17:00（16:30以降は時間外）」のように終了時刻として表示します。</div>
 </div>
 </section>
 <section class="card">
@@ -254,7 +254,8 @@ footer{
 </section>
 <section class="card purple">
 <h2>➡️ 次に進めること</h2>
-<p>平日版の基本操作は確認できました。今後は、操作履歴を残す仕組みや長期休暇版との接続など、園で安定して運用するための仕上げを進めます。</p>
+<p>予約画面の基本動作は、平日版・長期休暇版とも確認できました。次は、<strong>前日15:30時点の翌日利用者リスト、実際の利用実績、月次集計・請求</strong>をつなぐ園側業務の実装へ進みます。</p>
+<div class="note"><strong>現在のTEST基準</strong><br/>入口：<code>https://mcnet-admin.github.io/sumire-portal-test/</code><br/>平日版：<code>weekday_TEST_Ver14.html</code><br/>長期休暇版：<code>holiday_TEST_Ver03_work.html</code><br/>園予定：<code>data/calendar/schedule.json</code></div>
 </section>
 <section class="card" style="text-align:center;">
 <h2>📘 前後のページ</h2>
@@ -265,6 +266,6 @@ footer{
 </div>
 </section>
 </main>
-<footer><p>🌸 <strong>Sumire Lab</strong></p><p>先生方の時間を、子どもたちの笑顔へ。</p><p>園のDXを支える開発記録</p><p>© McLean Kindergarten</p><p>Version 2.0<br/>Last Update 2026-09-18</p></footer>
+<footer><p>🌸 <strong>Sumire Lab</strong></p><p>先生方の時間を、子どもたちの笑顔へ。</p><p>園のDXを支える開発記録</p><p>© McLean Kindergarten</p><p>Version 2.0<br/>Last Update 2026-09-20</p></footer>
 </body>
 </html>

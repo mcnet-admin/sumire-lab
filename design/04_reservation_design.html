@@ -29,7 +29,7 @@ footer p{margin:.45rem 0}
 <body>
 <header>
 <h1>📋 04 日別予約データ</h1>
-<p>現在の予約と、変更・取消などの履歴を分けて管理するVersion 2.0の設計をご紹介します。</p>
+<p>日別予約・一括登録・変更・取消を1日単位で扱うVersion 2.0の予約設計と、2026年9月20日時点のTEST実装との対応を整理します。</p>
 </header>
 <main>
 <section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
@@ -106,7 +106,7 @@ footer p{margin:.45rem 0}
     日別予約も一括登録も、登録後は同じように1日単位で管理するため、
     <strong>変更や取消が必要になった日だけを修正</strong>できます。
   </p>
-</div><p>そこでVersion 2.0では、いま有効な予約内容はシンプルに管理しながら、新規予約・変更・取消などの操作履歴は別に残す設計とします。</p><div class="note"><strong>現在の予約：</strong> 園児ごと・利用日ごとの最新状態を確認<br/><strong>予約履歴：</strong> 新規・変更・取消・園側修正の履歴を時系列で確認</div></section>
+</div><p>Version 2.0では、いま有効な予約内容はシンプルに管理しながら、新規予約・変更・取消などの操作履歴を将来別管理できる設計とします。現行TESTでは、まず <code>reservations</code> に1日1行で最新状態を保存し、履歴管理は次工程で実装します。</p><div class="note"><strong>現在の予約：</strong> 園児ごと・利用日ごとの最新状態を確認<br/><strong>予約履歴：</strong> 新規・変更・取消・園側修正の履歴を時系列で確認</div></section>
 <section class="card">
 <h2>📅 現在の予約</h2><p><strong>一括登録した場合も、ここでは1日ごとの予約として表示されます。</strong>必要な日だけ変更・取消できます。</p>
 <table>
@@ -257,36 +257,79 @@ footer p{margin:.45rem 0}
       <strong>料金設定を変更することで対応できる仕組み</strong>を目指します。
     </p>
 </div>
-<p style="margin-top:1rem;margin-bottom:0;">
+<p style="margin-top:1rem;">
     今回確認したルールをもとに、次の開発段階で料金マスタを設計します。
     単純な「利用時間 × 一律単価」ではなく、<strong>園で定められた時間枠と料金ルールをそのまま反映</strong>します。
   </p>
+  <div class="note" style="margin-top:1rem;">
+    <strong>長期休暇の画面では「終了時刻」で選びます</strong>
+    <p style="margin:0.7rem 0 0;">
+      17:00・17:30・18:00は、16:30から別の保育を新たに申し込む意味ではありません。
+      連続して利用する中で「何時まで利用するか」を選択し、画面では
+      <strong>「～17:00（16:30以降は時間外）」</strong>のように表示します。
+    </p>
+  </div>
 </section><section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
-<h2>🟣 キャンセル料の現在の運用を確認しました</h2>
+<h2>🟣 長期休暇の予約受付開始ルールを明確にしました</h2>
 <p>
-    園側への確認により、キャンセル料は利用区分によって次のように扱うことを確認しました。
-  </p>
+  長期休暇の予約受付は、<strong>各長期休暇の開始日の14日前から開始</strong>する運用とします。
+  夏休み・冬休み・春休みで個別に異なる日数を設定するのではなく、同じ基準で管理します。
+</p>
 <table>
 <thead>
-<tr><th>利用区分</th><th>キャンセル料</th><th>変更の扱い</th></tr>
+<tr><th>長期休暇</th><th>利用開始日</th><th>予約受付開始日</th></tr>
 </thead>
 <tbody>
-<tr><td>通常保育</td><td><strong>なし</strong></td><td>通常の変更ルールに従います</td></tr>
-<tr><td>午前保育</td><td><strong>なし</strong></td><td>通常の変更ルールに従います</td></tr>
-<tr><td>長期休暇</td><td><strong>利用日の7日前から、予約料金の全額</strong></td><td><strong>時間の変更は前日まで受付</strong></td></tr>
+<tr><td>夏休み</td><td>2026年7月18日</td><td><strong>2026年7月4日</strong>（14日前）</td></tr>
+<tr><td>冬休み</td><td>2026年12月21日</td><td><strong>2026年12月7日</strong>（14日前）</td></tr>
+<tr><td>春休み</td><td>2027年3月22日</td><td><strong>2027年3月8日</strong>（14日前）</td></tr>
+</tbody>
+</table>
+<div class="note" style="margin-top:1rem;">
+<strong>schedule.json との関係</strong>
+<p style="margin:0.7rem 0 0;">
+  長期休暇の日程を管理する <code>schedule.json</code> では、
+  <code>start</code>（長期休暇開始日）と <code>reservation_start</code>（予約受付開始日）を持たせます。
+  <strong>reservation_start は start の14日前</strong>となるよう設定し、年度更新時にも両者の整合を確認します。
+</p>
+</div>
+<p style="margin-bottom:0;">
+  これにより、受付開始日の設定根拠が明確になり、年度ごとの休暇日程が変わった場合も同じルールで更新できます。
+</p>
+</section><section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
+<h2>🟣 キャンセル料と前日15:30の運用を分けて整理しました</h2>
+<p>
+  園側への確認により、<strong>「7日前」はキャンセル料の境界</strong>、
+  <strong>「前日15:30」はWeb受付と翌日利用者リスト確定の境界</strong>として扱うことを確認しました。
+</p>
+<table>
+<thead><tr><th>利用区分</th><th>キャンセル料</th><th>Webでの変更・取消</th></tr></thead>
+<tbody>
+<tr><td>通常保育</td><td><strong>なし</strong></td><td>利用日前日の15:30まで</td></tr>
+<tr><td>午前保育</td><td><strong>なし</strong></td><td>利用日前日の15:30まで</td></tr>
+<tr><td>長期休暇</td><td><strong>利用日の7日前以降は、予約料金の全額</strong></td><td>利用日前日の15:30まで</td></tr>
 </tbody>
 </table>
 <div class="note" style="margin-top:1rem;">
 <strong>大切な点</strong>
-<p style="margin-bottom:0;">
-      長期休暇では、<strong>「キャンセル」と「時間変更」は別のルール</strong>として扱います。
-      キャンセル料が発生する期間に入っていても、時間の変更は前日まで受け付けます。
-    </p>
+<p style="margin:0.7rem 0 0;">
+  長期休暇では、キャンセル料が発生する時期に入っていても、Web受付の締切までは変更・取消の操作自体は可能です。
+  <strong>15:30を過ぎた変更・取消は園への電話連絡</strong>を基本とします。
+</p>
+<p style="margin-bottom:0;">15:30は料金発生の境界ではなく、園が翌日の利用予定者リストを確定する運用時刻です。</p>
 </div>
-<p style="margin-top:1rem;margin-bottom:0;">
-    システムでは、取消時に利用日と取消日を確認し、キャンセル料の有無と金額を自動判定できるように設計します。
-  </p>
-</section><section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
+<p style="margin-top:1rem;margin-bottom:0;">キャンセル料の請求反映は、利用実績・集計・請求処理の実装工程で行います。</p>
+</section><section class="card" style="border:2px solid #2e7d32;background:#f3fbf4;">
+<h2>✅ 2026年9月20日：TEST実装と予約設計を照合しました</h2>
+<ul>
+  <li><strong>平日版・長期休暇版とも、GitHub Pages → Apps Script → Google Spreadsheet</strong> の一連の登録を確認しました。</li>
+  <li>長期休暇の一括登録は、期間指定を基本とし、<strong>曜日で絞り込む機能は任意</strong>としました。</li>
+  <li>一括登録に既存予約が含まれる場合は、部分登録せず、<strong>一括登録全体を中止</strong>して日別操作へ案内します。</li>
+  <li><code>schedule.json</code> をブラウザ側とGoogle側の双方で参照し、園予定の判定が一致しない場合は保存しません。</li>
+  <li>予約は一括入力でも <code>reservations</code> へ<strong>1日1行</strong>で保存され、確認メールは一括登録ごとに1通送信されます。</li>
+</ul>
+</section>
+<section class="card" style="border: 2px solid #6f42c1; background: #fbf8ff;">
 <h2>🟣 将来、園児によって料金が異なる場合にも対応できるようにします</h2>
 <p>
     園側から、来年度以降、制度の変更により、
@@ -316,7 +359,7 @@ footer p{margin:.45rem 0}
 </section><section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
 <h2>🛠️ 04で整理した予約設計</h2>
 <p>このページでは、<strong>日別予約を基本単位として、一括登録した予約も1日ごとに管理する考え方</strong>と、変更・取消・園側修正を予約履歴として残す仕組みを整理しました。</p>
-<p>あわせて、園側に確認した<strong>利用時間・料金・キャンセル料</strong>のルールと、将来の料金改訂や園児ごとの料金区分にも対応できるよう、料金を設定として管理する方向を整理しました。</p>
+<p>あわせて、園側に確認した<strong>利用時間・料金・長期休暇の予約受付開始・キャンセル料</strong>のルールと、将来の料金改訂や園児ごとの料金区分にも対応できるよう、料金を設定として管理する方向を整理しました。</p>
 <p style="margin-bottom:0;">予約画面とGoogle側データをつなぐ実装・動作確認については、次の<strong>「05 システム実装・動作確認」</strong>で記録します。</p>
 </section><section class="card" style="text-align:center;">
 <h2>📘 前後のページ</h2>
@@ -401,7 +444,7 @@ renderLogs();
 <p>先生方の時間を、<br>子どもたちの笑顔へ。</p>
 <p>園のDXを支える開発記録</p>
 <p>© McLean Kindergarten</p>
-<p>Version 2.0<br>Last Update 2026-09-18</p>
+<p>Version 2.0<br>Last Update 2026-09-20</p>
 </footer>
 
 </body>

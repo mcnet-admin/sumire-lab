@@ -100,7 +100,8 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <div class="audience">
   <span class="role-tag">園スタッフ・システム担当者向け</span><br/>
   このページは、園の現在の運用を確認したうえで、今後システム化する集計・請求処理の仕様を整理したものです。
-  <strong>ここに記載する内容は「実装済み機能」ではなく、園側との確認によって確定した設計方針</strong>です。
+  <strong>集計・請求の中心部分は園側との確認によって確定した設計方針</strong>であり、
+  あわせて長期休暇のキャンセル料・変更期限については、Apps Script上で境界条件TESTを実施した結果も記録しています。
 </div>
 
 <section class="card">
@@ -178,6 +179,66 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
     <strong>1日が休日の場合でも、請求書の送信日は1日とします。</strong><br/>
     引き落とし日までの日数が短いため、土・日・祝日であっても請求書は1日に送信する運用です。
   </div>
+</section>
+
+
+<section class="card">
+<span class="timeline-date">2026年9月20日</span>
+<h2>✅ 予約データが請求前段まで正しく届くことを確認しました</h2>
+<p>集計・請求処理の前提となる予約データについて、<strong>GitHub Pages → Apps Script Ver.09 → Google Spreadsheet</strong> の流れを実動確認しました。</p>
+<table class="compact-table"><tbody>
+<tr><td>平日一括</td><td>5日分を <code>WD_1800 / bulk / active</code> として日別保存。</td></tr>
+<tr><td>長期休暇一括</td><td>5日分を <code>HD_1630 / bulk / active</code> として日別保存。</td></tr>
+<tr><td>長期休暇日別</td><td>1日分を <code>HD_1700 / single / active</code> として保存。</td></tr>
+<tr><td>確認メール</td><td>一括登録は1通に集約し、日別予約も送信完了。</td></tr>
+</tbody></table>
+<div class="success"><strong>予約段階のデータ受け渡しは、集計・請求へ進める状態になりました。</strong><br/>次は「予約した内容」と「実際に利用した内容」を分けて記録し、利用実績を請求データへつなげます。</div>
+</section>
+<section class="card" style="border:2px solid #9fb8d8;background:#f8fbff;">
+  <span class="timeline-date">2026年9月19日</span>
+  <h2>🧪 長期休暇の取消・変更ルールを確認しました</h2>
+  <p>
+    長期休暇の予約では、園側との確認により、
+    <strong>利用日の7日前以降は予約料金の全額をキャンセル料とし、
+    利用日前日の15:30をWeb受付と翌日利用者リスト確定の境界として扱う</strong>
+    ルールとしました。
+  </p>
+
+  <div class="note">
+    <strong>園スタッフにとって大切な確認点</strong><br/>
+    長期休暇では、<strong>7日前の料金境界</strong>と<strong>前日15:30のWeb受付・名簿確定</strong>は別のルールです。15:30を過ぎた変更・取消は園への電話連絡へ切り替える運用とします。
+  </div>
+
+  <h3 style="margin-top:1.2rem;">確認した場面と結果</h3>
+  <table>
+    <thead>
+      <tr><th>確認した場面</th><th>園のルール</th><th>TEST結果</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>利用日の8日前までに取消</td><td>キャンセル料なし</td><td><span class="badge ok">確認済み</span></td></tr>
+      <tr><td>利用日の7日前以降に取消</td><td>予約料金の全額をキャンセル料として扱う</td><td><span class="badge ok">確認済み</span></td></tr>
+      <tr><td>利用日前日の15:30</td><td>Web受付・翌日利用者リスト確定の境界。15:30ちょうどは受付可</td><td><span class="badge ok">確認済み</span></td></tr>
+      <tr><td>利用日前日の15:31以降</td><td>Web受付終了。変更・取消は園へ電話連絡</td><td><span class="badge ok">確認済み</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="success" style="margin-top:14px;">
+    <strong>4つの境界場面すべてで、園の運用ルールどおりに判定されることを確認しました。</strong><br/>
+    「7日前＝キャンセル料」と「前日15:30＝Web受付・翌日名簿確定」を別の条件として扱います。
+  </div>
+
+  <div class="info" style="margin-top:14px;">
+    <strong>確認方法の工夫（システム担当者向け）</strong><br/>
+    実際の日付になるまで待たなくても確認できるよう、
+    システム上で日付と時刻を再現するTEST専用の <code>BoundaryTest.gs</code> を用意しました。
+    正常動作を確認済みの予約処理本体 <code>ReservationWebApp.gs</code> はそのまま残し、
+    TEST処理を別ファイルに分けることで、安全に繰り返し確認できる構成にしています。
+  </div>
+
+  <p class="small" style="margin-bottom:0;margin-top:12px;">
+    ※キャンセル料の請求データへの反映は、今後の利用実績・集計・請求処理の実装工程で行います。
+    今回は、キャンセル料発生条件と時間変更締切の境界判定を先に確立しました。
+  </p>
 </section>
 
 <section class="card">
@@ -261,6 +322,11 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
       <strong>2026年9月18日 ― 訂正・調整方法を確定</strong>
       請求書発行と引き落とし処理を同時に行うため、確定後の差額は翌月の保育料で相殺する運用とすることを確認しました。
     </div>
+    <div class="timeline-item">
+      <strong>2026年9月19日 ― 長期休暇の取消・変更ルールを動作確認</strong>
+      園側で確認した「取消は利用日の7日前から予約料金の全額をキャンセル料とする」
+      「時間変更は前日15:30まで」というルールを、TEST専用の仕組みで確認しました。
+    </div>
   </div>
 </section>
 
@@ -268,13 +334,15 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   <h2>📌 現時点の設計ステータス</h2>
   <table class="compact-table">
     <tbody>
-      <tr><td>予約画面</td><td><span class="badge ok">TEST済み</span> 日別予約・一括予約・既存予約表示の動作を確認。</td></tr>
+      <tr><td>予約画面</td><td><span class="badge ok">TEST済み</span> 平日版・長期休暇版とも、日別予約・一括予約・Google側保存・確認メールまで確認。</td></tr>
       <tr><td>集計期間</td><td><span class="badge ok">確認済み</span> 毎月1日～最終日。</td></tr>
       <tr><td>月末集計</td><td><span class="badge ok">仕様確定</span> 最終日に自動集計し、職員が確認。</td></tr>
       <tr><td>請求書送信</td><td><span class="badge ok">仕様確定</span> 翌月1日。休日でも1日に送信。</td></tr>
       <tr><td>引き落とし</td><td><span class="badge ok">仕様確定</span> 翌月7日。休日の場合は翌営業日。</td></tr>
       <tr><td>請求後の訂正</td><td><span class="badge ok">仕様確定</span> 翌月の保育料で加算・減算して相殺。</td></tr>
       <tr><td>臨時徴収</td><td><span class="badge ok">要件確定</span> 通常利用料とは別の項目として入力・請求可能にする。</td></tr>
+      <tr><td>長期休暇の取消・変更</td><td><span class="badge ok">TEST済み</span> 8日前／7日前のキャンセル料境界、前日15:30／15:31のWeb受付境界を確認。</td></tr>
+      <tr><td>前日15:30の翌日名簿</td><td><span class="badge plan">次工程</span> 15:30時点の利用予定者をスナップショットとして保持し、その後の電話変更とは分けて記録する。</td></tr>
       <tr><td>データの持ち方・受け渡し</td><td><span class="badge plan">次工程</span> 確定した業務フローをもとに、予約・利用実績・集計・請求・調整をつなぐデータ構造と受け渡し方法を設計する。</td></tr>
       <tr><td>集計プログラム</td><td><span class="badge plan">未実装</span> データの持ち方と受け渡し方法を確定した後に開発する。</td></tr>
     </tbody>
@@ -293,7 +361,7 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   <p>先生方の時間を、子どもたちの笑顔へ。</p>
   <p>園のDXを支える開発記録</p>
   <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-18</p>
+  <p>Version 2.0<br/>Last Update 2026-09-20</p>
 </footer>
 </body>
 </html>

@@ -649,14 +649,24 @@ Google Spreadsheetを直接見ることはできません。
 </div>
 </section>
 <section class="card">
+<h2>✅ 2026年9月20日：公開画面とGoogle側の接続を再確認しました</h2>
+<div class="simple-flow">
+<div class="step"><strong>GitHub Pages</strong>平日版・長期休暇版の予約画面と <code>schedule.json</code></div>
+<div class="step"><strong>Apps Script Ver.09</strong>園児照合・園予定再判定・予約保存・確認メール送信</div>
+<div class="step"><strong>Google Spreadsheet</strong><code>children</code> と <code>reservations</code> を非公開で管理</div>
+</div>
+<div class="security-box"><h4>同じ園予定を二重に確認します</h4>ブラウザ側は GitHub Pages の <code>data/calendar/schedule.json</code> を読み込み、送信後はApps Script側も同じURLを再取得して判定します。Apps Scriptの接続TESTでは <code>school_year=2026</code>、<code>long_holidays=3</code>、<code>no_care_events=27</code>、<code>morning_care_days=14</code> を確認しました。判定が一致しない場合は保存を止めます。</div>
+<div class="success"><strong>実データ保存まで確認済みです。</strong><br/>平日一括5日、長期休暇一括5日、長期休暇の日別予約をTEST用Spreadsheetへ保存し、<code>input_type</code>、<code>time_code</code>、<code>reservation_id</code> を含む日別行として記録されることを確認しました。</div>
+</section>
+<section class="card">
 <h2>🧩 データ管理・安全性に関する技術メモ</h2>
 <table class="compact-table"><tbody>
-<tr><td>予約画面</td><td>GitHub Pages。保護者が利用する入口として公開。</td></tr>
-<tr><td>Apps Script</td><td>Google上で動く中継・処理プログラム。開発・所有と園の運用実行を分け、園児照合、予約処理、メール送信を担当。</td></tr>
+<tr><td>予約画面</td><td>GitHub Pages。TEST入口は <code>https://mcnet-admin.github.io/sumire-portal-test/</code>。平日版・長期休暇版を分けて公開。</td></tr>
+<tr><td>Apps Script</td><td>Google上で動く中継・処理プログラム。Ver.09で園児照合、<code>schedule.json</code> の再判定、予約処理、メール送信を担当。</td></tr>
 <tr><td>Google Spreadsheet</td><td><code>children</code> と <code>reservations</code> を分離。Spreadsheet自体は一般公開しない。</td></tr>
 <tr><td>アクセス制限</td><td>Google側の保存先はマクリン幼稚園組織内（<code>@mclean.ed.jp</code>）に限定。</td></tr>
 <tr><td>画面へ返す情報</td><td><code>child_id</code>・<code>class</code>・<code>no</code>・<code>name</code> の4項目。保護者メールアドレスは返さない。</td></tr>
-<tr><td>予約記録</td><td><code>reservations</code> には園児名・メールアドレスを重複保存せず、<code>child_id</code> で照合。</td></tr>
+<tr><td>予約記録</td><td><code>reservations</code> には園児名・メールアドレスを重複保存せず、<code>child_id</code> で照合。現在は <code>child_id / date / end_time / received_at / time_code / pickup / memo / status / input_type / updated_at / reservation_id</code> を1日1行で管理。</td></tr>
 <tr><td>確認メール</td><td>TESTでは <code>sumire@mclean.ed.jp</code> を送信元として、園内・園外の2つの確認用メールアドレスへの到達を確認。</td></tr>
 <tr><td>TEST園児</td><td><code>test001</code>〜<code>test010</code> の10名。<code>active = TRUE</code> 9名、<code>FALSE</code> 1名。<code>test010</code> が予約画面に表示されないことを確認済み。</td></tr>
 </tbody></table>
@@ -678,7 +688,7 @@ Google Spreadsheetを直接見ることはできません。
 <p>先生方の時間を、子どもたちの笑顔へ。</p>
 <p>園のDXを支える開発記録</p>
 <p>© McLean Kindergarten</p>
-<p>Version 2.0<br/>Last Update 2026-09-18</p>
+<p>Version 2.0<br/>Last Update 2026-09-20</p>
 </footer>
 </body>
 </html>
