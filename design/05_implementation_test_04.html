@@ -1,0 +1,303 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>05-04 明日の名簿と当日の利用確認 | Sumire Lab</title><style>
+:root{
+  --purple:#6f42c1;
+  --purple-bg:#fbf8ff;
+  --gold:#e2c66d;
+  --gold-bg:#fff9e8;
+  --green:#2e7d32;
+  --green-bg:#f3fbf4;
+  --blue:#35516f;
+  --blue-bg:#f5f9ff;
+  --red:#a33b3b;
+  --red-bg:#fff7f7;
+  --dark:#333;
+}
+*{box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+  margin:0;background:#f5f7fa;color:#333;line-height:1.75
+}
+header{background:#fff;padding:24px;border-bottom:1px solid #ddd}
+header h1{margin:0 0 8px}
+header p{margin:0}
+main{max-width:1100px;margin:0 auto;padding:24px}
+.card{
+  background:#fff;border-radius:14px;padding:20px;margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05)
+}
+h1,h2,h3{margin-top:0}
+h2{line-height:1.45}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.box{border:1px solid #ddd;border-radius:12px;padding:16px;background:#fff}
+.box h3{font-size:1rem;margin-bottom:8px}
+.note{background:var(--gold-bg);border:1px solid var(--gold);padding:14px;border-radius:10px}
+.success{background:var(--green-bg);border:2px solid #81c784;padding:16px;border-radius:12px}
+.info{background:var(--blue-bg);border:2px solid #9fb8d8;padding:16px;border-radius:12px}
+.warning{background:var(--red-bg);border:1px solid #ddb4b4;padding:14px;border-radius:10px}
+.emphasis{background:#fff4c7;border-left:5px solid #d5a300;padding:14px 16px;border-radius:8px;margin:14px 0}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;background:#eee;font-size:12px;font-weight:700}
+.badge.ok{background:#e7f5e9;color:#256029}
+.badge.plan{background:#eef4ff;color:#35516f}
+.badge.rule{background:#fff0d2;color:#7a5a00}
+.small{font-size:13px;color:#666}
+code{background:#f1f3f5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;vertical-align:top;font-size:14px}
+th{background:#fafafa}
+.compact-table td:first-child{white-space:nowrap;font-weight:700}
+.page-nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px;padding:10px;background:#fff;border:1px solid #ddd;border-radius:12px;position:sticky;top:8px;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.page-nav a{flex:1 1 170px;text-align:center;text-decoration:none;color:#35516f;background:#f7f9fc;border:1px solid #d7e2ef;border-radius:9px;padding:9px 10px;font-weight:700;font-size:14px}
+.page-nav a.current{background:#35516f;color:#fff;border-color:#35516f}
+.audience{margin:0 0 18px;padding:12px 15px;border-radius:12px;border:1px solid #cfe0d2;background:#f4fbf5;color:#35583c;line-height:1.65}
+.role-tag{display:inline-block;margin-bottom:6px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:800;background:#e7f5e9;color:#256029}
+.timeline{display:grid;gap:12px;margin:14px 0}
+.timeline-item{border-left:5px solid #6f42c1;background:#fbf8ff;border-radius:10px;padding:13px 15px}
+.timeline-item strong{display:block;margin-bottom:3px}
+.timeline-date{display:inline-block;margin-bottom:8px;padding:4px 10px;border-radius:999px;background:#eef4ff;color:#35516f;font-size:13px;font-weight:700}
+.process{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
+.process .step{position:relative;border:1px solid #d8d8d8;border-radius:12px;background:#fff;padding:14px;text-align:center;min-height:120px}
+.process .step strong{display:block;color:#35516f;margin-bottom:6px}
+.process .step .day{display:inline-block;margin-bottom:7px;padding:2px 8px;border-radius:999px;background:#eef4ff;color:#35516f;font-size:12px;font-weight:800}
+.billing-example{border:2px solid #d7e2ef;background:#f8fbff;border-radius:14px;padding:18px;margin:16px 0}
+.money-row{display:grid;grid-template-columns:1fr auto;gap:14px;padding:7px 0;border-bottom:1px dashed #ccd6df}
+.money-row:last-child{border-bottom:0;font-weight:800;font-size:1.05rem}
+.rule-card{border:2px solid #81c784;background:#f4fbf5;border-radius:14px;padding:18px;margin:14px 0}
+.rule-card h3{color:#2e6b38}
+.data-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:16px 0}
+.data-flow .step{border:1px solid #d7e2ef;background:#fff;border-radius:12px;padding:14px;text-align:center}
+.data-flow .step strong{display:block;color:#29466f;margin-bottom:5px}
+.menu-card{display:inline-block;padding:.8rem 2rem;background:var(--purple);color:#fff;border-radius:.5rem;text-decoration:none}
+footer{text-align:center;padding:24px;color:#666;font-size:13px}
+@media(max-width:700px){main{padding:14px}header{padding:18px}.page-nav{position:static}.page-nav a{flex-basis:100%}}
+@media print{
+  body{background:#fff}
+  .page-nav,.menu-card{display:none!important}
+  main{max-width:none;padding:0}
+  .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+  header{padding:12px 0}
+}
+
+.table-scroll{overflow-x:auto}details{margin-top:18px}summary{cursor:pointer;font-weight:700;color:#35516f;padding:12px;background:#eef4ff;border-radius:8px}.flow-root{background:#35516f;color:white;padding:16px;border-radius:10px;text-align:center}.branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.branches .box{border-top:5px solid #6f42c1}a{color:#35516f}p,li,td{overflow-wrap:anywhere}@media(max-width:700px){.branches{grid-template-columns:1fr}h1{font-size:1.6rem}.compact-table td:first-child{white-space:normal}}
+</style></head><body><header><h1>⏰ 05-04 明日の名簿と当日の利用確認</h1><p>予約の締切から、名簿の受け取り・当日の確認まで。</p></header><main><nav class="page-nav">
+  <a href="05_implementation_test_00.html">05-00 まず全体像</a>
+  <a href="05_implementation_test_01.html">05-01 予約画面を見る</a>
+  <a href="05_implementation_test_02.html">05-02 データ管理を詳しく</a>
+  <a href="05_implementation_test_03.html">05-03 集計・請求</a>
+<a class="current" aria-current="page" href="05_implementation_test_04.html">05-04 自動処理・利用実績</a>
+</nav><section class="card"><span class="timeline-date">2026年9月26日 更新</span><span class="role-tag">園スタッフ向け</span><h2>明日の名簿を受け取り、当日の利用を確認する</h2><p>保護者が予約した後、園でどのように確認するのかをまとめました。</p><div class="emphasis"><strong>システムが「明日の準備」を行い、園スタッフが「当日の実際の利用」を確認します。</strong></div><p>予約をしただけでは、実際に利用したかどうかは分かりません。欠席やお迎え時刻の変更もあるため、予定と実際の利用を分けて記録します。</p></section>
+<section class="card" id="staff"><h2>1．前日の15:30に、インターネットでの受付を締め切ります</h2><p>翌日分の予約・変更・取消を、保護者が画面から行えるのは前日15:30までです。締切後の変更・取消は、園への電話連絡で受け付ける運用です。</p><p>園スタッフが、毎日15:30に締切ボタンを押す必要はありません。</p></section>
+<section class="card"><h2>2．15:35頃に「明日の利用予定者の名簿」が届きます</h2><p>システムが翌日の予約をまとめ、園へメールを送ります。園スタッフは、届いた名簿で<strong>誰が、何時まで利用する予定か、お迎えは誰か</strong>を確認します。</p><div class="note"><strong>メールを送るための操作は不要です。</strong><br>これは園が翌日の準備に使うメールです。保護者へ予約直後に届く確認メールとは別のものです。</div><p>名簿は、15:30の締切時点の予定をまとめたものです。15:30から15:35までの5分間に、電話で受けた変更を急いで入力する必要はありません。</p></section>
+<section class="card"><h2>3．名簿が届いた後の電話変更は、園で記録します</h2><p>例えば、名簿が届いた後に「明日はお休みします」と電話があった場合です。</p><div class="box"><h3>園スタッフ専用「電話受付・予約修正」画面で行います</h3><p>該当する園児の現在の予約を確認し、時刻・お迎えの方の変更、または利用取消を記録します。誰から電話があり、誰が受け、何を変更したかは電話受付履歴として残ります。</p><p><strong>すでに届いた15:35の確定リストメール自体は書き換わりません。</strong>変更後の最新予定は電話受付画面で確認し、保護者には電話で承った変更・取消内容の確認メールを送ります。</p></div><p class="small">電話受付画面の操作方法と起動URLは05-01、履歴・認証・データ管理の詳細は05-02に記載しています。</p></section>
+<section class="card"><h2>4．当日は「実際に利用した結果」を確認します</h2><p>システムは、翌日の予約がある園児について、<strong>利用結果を書き込む欄</strong>も用意します。紙の名簿に、出欠やお迎え時刻の記入欄をあらかじめ作っておくイメージです。</p><div class="table-scroll"><table><thead><tr><th>当日の様子</th><th>園で記録すること</th></tr></thead><tbody><tr><td>予定どおり利用した</td><td>「利用あり」と、実際のお迎え時刻</td></tr><tr><td>予約していたが欠席した</td><td>「利用なし」と、必要なメモ</td></tr><tr><td>18:00の予定だったが17:00に帰った</td><td>「利用あり」と「17:00」</td></tr></tbody></table></div><div class="note"><strong>何も記入していない状態は、「まだ確認していない」という意味です。</strong><br>欠席したことを確認した場合は、「利用なし」として記録します。</div><p>これらは、今後作る<strong>「本日の利用者確認画面」</strong>で操作できるようにします。園スタッフがデータ保存用の表を直接編集する必要のない形を目指します。</p><p class="small">実際の利用記録は、月末の料金確認につなげます。欠席や早いお迎えの場合の料金は、園の料金・取消ルールに沿って扱います。</p></section>
+<section class="card" id="results"><h2>5．今回、どこまで確認できたか</h2><p>9月23日に、テスト用の翌日予約2人分を使って確認しました。</p><div class="table-scroll"><table><thead><tr><th>確認したこと</th><th>結果</th></tr></thead><tbody><tr><td>人が操作しなくても、名簿メールが届くか</td><td>15:35に受信できました。</td></tr><tr><td>2人分の記入欄が正しく用意されているか</td><td>1人につき1行、合計2行ありました。</td></tr><tr><td>同じ準備を繰り返しても、記入欄が増えないか</td><td>同じ園児の欄が二重に作られることはありませんでした。</td></tr><tr><td>メールを送ったことが記録されているか</td><td>送信済みの記録が残っていました。</td></tr></tbody></table></div><div class="success"><strong>名簿メールの自動送信と、利用結果を記録する欄の準備まで確認できました。</strong></div><p>翌日も同じ時刻に動くための予定が記録されています。園スタッフが毎日、翌日の送信時刻を設定する必要はありません。</p><p class="small">今回はテスト環境での確認です。翌日以降の継続動作や、園スタッフが使う管理画面の確認は、今後進めます。</p></section>
+<section class="card"><h2>6．園スタッフが覚えておくこと</h2><ul><li><strong>前日15:35頃：</strong>届いた翌日の名簿を確認します。</li><li><strong>名簿を受け取った後：</strong>電話変更があれば、変更内容を記録・共有します。</li><li><strong>利用当日：</strong>実際の利用の有無と、お迎え時刻を確認します。</li></ul><p>電話による予約変更・取消は、園スタッフ専用の「電話受付・予約修正」画面で操作できるところまで実装・TEST済みです。当日の利用結果を入力する「本日の利用者確認画面」は、引き続き整備します。</p><div class="note"><strong>メールが届かない場合の対応</strong><br>何時まで待って確認するか、誰に連絡するかは、本番運用を始める前に決めてご案内します。</div></section>
+<section class="card"><details><summary>開発担当者向けの補足を開く（園スタッフは読む必要はありません）</summary><p>以下は、仕組みの学習と保守のための技術記録です。園スタッフ向けの説明は、ここまでで完結します。</p><section class="card" id="design"><span class="role-tag">システム担当者・仕組みを学ぶ方向け</span><h2>2．仕事の段取りと、スクリプトをつなぐ</h2><p><strong>スクリプトは仕事の手順書、トリガーはその手順を始める合図です。</strong>コードを用意することと、決めた時刻に起動する設定を用意することを分けて考えます。</p><div class="table-scroll" style="overflow-x:auto"><table><thead><tr><th>役割</th><th>担当するもの</th><th>今回の意味</th></tr></thead><tbody><tr><td>開始の合図</td><td>時間主導型トリガー</td><td>15:35を目標に自動処理を起動する</td></tr><tr><td>処理の手順</td><td>スクリプト</td><td>予約を読み、利用候補生成・確定リスト送信・次回設定を進める</td></tr><tr><td>判断の材料</td><td><code>reservations</code></td><td>翌日分の利用予定を読む</td></tr><tr><td>利用結果の記録先</td><td><code>usage_actuals</code></td><td>園児・利用日ごとに確認用の行を用意する</td></tr><tr><td>処理状況のメモ</td><td>スクリプト プロパティ</td><td>送信済み日時と次回実行予定を保持する</td></tr></tbody></table></div><h3 style="margin-top:20px">自動処理の役割を見渡す</h3><div class="flow-root">15:35のトリガー → <code>run1535ScheduledProcess</code> が起動</div><div class="branches"><div class="box"><h3>利用結果の記録欄を準備</h3><p>翌日の予約を読む → 同じ利用IDの行を調べる → なければ追加する。</p><p><code>usage_actuals</code> に保存</p></div><div class="box"><h3>翌日確定リストを送信</h3><p>対象日の送信済み記録を調べる → 未送信ならメールを送る → 送信済みを記録する。</p><p>メール＋プロパティ</p></div><div class="box"><h3>次回の起動を設定</h3><p>翌日の15:35に動く日時指定トリガーを用意する。</p><p>次回予定をプロパティにも記録</p></div></div><p class="small">図は役割の関係を示すもので、コードの厳密な実行順や並列実行を表すものではありません。</p><div class="note"><strong>プロパティに日時を書くだけで、自動起動するわけではありません。</strong><br>実際の起動を担当するのはトリガーです。次回予定のプロパティは、その設定内容を確認するための記録です。</div><h3 style="margin-top:20px">関数名と段取りの対応</h3><p><code>run1535ScheduledProcess</code> は自動起動の入口、<code>run1535DailyProcess</code> は日次処理、<code>generateTomorrowUsageActuals()</code> は翌日の利用候補生成を担当します。関数内部の詳しい順序やエラー時の動きは、UsageActuals Ver.03のコードで照合します。</p></section><section class="card"><h2>3．「2行のまま」と「送信済み記録」の関係</h2><p>9/24にはテスト園児2人の予約があります。朝のTESTで、利用結果を書く行をすでに1人分ずつ用意しました。</p><div class="table-scroll" style="overflow-x:auto"><table><thead><tr><th>利用ID</th><th>利用日</th><th>利用結果</th></tr></thead><tbody><tr><td><code>test005_20260924</code></td><td>2026-09-24</td><td>未確認・空欄</td></tr><tr><td><code>test006_20260924</code></td><td>2026-09-24</td><td>未確認・空欄</td></tr></tbody></table></div><p>15:35にも候補生成の処理が動きますが、同じ利用IDの行があるため追加しません。<strong>2行が4行へ増えず、2行のままであることが正常</strong>です。これは「実際に利用した」と確定した意味ではありません。</p><div class="table-scroll" style="overflow-x:auto"><table><thead><tr><th>重複させたくないもの</th><th>調べる場所</th><th>すでにある場合</th></tr></thead><tbody><tr><td>同じ園児・同じ日の利用記録欄</td><td><code>usage_actuals</code> の利用ID</td><td>行を追加しない</td></tr><tr><td>同じ対象日の確定メール</td><td>プロパティの送信済み記録</td><td>メールを再送しない</td></tr></tbody></table></div><div class="emphasis"><strong>目的はどちらも重複防止ですが、確認する記録が違います。</strong></div><p>今回は朝のメールTEST後、送信済みフラグを解除して15:35の自動送信に備えました。そのため朝のTEST分と午後の自動送信分が届きました。一方、利用記録の2行は残したので追加されませんでした。</p><p class="small">未確認の空欄と、確認済みの「利用なし」は区別します。今後の確認画面では、利用なしの確定も記録できるようにします。</p></section><section class="card" id="technical-results"><h2>4．2026年9月23日の自動実行結果</h2><div class="table-scroll" style="overflow-x:auto"><table><thead><tr><th>確認項目</th><th>確認した事実</th></tr></thead><tbody><tr><td>自動起動</td><td><code>run1535ScheduledProcess</code> が時間主導型で15:35:45に開始。3.563秒で「完了」。</td></tr><tr><td>メール</td><td>9/24分の翌日確定リストの15:35受信を確認。</td></tr><tr><td>利用候補</td><td><code>test005_20260924</code>・<code>test006_20260924</code> の2行。重複なし。実績項目E〜Iは空欄。</td></tr><tr><td>送信済み</td><td><code>SUMIRE_1535_MAIL_SENT_20260924</code><br>値：2026-09-23 15:35:48</td></tr><tr><td>次回予定の記録</td><td><code>SUMIRE_1535_NEXT_TRIGGER_AT</code><br>値：2026-09-24 15:35:00</td></tr></tbody></table></div><div class="success"><strong>今回の本番相当TESTの4項目を確認完了。</strong><br>自動起動・メール受信・利用候補の重複なし・送信済み記録が揃いました。</div><p>次回のトリガーとは、次の園向け確定リスト処理を始める予約です。9/23の処理で9/24の15:35を設定し、9/24の処理では9/25分のリストを扱う設計です。</p><p class="small">次回予定の記録は確認済みですが、9/24の実行そのものはこの記録時点では未確認です。今回の確認はTEST環境における結果であり、全機能の本番稼働完了を意味しません。</p></section><section class="card"><h2>5．機能を追加する前に考える4つの問い</h2><ol><li><strong>いつ動くか：</strong>時刻の合図か、スタッフの操作か。</li><li><strong>何を読んで判断するか：</strong>予約の表か、利用結果か、送信済み記録か。</li><li><strong>何を送る・書き込むか：</strong>メール、確認用の行、処理状況の記録。</li><li><strong>もう一度動いても困らないか：</strong>同じ行や同じメールを重複させない。</li></ol><p>次の「本日の利用者確認画面」も、この順に業務を整理してから、画面とスクリプトを設計します。管理画面、完全な操作履歴、月次集計・請求は今後の工程です。</p></section><section class="card" id="data"><h2>6．利用実績・運用ルールの詳細</h2><p>05-03から移した説明です。必要な項目を開いて確認してください。</p><details><summary>利用実績シートの役割と全9項目</summary><section class="card" style="border:2px solid #9fb8d8;background:#f8fbff;">
+  <span class="timeline-date">2026年9月20日</span>
+  <h2>✅ 利用実績を確認するためのシートと流れを整理しました</h2>
+
+  <p>
+    集計・請求では、保護者が登録した<strong>「予約」だけをそのまま請求に使うのではなく、
+    実際に利用した結果を園側で確認してから集計</strong>します。
+    そのため、予約データ <code>reservations</code> とは別に、
+    実際の利用結果を保存する<strong>利用実績シート <code>usage_actuals</code></strong> を用意します。
+  </p>
+
+  <div class="note">
+    <strong>作成済みのデータシート</strong><br/>
+    Google Spreadsheet「Sumire Lab TEST DB」の中に、
+    <code>children</code>、<code>reservations</code> と並ぶ新しいシートとして
+    <strong><code>usage_actuals</code></strong> を作成します。<br/>
+    このシートは「園児の在籍情報」を記録する表ではなく、
+    <strong>その日に、誰が、実際に利用したか</strong>を記録するための表です。
+  </div>
+
+  <h3>まず、予約から「翌日の利用予定」を用意します</h3>
+  <p>
+    保護者からの翌日分のWeb予約・変更・取消は<strong>前日15:30で締め切り</strong>ます。
+    その時点の <code>reservations</code> を基準に、15:35の処理で翌日の利用予定者を抽出します。
+    2026年9月23日のTESTでは、翌日9月24日の次の2件を基準データとして確認しました。
+  </p>
+  <div class="table-scroll" style="overflow-x:auto"><table class="compact-table">
+    <thead>
+      <tr><th>園児</th><th>利用日</th><th>予約終了時刻</th><th>予約区分</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>テスト園児005</td><td>2026-09-24</td><td>17:00</td><td><code>WD_1700</code></td></tr>
+      <tr><td>テスト園児006</td><td>2026-09-24</td><td>18:00</td><td><code>WD_1800</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>次に、利用実績シート <code>usage_actuals</code> に確認用の行を作ります</h3>
+  <p>
+    予約情報をもとに、利用実績を記録するための行を用意します。
+    TEST段階では、Google Spreadsheet上で次のような形を確認します。
+  </p>
+  <div class="data-sample">
+    <div class="table-scroll" style="overflow-x:auto"><table>
+      <thead>
+        <tr>
+          <th>usage_id</th><th>child_id</th><th>date</th><th>reservation_id</th>
+          <th>used</th><th>actual_end_time</th><th>actual_time_code</th><th>confirmed_at</th><th>memo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>test005_20260924</code></td><td><code>test005</code></td><td>2026-09-24</td><td>元予約ID</td>
+          <td>未確認</td><td>―</td><td>―</td><td>―</td><td></td>
+        </tr>
+        <tr>
+          <td><code>test006_20260924</code></td><td><code>test006</code></td><td>2026-09-24</td><td>元予約ID</td>
+          <td>未確認</td><td>―</td><td>―</td><td>―</td><td></td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+  <p class="small">
+    ※この時点では「予約がある」ことをもとに候補行を用意しただけで、まだ「実際に利用した」とは確定していません。
+    そのため、自動生成時は <code>usage_id</code>・<code>child_id</code>・<code>date</code>・<code>reservation_id</code> の4項目を作成し、
+    <code>used</code> 以降の実績項目は未確認のまま残します。予約終了時刻と予約時の <code>time_code</code> は元の <code>reservations</code> に保持します。
+  </p>
+
+  <h3>園側で「実際に利用したか」を確認します</h3>
+  <p>
+    当日、園スタッフが利用状況を確認し、利用した園児には<strong>「利用あり」</strong>のチェックを入れます。
+    予約があっても欠席した場合は「利用なし」として確認します。未確認の空欄とは区別します。
+    あわせて、予約時刻と実際の終了時刻が異なった場合は、実際の終了時刻へ修正します。
+  </p>
+
+  <div class="grid">
+    <div class="box">
+      <h3>利用した場合</h3>
+      <p style="margin-bottom:0;">「利用あり」☑<br/>実終了時刻を確認<br/>例：18:00</p>
+    </div>
+    <div class="box">
+      <h3>予約はあったが欠席</h3>
+      <p style="margin-bottom:0;">「利用なし」として確認<br/>実終了時刻は空欄<br/>必要に応じて備考を入力</p>
+    </div>
+    <div class="box">
+      <h3>予定より早く帰った場合</h3>
+      <p style="margin-bottom:0;">「利用あり」☑<br/>予約18:00でも<br/>実績17:00として記録</p>
+    </div>
+  </div>
+
+  <div class="emphasis">
+    <strong><code>used</code> は「在籍の有無」ではありません。</strong><br/>
+    ここで初めて、<code>used</code> が「その利用日に、実際にすみれクラブを利用したか」を表す項目として登場します。
+    園児が現在の管理対象かどうかは、園児マスタ側の <code>active</code> で管理し、日々の利用実績とは分けて扱います。
+  </div>
+
+  <h3>TEST段階と本番運用では、操作方法を分けます</h3>
+  <p>
+    開発中のTESTでは、仕組みを確認するために <code>usage_actuals</code> シート上の
+    <code>used</code> をチェックボックスにして操作できます。
+    ただし、本番では園スタッフがこのデータシートを直接編集するのではなく、
+    <strong>「本日の利用者確認画面」</strong>を用意し、そこで「利用あり」と実際の終了時刻を確認する形を基本とします。
+  </p>
+  <div class="data-flow" aria-label="予約から利用実績保存までの流れ">
+    <div class="step"><strong>① 前日15:30</strong><span class="small">保護者側の翌日分をWeb締切</span></div>
+    <div class="step"><strong>② 前日15:35</strong><span class="small">翌日分を <code>usage_actuals</code> に候補生成</span></div>
+    <div class="step"><strong>③ 前日15:35</strong><span class="small">翌日の確定リストを園へメール送信</span></div>
+    <div class="step"><strong>④ 15:35以降</strong><span class="small">電話変更は園スタッフが管理画面で事務修正</span></div>
+    <div class="step"><strong>⑤ 利用当日</strong><span class="small">利用あり／なし・実終了時刻を確認</span></div>
+    <div class="step"><strong>⑥ 月次集計</strong><span class="small">確認済み実績から料金計算</span></div>
+  </div>
+
+  <h3>項目名と意味の対照表</h3>
+  <div class="table-scroll" style="overflow-x:auto"><table class="compact-table">
+    <thead>
+      <tr><th>項目名</th><th>園側での意味</th><th>システム上の役割</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>usage_id</code></td><td>1件の利用実績を識別する番号</td><td>利用実績を重複なく管理するためのID。TESTでは <code>child_id + 利用日</code> を基本形とする。</td></tr>
+      <tr><td><code>child_id</code></td><td>どの園児の利用か</td><td>園児マスタと結び付ける内部ID。園スタッフ向け画面では氏名・クラスを表示する。</td></tr>
+      <tr><td><code>date</code></td><td>利用日</td><td>月次集計の対象日を特定する。</td></tr>
+      <tr><td><code>reservation_id</code></td><td>どの予約から生じた利用実績か</td><td><code>reservations</code> の元予約と結び付け、予定と実績を照合する。</td></tr>
+      <tr><td><code>used</code></td><td>その日に実際に利用したか</td><td>利用あり＝<code>TRUE</code>、利用なし＝<code>FALSE</code>。在籍状態を表す <code>active</code> とは別。</td></tr>
+      <tr><td><code>actual_end_time</code></td><td>実際に何時まで利用したか</td><td>予約終了時刻ではなく、利用実績として確認した終了時刻を記録する。</td></tr>
+      <tr><td><code>actual_time_code</code></td><td>実際の利用時間に対応する区分</td><td><code>WD_1800</code>、<code>HD_1700</code> など、料金マスタと結び付ける内部コード。</td></tr>
+      <tr><td><code>confirmed_at</code></td><td>園で利用実績を確認した日時</td><td>いつ実績を確定したかを記録し、後から確認できるようにする。</td></tr>
+      <tr><td><code>memo</code></td><td>当日の特記事項</td><td>欠席、電話連絡、例外対応など、必要な補足を記録する。</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="success" style="margin-top:14px;">
+    <strong>設計上の基本線：</strong><br/>
+    「園児DB＝園児の基本情報」→「reservations＝利用予定」→「usage_actuals＝園で確認した実際の利用」へ段階を分けます。<br/>
+    これにより、予約どおりに利用しなかった日や、実際の終了時刻が変わった日も、請求前に正しく扱えるようにします。
+  </div>
+</section></details><details><summary>15:30締切・15:35運用と候補生成TEST</summary><section class="card" style="border:2px solid #81c784;background:#f4fbf5;">
+  <span class="timeline-date">2026年9月23日</span>
+  <h2>⏰ 「15:30締切 → 15:35確定リスト」の運用を基準にします</h2>
+  <p>
+    園スタッフへ配布済みの評価版マニュアルでは、
+    <strong>前日15:30で保護者側の予約・変更・取消を締め切り、15:35に翌日の確定リストをメールで受け取る</strong>
+    という運用を案内しています。今回の集計システムも、この既存運用を基準に設計します。
+  </p>
+
+  <div class="process" aria-label="15時30分締切から翌日利用確認までの流れ">
+    <div class="step">
+      <span class="day">15:30</span>
+      <strong>① Web受付を締切</strong>
+      保護者による翌日分の新規・変更・取消をロックします。
+    </div>
+    <div class="step">
+      <span class="day">15:35</span>
+      <strong>② 利用予定候補を生成</strong>
+      15:30時点の active 予約から、翌日分の <code>usage_actuals</code> 候補行を作ります。
+    </div>
+    <div class="step">
+      <span class="day">15:35</span>
+      <strong>③ 確定リストを送信</strong>
+      15:30締切時点の翌日利用予定を、園スタッフへメールで送信します。
+    </div>
+    <div class="step">
+      <span class="day">15:35以降</span>
+      <strong>④ 電話変更は事務修正</strong>
+      電話で受けた変更は、園スタッフが管理画面から手作業で修正し、履歴を残します。
+    </div>
+    <div class="step">
+      <span class="day">利用当日</span>
+      <strong>⑤ 実利用を確認</strong>
+      利用あり／なし、実際の終了時刻を確認し、月次集計へつなげます。
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>15:30から15:35までの「5分」の意味</strong><br/>
+    この5分は、電話変更を5分以内に処理するための猶予時間ではありません。
+    <strong>15:30で保護者側を締め切った後、システムが翌日のデータを整理して15:35に基準リストを作成・送信するための間隔</strong>とします。
+    15:35以降に電話で変更が入った場合は、確定リストを再送するのではなく、園スタッフが管理画面で事務修正します。
+  </div>
+
+  <div class="emphasis">
+    <strong>15:35メールは「15:30締切時点の基準リスト」です。</strong><br/>
+    その後の電話変更は別の事務対応として履歴を残し、最新状態は管理画面で確認します。
+    これにより「15:35メールを待つために、15:31〜15:34の電話変更を急いで入力しなければならない」という運用にはしません。
+  </div>
+
+  <h3><code>usage_actuals</code> 自動生成のTEST結果</h3>
+  <p>
+    2026年9月23日、翌日を自動判定する <code>generateTomorrowUsageActuals()</code> を実行し、
+    2026年9月24日の active 予約2件から <code>usage_actuals</code> の候補行を2件生成できることを確認しました。
+    同じ処理を再実行した場合は既存2件を検出し、新しい行を追加しないことも確認しています。
+  </p>
+  <div class="table-scroll" style="overflow-x:auto"><table class="compact-table">
+    <tbody>
+      <tr><td>対象日</td><td>2026-09-24</td></tr>
+      <tr><td>対象予約</td><td>2件（<code>test005</code>、<code>test006</code>）</td></tr>
+      <tr><td>1回目</td><td><code>matched_reservations: 2 / created: 2 / skipped_existing: 0</code></td></tr>
+      <tr><td>2回目</td><td><code>matched_reservations: 2 / created: 0 / skipped_existing: 2</code></td></tr>
+      <tr><td>確認事項</td><td>翌日判定・active予約抽出・候補生成・二重生成防止までTEST済み。</td></tr>
+    </tbody>
+  </table></div>
+
+  <p class="small" style="margin-bottom:0;">
+    ※同日の15:35に、候補生成と確定リストメール送信を接続した自動実行を確認済みです。結果は本ページの第4節を参照してください。
+  </p>
+</section></details></section></details></section><section class="card"><p><a href="05_implementation_test_03.html">◀ 05-03 集計・請求処理の設計へ</a></p></section></main><footer>
+  <p>🌸 <strong>Sumire Lab</strong></p>
+  <p>先生方の時間を、子どもたちの笑顔へ。</p>
+  <p>園のDXを支える開発記録</p>
+  <p>© McLean Kindergarten</p>
+  <p>Version 2.0<br/>Last Update 2026-09-23</p>
+</footer></body></html>
