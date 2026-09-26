@@ -345,15 +345,31 @@ footer{
 
 <div class="note" style="margin-top:14px;border:2px solid #b99ad6;background:#faf6ff;">
 <strong style="font-size:1.08rem;">💜 園スタッフ専用「電話受付・予約修正」TEST画面</strong><br/><br/>
+
+<div style="background:#fff;border:1px solid #d7c5e8;border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+<strong>この開発記録と、実際の操作画面は権限を分けています。</strong><br/>
+<span class="small">
+この05-01は、園内で開発内容・操作の流れを共有するため、園側の誰でも閲覧できる説明ページです。<br/>
+一方、下の「電話受付・予約修正」ボタンから開く業務画面は、予約内容を変更・取消できるため、
+<strong>園が指定した操作用Googleアカウントでログインしている場合だけ利用できます。</strong>
+</span>
+</div>
+
 <strong>操作用Googleアカウント：</strong>
 <code style="font-size:1.05rem;font-weight:800;">sumire-staffs@mclean.ed.jp</code><br/>
-<span class="small">複数の園スタッフが日常の電話受付・予約修正に使用する共通アカウントです。実際に電話を受けた職員名は、画面の「受付した職員」欄へ入力して履歴に残します。</span>
+<span class="small">
+複数の園スタッフが日常の電話受付・予約修正に使用する共通アカウントです。
+実際に電話を受けた職員名は、画面の「受付した職員」欄へ入力して履歴に残します。
+</span>
+
 <p style="margin:14px 0 8px;">
 <a class="menu-card" href="https://script.google.com/a/macros/mclean.ed.jp/s/AKfycbzU5c2qPH-U7HitZBEptauUNB2dHR7-nnMi6HQu_awb_QmDMDK6HfVwV6UE19D3F32P/exec?action=staff_phone" target="_blank" rel="noopener noreferrer">電話受付・予約修正 TEST画面を開く ↗</a>
 </p>
+
 <p class="small" style="overflow-wrap:anywhere;margin-bottom:0;">
 <strong>園スタッフ用URL：</strong><br/>
 https://script.google.com/a/macros/mclean.ed.jp/s/AKfycbzU5c2qPH-U7HitZBEptauUNB2dHR7-nnMi6HQu_awb_QmDMDK6HfVwV6UE19D3F32P/exec?action=staff_phone<br/><br/>
+※このURLを知っているだけでは操作できません。<strong>許可されたGoogleアカウントでのログインが必要</strong>です。<br/>
 ※園スタッフは上記の<strong>最新版 <code>/exec</code> WebアプリURL</strong>を使用します。<br/>
 ※開発用の <code>/dev</code> URLは、開発・保守担当が最新版を確認するときだけ使用します。<br/>
 ※本番移行時は、正式運用のWebアプリURLへ差し替えます。
