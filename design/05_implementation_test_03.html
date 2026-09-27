@@ -87,7 +87,7 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <body>
 <header>
   <h1>🧾 05-03 集計・請求処理の設計</h1>
-  <p>園側の実運用を確認し、予約後の「利用実績 → 集計 → 請求 → 訂正・調整」の流れを整理した開発記録です。</p>
+  <p>園側の実運用を確認し、予約後の「利用実績 → 集計 → 臨時徴収 → 請求書 → メール送信 → 訂正・調整」の流れを整理します。</p>
 </header>
 <main>
 <nav class="page-nav">
@@ -95,14 +95,14 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   <a href="05_implementation_test_01.html">05-01 予約画面を見る</a>
   <a href="05_implementation_test_02.html">05-02 データ管理を詳しく</a>
   <a class="current" href="05_implementation_test_03.html">05-03 集計・請求</a>
-<a href="05_implementation_test_04.html">05-04 自動処理・利用実績</a>
+<a href="05_implementation_test_04.html">05-04 名簿・利用実績</a>
 </nav>
 
 <div class="audience">
-  <span class="role-tag">園スタッフ・システム担当者向け</span><br/>
-  このページは、園の現在の運用を確認したうえで、今後システム化する集計・請求処理の仕様を整理したものです。
-  <strong>集計・請求の中心部分は園側との確認によって確定した設計方針</strong>であり、
-  あわせて長期休暇のキャンセル料・変更期限については、Apps Script上で境界条件TESTを実施した結果も記録しています。
+  <span class="role-tag">園スタッフ向け</span><br/>
+  このページでは、予約後の利用実績・月末集計・請求書・メール送信・訂正まで、
+  <strong>園の日常業務として必要な流れ</strong>をまとめています。
+  使用しているサービス名やプログラム構成などの技術情報は「06 開発・保守記録」に分けて整理します。
 </div>
 
 <section class="card">
@@ -123,32 +123,32 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 </section>
 
 <section class="card">
-  <h2>🔎 「20日締め」の意味を整理しました</h2>
+  <h2>🔎 集計期間を再確認しました</h2>
   <p>
-    当初は「毎月20日が利用料金の締め日」と想定していましたが、園の現行運用を確認した結果、
-    <strong>毎月20日は翌月分の予約をいったん確定するための区切り</strong>であり、利用料金の集計期間とは別であることが分かりました。
+    当初は「毎月20日締め」で利用料金を集計する想定も検討していましたが、
+    副園長への確認により、<strong>請求の集計期間は毎月1日～最終日の1か月単位</strong>であることを再確認しました。
   </p>
   <div class="grid">
     <div class="box">
-      <span class="badge rule">予約の区切り</span>
-      <h3 style="margin-top:10px;">毎月20日</h3>
-      <p>翌月分の予約をいったん確定し、翌月の予約内容を確認するための時点です。</p>
-    </div>
-    <div class="box">
       <span class="badge ok">料金の集計期間</span>
       <h3 style="margin-top:10px;">毎月1日 ～ 最終日</h3>
-      <p>実際の利用実績と利用料金は、暦月単位で集計します。</p>
+      <p>その月に実際に利用した内容と利用料金を、暦月単位で集計します。</p>
+    </div>
+    <div class="box">
+      <span class="badge rule">自動集計</span>
+      <h3 style="margin-top:10px;">月の最終日</h3>
+      <p>最終日にシステムが自動集計し、その後に職員が内容を確認します。</p>
     </div>
   </div>
   <div class="emphasis">
-    <strong>予約の締めと、請求の締めは別のものとして扱います。</strong><br/>
-    これにより、予約管理と請求管理を混同せず、それぞれの目的に合わせたデータ設計を行います。
+    <strong>請求集計は20日締めではありません。</strong><br/>
+    1日から最終日までの利用実績を1か月分としてまとめ、最終日に自動集計します。
   </div>
 </section>
 
 <section class="card">
   <h2>📅 月次の集計・請求フロー</h2>
-  <p>園側との確認により、通常月は次の流れで処理する方針が確定しました。</p>
+  <p>副園長への再確認により、通常月は次の流れで処理する方針を確定しました。</p>
   <div class="process" aria-label="月次の集計・請求フロー">
     <div class="step">
       <span class="day">毎月1日～最終日</span>
@@ -158,42 +158,39 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
     <div class="step">
       <span class="day">月の最終日</span>
       <strong>② 自動集計</strong>
-      その月の利用料金を園児ごとに集計します。
+      1日から最終日までの利用料金を園児ごとに自動集計します。
     </div>
     <div class="step">
-      <span class="day">最終日</span>
+      <span class="day">月末</span>
       <strong>③ 職員が確認</strong>
       自動集計された内容を職員がチェックします。
     </div>
     <div class="step">
       <span class="day">翌月1日</span>
-      <strong>④ 請求確定</strong>
-      請求書を送信し、保育料引き落としの処理も同時に行います。
+      <strong>④ 請求書メール送信</strong>
+      確認済みの請求書を保護者へ送信します。1日が休日でも送信日は変更しません。
     </div>
     <div class="step">
       <span class="day">翌月7日</span>
       <strong>⑤ 引き落とし</strong>
-      保育料とあわせて引き落とします。休日の場合は翌営業日です。
+      保育料とあわせて引き落とします。7日が休日の場合は翌営業日です。
     </div>
   </div>
   <div class="note">
-    <strong>1日が休日の場合でも、請求書の送信日は1日とします。</strong><br/>
-    引き落とし日までの日数が短いため、土・日・祝日であっても請求書は1日に送信する運用です。
+    <strong>請求書は、1日が土・日・祝日でも1日に送信します。</strong><br/>
+    引き落としは翌月7日を基本とし、7日が休日の場合は翌営業日に処理します。
   </div>
 </section>
 
 
 <section class="card">
 <span class="timeline-date">2026年9月20日</span>
-<h2>✅ 予約データが請求前段まで正しく届くことを確認しました</h2>
-<p>集計・請求処理の前提となる予約データについて、<strong>GitHub Pages → Apps Script Ver.09 → Google Spreadsheet</strong> の流れを実動確認しました。</p>
-<div class="table-scroll" style="overflow-x:auto"><table class="compact-table"><tbody>
-<tr><td>平日一括</td><td>5日分を <code>WD_1800 / bulk / active</code> として日別保存。</td></tr>
-<tr><td>長期休暇一括</td><td>5日分を <code>HD_1630 / bulk / active</code> として日別保存。</td></tr>
-<tr><td>長期休暇日別</td><td>1日分を <code>HD_1700 / single / active</code> として保存。</td></tr>
-<tr><td>確認メール</td><td>一括登録は1通に集約し、日別予約も送信完了。</td></tr>
-</tbody></table></div>
-<div class="success"><strong>予約段階のデータ受け渡しは、集計・請求へ進める状態になりました。</strong><br/>次は「予約した内容」と「実際に利用した内容」を分けて記録し、利用実績を請求データへつなげます。</div>
+<h2>✅ 予約内容が請求前段まで正しく届くことを確認しました</h2>
+<p>平日版・長期休暇版とも、日別予約と一括登録の内容が園側の予約記録へ正しく反映され、確認メールまで届くことを確認しました。</p>
+<div class="success">
+<strong>予約段階の情報は、利用実績・月末集計・請求へつなげられる状態になりました。</strong><br/>
+この確認をもとに、「予約した内容」と「実際に利用した内容」を分けて記録する仕組みへ進みました。
+</div>
 </section>
 <section class="card" style="border:2px solid #9fb8d8;background:#f8fbff;">
   <span class="timeline-date">2026年9月19日</span>
@@ -228,25 +225,16 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
     「7日前＝キャンセル料」と「前日15:30＝Web受付・翌日名簿確定」を別の条件として扱います。
   </div>
 
-  <div class="info" style="margin-top:14px;">
-    <strong>確認方法の工夫（システム担当者向け）</strong><br/>
-    実際の日付になるまで待たなくても確認できるよう、
-    システム上で日付と時刻を再現するTEST専用の <code>BoundaryTest.gs</code> を用意しました。
-    正常動作を確認済みの予約処理本体 <code>ReservationWebApp.gs</code> はそのまま残し、
-    TEST処理を別ファイルに分けることで、安全に繰り返し確認できる構成にしています。
-  </div>
-
   <p class="small" style="margin-bottom:0;margin-top:12px;">
-    ※キャンセル料の請求データへの反映は、今後の利用実績・集計・請求処理の実装工程で行います。
-    今回は、キャンセル料発生条件と時間変更締切の境界判定を先に確立しました。
+    ※キャンセル料の請求への反映は、利用実績・月末集計とあわせて確認していきます。
   </p>
 </section>
 
 <section class="card">
   <h2>🔒 請求確定後の訂正ルールも確定しました</h2>
   <p>
-    請求書の発行と同時に保育料引き落としの処理を行うため、
-    <strong>翌月1日の請求確定後に利用金額の誤りが判明しても、確定済みの請求額は書き換えません。</strong>
+    請求処理は月単位で管理するため、
+    <strong>翌月1日の請求書送信後に利用金額の誤りが判明しても、確定済みの請求額は書き換えません。</strong>
   </p>
   <div class="rule-card">
     <h3>基本ルール</h3>
@@ -288,66 +276,67 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   </p>
 </section>
 
-<section class="card">
-  <h2>🧩 この確認を、次のデータ設計へつなげます</h2>
+<section class="card" style="border:2px solid #c7a7e8;background:#fcf9ff;">
+  <span class="timeline-date">2026年9月27日</span>
+  <h2>🌸 臨時徴収は、通常利用料とは分けて登録します</h2>
   <p>
-    今回の運用確認により、予約情報だけから直接請求額を作るのではなく、
-    <strong>「予約」と「実際の利用」と「請求」を段階に分けて管理する必要がある</strong>ことが明確になりました。
+    写真代・教材費・行事費など、通常のすみれクラブ利用料とは別に請求する項目を登録できるようにします。
   </p>
-  <div class="data-flow" aria-label="今後のデータ設計の流れ">
-    <div class="step"><strong>① 予約</strong><code>reservations</code><br/><span class="small">利用予定を記録</span></div>
-    <div class="step"><strong>② 利用実績</strong><code>usage_actuals</code><br/><span class="small">実際に利用した内容を記録</span></div>
-    <div class="step"><strong>③ 月次集計</strong><span class="small">1日～最終日を園児ごとに集計</span></div>
-    <div class="step"><strong>④ 請求確定</strong><span class="small">翌月1日に請求額を確定</span></div>
-    <div class="step"><strong>⑤ 訂正・調整</strong><span class="small">確定後の差額は翌月へ</span></div>
+  <div class="emphasis">
+    <strong>通常利用料と臨時徴収は、別々に確認してから請求額を確定します。</strong><br/>
+    これにより、何にいくら請求したのかを園側でも保護者側でも確認しやすくします。
   </div>
-  <div class="info">
-    <strong>ここから先が次の開発工程です。</strong><br/>
-    この業務フローを基準に、Google Spreadsheetで管理するデータ項目、システム間で受け渡すデータの内容、集計プログラムの役割を順番に設計します。<br/>
-    <span class="small">※園児情報・予約・利用実績・請求などの業務データはGoogle側で管理し、GitHubには公開して差し支えないプログラムやデータだけを置く方針です。</span>
+  <div class="grid" style="margin-top:14px;">
+    <div class="box"><h3>園児</h3><p>誰に対する臨時徴収かを選びます。</p></div>
+    <div class="box"><h3>対象月</h3><p>どの月の請求に加えるかを指定します。</p></div>
+    <div class="box"><h3>項目・金額</h3><p>写真代などの項目名と金額を入力します。</p></div>
+    <div class="box"><h3>備考</h3><p>必要に応じて補足を残します。</p></div>
   </div>
 </section>
 
-<section class="card"><h2>⏰ 日々の利用実績の準備は05-04へ</h2><p>利用実績シートの詳しい項目、15:30締切・15:35自動処理の流れとTEST結果は、新しい05-04へ移しました。予約と実際の利用を分けて記録し、確認済み実績を月次集計へつなぐ方針は共通です。</p><p><a class="menu-card" href="05_implementation_test_04.html">05-04 自動処理・利用実績へ ▶</a></p></section>
+<section class="card">
+  <h2>🧩 予約から請求までの流れ</h2>
+  <p>
+    予約内容だけから請求額を作るのではなく、
+    <strong>「予約」→「実際の利用」→「月末集計」→「請求」</strong>の順に確認します。
+  </p>
+  <div class="data-flow" aria-label="予約から請求までの流れ">
+    <div class="step"><strong>① 予約</strong><span class="small">利用予定を記録</span></div>
+    <div class="step"><strong>② 利用実績</strong><span class="small">実際に利用した内容を確認</span></div>
+    <div class="step"><strong>③ 臨時徴収</strong><span class="small">必要な追加項目を登録</span></div>
+    <div class="step"><strong>④ 月次集計</strong><span class="small">園児ごとの利用額を確認</span></div>
+    <div class="step"><strong>⑤ 請求確定</strong><span class="small">通常利用料と臨時徴収を合算</span></div>
+    <div class="step"><strong>⑥ 請求書</strong><span class="small">園児ごとに作成</span></div>
+    <div class="step"><strong>⑦ メール送信</strong><span class="small">保護者へ送信</span></div>
+    <div class="step"><strong>⑧ 訂正・調整</strong><span class="small">確定後の差額は翌月へ</span></div>
+  </div>
+  <div class="billing-example">
+    <div class="money-row"><span>通常利用額</span><span>月末集計で確認</span></div>
+    <div class="money-row"><span>臨時徴収額</span><span>必要に応じて加算</span></div>
+    <div class="money-row"><span>請求額合計</span><span>通常利用額 ＋ 臨時徴収額</span></div>
+  </div>
+</section>
+
+<section class="card"><h2>⏰ 日々の利用実績の準備は05-04へ</h2><p>15:30締切、15:35の翌日利用者リスト、当日の利用確認の流れは05-04へまとめています。予約と実際の利用を分けて確認し、確定した利用実績を月末集計へつなぎます。</p><p><a class="menu-card" href="05_implementation_test_04.html">05-04 名簿・利用実績へ ▶</a></p></section>
 
 
 
 <section class="card" style="border:2px solid #f0b36a;background:#fffaf3;">
   <span class="timeline-date">2026年9月23日</span>
-  <h2>🧭 本番移行前に確認する操作性・アクセス環境</h2>
+  <h2>🧭 本番運用前に確認する使いやすさ</h2>
   <p>
-    TEST運用の途中で、本番公開前にあらためて確認しておくべき項目が見えてきました。
-    ここでは、予約・集計機能そのものとは分けて、<strong>保護者が実際に使う環境と入力のしやすさ</strong>に関する検討事項として整理します。
+    本番運用前には、保護者が実際に使う場面を想定して、入力のしやすさや連続操作を確認します。
   </p>
-
-  <h3>1．複数のGoogleアカウントにログインしている場合</h3>
+  <h3>兄弟姉妹が在籍している家庭の連続予約</h3>
   <p>
-    保護者が複数のGoogleアカウントにログインしている環境でも、
-    Apps Script Webアプリへのアクセスや園児名簿取得が安定して動作するかを確認します。
-    TESTでは、通常のChromeでGoogleアカウントの切替状態により、Apps Script WebアプリのURLに
-    <code>/u/3/</code> が付加され、園児名簿を取得できない場面が確認されました。
-    一方、シークレットウインドウでは同じWebアプリから正常に園児名簿を取得できました。
-  </p>
-  <div class="note">
-    <strong>今後の検討項目</strong><br/>
-    「保護者が複数のGoogleアカウントにログインしている環境でも、Apps Script Webアプリへのアクセスや園児名簿取得が安定して動作するか。本番公開方法を含めて検証する」。
-  </div>
-
-  <h3>2．兄弟姉妹が在籍している家庭の連続予約</h3>
-  <p>
-    同一保護者の家庭で兄弟姉妹が同時に在籍する場合、1人目の予約完了後に最初から操作をやり直すのではなく、
-    <strong>続けて別の園児を予約できる導線</strong>を用意します。
-    予約完了後に「続けて予約する」「終了する」を選べるようにし、「続けて予約する」を選んだ場合は、
-    園児選択をいったん解除して予約画面へ戻す方法を基本案とします。
+    同じ家庭で兄弟姉妹が在籍する場合、1人目の予約完了後に最初から操作をやり直すのではなく、
+    <strong>続けて別の園児を予約できる導線</strong>を用意する方向で検討します。
   </p>
   <div class="emphasis">
     <strong>予約完了後の基本案：</strong><br/>
     「続けて別の園児を予約しますか？」
     → ［続けて予約する］ ［終了する］
   </div>
-  <p class="small" style="margin-bottom:0;">
-    ※同じ家庭の兄弟姉妹では利用日が共通する場合も多いため、日付や入力内容をどこまで引き継ぐかは、実装時に操作性を確認して決定します。
-  </p>
 </section>
 
 <section class="card">
@@ -363,7 +352,7 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
     </div>
     <div class="timeline-item">
       <strong>2026年9月18日 ― 訂正・調整方法を確定</strong>
-      請求書発行と引き落とし処理を同時に行うため、確定後の差額は翌月の保育料で相殺する運用とすることを確認しました。
+      請求処理を月単位で管理し、確定後の差額は翌月の保育料で相殺する運用とすることを確認しました。
     </div>
     <div class="timeline-item">
       <strong>2026年9月19日 ― 長期休暇の取消・変更ルールを動作確認</strong>
@@ -372,44 +361,60 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
     </div>
     <div class="timeline-item">
       <strong>2026年9月20日 ― 利用実績データの基本構造を整理</strong>
-      予約と請求を直接つなげず、<code>usage_actuals</code> で実際の利用有無・実終了時刻を確認してから月次集計へ進む構造としました。
-      あわせて、園スタッフが操作する「利用確認画面」と、Google側に保存するデータシートを分ける方針を整理しました。
+      予約と請求を直接つなげず、実際の利用有無・終了時刻を確認してから月末集計へ進む流れとしました。
     </div>
     <div class="timeline-item">
       <strong>2026年9月23日 ― 翌日利用候補の自動生成と15:35運用を確認</strong>
-      TEST DBをバックアップ・整理したうえで、9月24日の active 予約2件から <code>usage_actuals</code> を自動生成し、再実行時の二重生成防止まで確認しました。
+      翌日利用者リストから当日の利用確認へつなぐ流れをTESTし、同じ利用者が重複して登録されないことを確認しました。
       また、園スタッフへ案内済みの「15:30締切 → 15:35確定リスト」を基準とし、15:35以降の電話変更は園スタッフが管理画面から事務修正する運用に統一しました。
-      あわせて、本番移行前の検討事項として、複数Googleアカウント環境でのWebアプリ動作と、兄弟姉妹在籍家庭の連続予約導線を追加しました。
+      あわせて、本番運用前の検討事項として、兄弟姉妹在籍家庭の連続予約導線を追加しました。
+    </div>
+    <div class="timeline-item">
+      <strong>2026年9月27日 ― 月末集計から請求書メール送信まで確認</strong>
+      TESTデータ57件を用いて月末集計を行い、利用あり46件、利用なし11件、未確定0件、
+      時間帯別件数（15:00まで22件、16:30まで0件、17:00まで14件、18:00まで10件）を確認しました。
+      通常利用額の合計27,400円も期待値と一致しました。
+      さらに、園児別の請求書を作成し、保護者への確認メール送信までTESTを完了しました。
+      臨時徴収は、通常利用料とは分けて登録し、請求時に加算する方針としています。
     </div>
   </div>
 </section>
 
+<section class="card" style="border:2px solid #9fb8d8;background:#f8fbff;">
+  <span class="timeline-date">2026年9月27日</span>
+  <h2>📨 請求書作成・確認メール送信までTESTを完了しました</h2>
+  <p>
+    園児ごとの請求内容を確認し、請求書を作成して、TEST用の送信先へメールで届けるところまで確認しました。
+  </p>
+  <div class="success">
+    <strong>確認できた流れ：</strong>月末集計 → 請求額確認 → 請求書作成 → メール送信。
+    請求書の内容と送信先を確認したうえで送る運用とします。
+  </div>
+</section>
+
 <section class="card">
-  <h2>📌 現時点の設計ステータス</h2>
+  <h2>📌 2026年9月27日時点の確認状況</h2>
   <div class="table-scroll" style="overflow-x:auto"><table class="compact-table">
     <tbody>
-      <tr><td>予約画面</td><td><span class="badge ok">TEST済み</span> 平日版・長期休暇版とも、日別予約・一括予約・Google側保存・確認メールまで確認。</td></tr>
-      <tr><td>集計期間</td><td><span class="badge ok">確認済み</span> 毎月1日～最終日。</td></tr>
-      <tr><td>月末集計</td><td><span class="badge ok">仕様確定</span> 最終日に自動集計し、職員が確認。</td></tr>
-      <tr><td>請求書送信</td><td><span class="badge ok">仕様確定</span> 翌月1日。休日でも1日に送信。</td></tr>
+      <tr><td>予約画面</td><td><span class="badge ok">TEST済み</span> 平日版・長期休暇版とも、日別予約・一括予約・確認メールまで確認。</td></tr>
+      <tr><td>月末集計</td><td><span class="badge ok">TEST済み</span> 57件を集計し、時間帯別件数と通常利用額27,400円を確認。</td></tr>
+      <tr><td>請求書作成</td><td><span class="badge ok">TEST済み</span> 園児ごとの請求書作成まで確認。</td></tr>
+      <tr><td>確認メール送信</td><td><span class="badge ok">TEST済み</span> 請求書を添付した確認メールの送信まで確認。</td></tr>
+      <tr><td>請求書送信日</td><td><span class="badge ok">仕様確定</span> 翌月1日。休日でも1日に送信。</td></tr>
       <tr><td>引き落とし</td><td><span class="badge ok">仕様確定</span> 翌月7日。休日の場合は翌営業日。</td></tr>
-      <tr><td>請求後の訂正</td><td><span class="badge ok">仕様確定</span> 翌月の保育料で加算・減算して相殺。</td></tr>
-      <tr><td>臨時徴収</td><td><span class="badge ok">要件確定</span> 通常利用料とは別の項目として入力・請求可能にする。</td></tr>
-      <tr><td>長期休暇の取消・変更</td><td><span class="badge ok">TEST済み</span> 8日前／7日前のキャンセル料境界、前日15:30／15:31のWeb受付境界を確認。</td></tr>
-      <tr><td>15:30締切・15:35確定リスト</td><td><span class="badge ok">運用方針確定</span> 15:30で保護者側をロックし、15:35に締切時点の翌日基準リストを作成・送信。15:35以降の電話変更は園スタッフが管理画面で事務修正する。</td></tr>
-      <tr><td>利用実績 <code>usage_actuals</code></td><td><span class="badge ok">自動生成TEST済み</span> 翌日の active 予約から候補行を生成し、同一 <code>usage_id</code> の二重生成を防止できることを確認。利用有無・実終了時刻は当日の確認後に確定する。</td></tr>
-      <tr><td>15:35確定リストメール</td><td><span class="badge ok">自動実行TEST済み</span> 9/23 15:35の自動起動・受信・候補行重複なし・送信済み記録を確認。<a href="05_implementation_test_04.html#results">詳細は05-04へ</a>。</td></tr>
-      <tr><td>複数Googleアカウント環境</td><td><span class="badge plan">本番前検証</span> 複数アカウントにログインした保護者環境でもApps Script Webアプリと園児名簿取得が安定するか、本番公開方法を含めて確認する。</td></tr>
-      <tr><td>兄弟姉妹の連続予約</td><td><span class="badge plan">本番前検討</span> 予約完了後に「続けて予約する／終了する」を選べる導線を設け、別の園児を連続して入力できるようにする。</td></tr>
-      <tr><td>データの持ち方・受け渡し</td><td><span class="badge plan">設計中</span> <code>reservations</code> → <code>usage_actuals</code> → 月次集計 → 請求をつなぐ受け渡し方法を設計する。</td></tr>
-      <tr><td>集計プログラム</td><td><span class="badge plan">未実装</span> データの持ち方と受け渡し方法を確定した後に開発する。</td></tr>
+      <tr><td>請求後の訂正</td><td><span class="badge ok">仕様確定</span> 翌月の保育料で加算・減算して調整。</td></tr>
+      <tr><td>臨時徴収</td><td><span class="badge plan">実装準備</span> 通常利用料とは別に入力し、請求時に加算する。</td></tr>
+      <tr><td>長期休暇の取消・変更</td><td><span class="badge ok">TEST済み</span> 7日前のキャンセル料境界と前日15:30の受付境界を確認。</td></tr>
+      <tr><td>翌日利用者リスト</td><td><span class="badge ok">TEST済み</span> 15:30締切、15:35の確定リスト送信を確認。</td></tr>
+      <tr><td>利用実績</td><td><span class="badge ok">TEST済み</span> 実際の利用有無・終了時刻を確認し、月末集計へつなげる流れを確認。</td></tr>
+      <tr><td>兄弟姉妹の連続予約</td><td><span class="badge plan">本番前検討</span> 予約完了後に続けて別の園児を予約できる導線を検討。</td></tr>
     </tbody>
   </table></div>
 </section>
 
 <section class="card" style="text-align:center;">
   <h2>⬅️ データ管理の設計へ戻る</h2>
-  <p>Google側でどの情報を管理し、公開画面とどう分離しているかは05-02にまとめています。</p>
+  <p>園児情報や予約記録をどのように安全に管理するかは05-02にまとめています。</p>
   <p><a class="menu-card" href="05_implementation_test_02.html">◀ 05-02 データ管理と安全性へ</a></p>
 </section>
 
@@ -419,7 +424,7 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   <p>先生方の時間を、子どもたちの笑顔へ。</p>
   <p>園のDXを支える開発記録</p>
   <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-23</p>
+  <p>Version 2.0<br/>Last Update 2026-09-27</p>
 </footer>
 </body>
 </html>
