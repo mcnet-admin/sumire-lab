@@ -252,6 +252,50 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   </table>
 </section>
 
+
+<section class="card">
+  <h2>🧾 請求書運用の園側確認</h2>
+
+  <div class="timeline-date">2026年9月27日 確認</div>
+
+  <p>
+    請求書の宛名表記と、きょうだい在籍時の請求単位について園側へ確認し、
+    現在の運用とシステム設計の方向性が一致していることを確認しました。
+  </p>
+
+  <div class="grid">
+    <div class="box">
+      <h3>① 請求書の宛名</h3>
+      <p>
+        現在も請求書は<strong>園児名を基準</strong>に発行しているため、
+        保護者氏名を別途記載しない形で問題ないことを確認しました。
+      </p>
+      <p style="margin-bottom:0;">
+        請求書では、<strong>「園児名 さん　保護者様」</strong>の表記を基本とします。
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>② きょうだい在籍時の請求</h3>
+      <p>
+        きょうだいが在籍している場合も、現在の運用では
+        <strong>園児1人ずつに請求書を発行</strong>し、
+        保育料の引き落としも1人ずつ別に行っています。
+      </p>
+      <p style="margin-bottom:0;">
+        そのため、Version 2.0でも<strong>園児単位（child_id単位）で請求</strong>する設計を継続します。
+      </p>
+    </div>
+  </div>
+
+  <div class="success" style="margin-top:14px;">
+    <strong>設計上の整理：</strong><br/>
+    保護者氏名を請求書作成のためだけに新たに保持する必要はなく、
+    きょうだいをまとめるための家庭単位IDも現時点では追加しません。
+    既存の園児単位の予約・利用実績・月末集計・請求の流れをそのまま維持します。
+  </div>
+</section>
+
 <section class="card">
   <h2>🧭 06系列の今後の構成案</h2>
   <div class="grid">
