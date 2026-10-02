@@ -1,139 +1,163 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌸 すみれクラブ予約システム 開発進捗案内サイト</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>🌸 すみれクラブ予約システム 開発進捗案内サイト</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
-
 <header>
-  <img src="img/sumire_lab_logo.png" alt="Sumire Lab Logo" class="logo">
-  <h1>🌸 すみれクラブ予約システム 開発進捗案内</h1>
-  <p class="subtitle">先生方が子どもたちと向き合う時間を、少しでも増やすために。</p>
-  <div class="version">Version 2.0</div>
+<img alt="Sumire Lab Logo" class="logo" src="img/sumire_lab_logo.png"/>
+<h1>🌸 すみれクラブ予約システム 開発進捗案内</h1>
+<p class="subtitle">先生方が子どもたちと向き合う時間を、少しでも増やすために。</p>
+<div class="version">Version 2.0</div>
 </header>
-
-<main>
-  <section class="hero">
-    <h2>園のDXを支え、システムを育てる。</h2>
-    <p class="lead">マクリン幼稚園の「すみれクラブ予約システム」の開発進捗をお知らせする<br>案内サイト（すみれラボ）です。</p>
-    <p>このサイトでは、預かり保育業務の負担を軽減するためのシステムが、今どのような状況で作られているのか、<br>その仕組みを園の先生方にいつでもご確認いただける報告の場所として作成いたしました。</p>
-  </section>
-
-  <section class="card" style="border: 2px solid var(--color-main); background: #fffdfa;">
-    <h2>💡 先生方へ：ご意見・ご希望をどんどんお寄せください！</h2>
-    <p>このシステムは、実際に現場で使う先生方の「ここがもっと楽になってほしい」「この画面はこう見えたほうが使いやすい」という生の声をもとに、みんなで使いやすいものに仕上げていきたいと考えています。</p>
-    <p><strong>どんな小さなことでも、気づいたことや「こうなったらいいな」というご希望があれば、ぜひ遠慮なく、どんどん私まで<br>お聞かせください！</strong>皆様からのたくさんのアイデアをお待ちしております。</p>
-  </section>
-
-  <section class="card">
-    <h2>🌸 プロジェクトについて</h2>
-    <p>本プロジェクトは、<strong>預かり保育予約システムを作ることだけを目的としたものではありません。</strong></p>
-    <p>2024年10月31日、行政から委嘱された幼児教育アドバイザーとして、園のICT・DX化について提案したことが、このプロジェクトの出発点となりました。先生方の働き方改革につながる業務改善を進める中で、現在の予約システム開発へと発展しています。</p>
-  </section>
-
-  <section class="card">
-    <h2>🕒 プロジェクトの歩み</h2>
-    <div class="timeline">
-      <div class="timeline-item">
-        <h3>2024年10月31日</h3>
-        <p>園のICT・DX化をご提案 / DXプロジェクト開始</p>
-      </div>
-      <div class="timeline-item">
-        <h3>2025年</h3>
-        <p>Google Workspace for Education 導入 / 園内ICT環境を整備</p>
-      </div>
-      <div class="timeline-item">
-        <h3>2026年</h3>
-        <p>請求書メール発送システム完成 / 予約システム開発へ発展</p>
-      </div>
-      <div class="timeline-item">
-        <h3>現在</h3>
-        <p>園全体のDXプロジェクトとして継続中</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>📈 開発状況</h2>
-    <p>予約システム本体の開発進捗に合わせて、現在の状況をタイムリーにお知らせしています。</p>
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress" style="width: 80%;"></div>
-      </div>
-      <p>システム開発進捗 80％　｜　現在：基本通信・予約受付の動作確認完了 → 料金設定の実装へ</p>
-    </div>
-  </section>
-
-
-  <section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
-    <h2>🌸 Ver.2.0 基本動作確認のお知らせ</h2>
-    <p>予約画面とGoogle側の園児情報をつなぎ、<strong>クラス・園児名の表示から予約受付、確認メール送信までの基本動作を確認しました。</strong></p>
-    <p>園児情報は、予約に必要な情報だけを予約画面に表示し、メールアドレスなどは園側で管理する仕組みとしています。</p>
-    <p>これまでの設計内容に加えて、今回の実装・動作確認の内容を<strong>「05 システム実装・動作確認」</strong>としてご紹介しています。内容が増えたため、<strong>「05-00 システムの概要」「05-01 予約画面と操作方法」「05-02 データ管理と安全性」</strong>の3ページに分けました。</p>
-    <p>01 → 02 → 03 → 04 → 05-00 の順にご覧いただくと、予約方法からデータ管理、予約設計、実際の動作確認までの流れをご確認いただけます。05-00から、予約画面の説明やデータ管理の詳しい説明へ進めます。</p>
-    <div style="margin-top: 1.2rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
-      <a href="./design/01_system_overview.html" class="menu-card" style="flex: 1 1 240px;">
-        <h3>📘 01 システム概要を見る</h3>
-        <p>今回の予約方法の改訂イメージをご確認ください。</p>
-      </a>
-      <a href="./design/02_system_architecture.html" class="menu-card" style="flex: 1 1 240px;">
-        <h3>🖥️ 02 システムの流れを見る</h3>
-        <p>予約生成の4つのルールをご確認ください。</p>
-      </a>
-      <a href="./design/03_data_design.html" class="menu-card" style="flex: 1 1 240px;">
-        <h3>📋 03 情報の管理を見る</h3>
-        <p>一括登録から日別予約データができる流れをご確認ください。</p>
-      </a>
-      <a href="./design/04_reservation_design.html" class="menu-card" style="flex: 1 1 240px; border: 2px solid #6f42c1;">
-        <h3>🟣 04 日別予約データを見る</h3>
-        <p>Ver.01の日別予約を残しながら、<strong>一括登録にも対応</strong>します。一括登録した予約も1日ごとに管理するため、<strong>必要な日だけ変更・取消できます。</strong>あわせて、利用時間・料金・キャンセルの考え方も整理しています。</p>
-      </a>
-      <a href="./design/05_implementation_test_00.html" class="menu-card" style="flex: 1 1 240px; border: 2px solid #2e7d32;">
-        <h3>🛠️ 05 システム実装・動作確認を見る</h3>
-        <p>まず<strong>05-00「システムの概要」</strong>からご覧ください。日別予約・一括登録・変更・取消・確認メールまでの到達点をまとめています。</p>
-      </a>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>📚 開発ドキュメント</h2>
-    <p>システム開発の内容を、テーマごとにご紹介しています。</p>
-
-    <div class="grid">
-      <a href="./design/01_system_overview.html" class="menu-card">
-        <h3>📘 01 システム概要</h3>
-        <p>開発の目的と背景をご紹介します。</p>
-      </a>
-      <a href="./design/02_system_architecture.html" class="menu-card">
-        <h3>🖥️ 02 システムの流れ</h3>
-        <p>予約から請求までの流れをご紹介します。</p>
-      </a>
-      <a href="./design/03_data_design.html" class="menu-card">
-        <h3>📋 03 情報（データ）の管理</h3>
-        <p>予約システムで管理する情報と、日別予約データができる流れをご紹介します。</p>
-      </a>
-      <a href="./design/04_reservation_design.html" class="menu-card" style="border: 2px solid #6f42c1;">
-        <h3>🟣 04 日別予約データ</h3>
-        <p>現在の予約と、変更・取消などの予約履歴の管理方法をご紹介します。</p>
-      </a>
-      <a href="./design/05_implementation_test_00.html" class="menu-card" style="border: 2px solid #2e7d32;">
-        <h3>🛠️ 05 システム実装・動作確認</h3>
-        <p>05-00を入口に、予約画面と操作方法、データ管理と安全性を3ページに分けてご紹介します。</p>
-      </a>
-    </div>
-  </section>
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="./design/01_system_overview.html">01 システム概要 ▶</a></nav>
+<section class="hero">
+<h2>園のDXを支え、システムを育てる。</h2>
+<p class="lead">マクリン幼稚園の「すみれクラブ予約システム」の開発進捗をお知らせする<br/>案内サイト（すみれラボ）です。</p>
+<p>このサイトでは、預かり保育業務の負担を軽減するためのシステムが、今どのような状況で作られているのか、<br/>その仕組みを園の先生方にいつでもご確認いただける報告の場所として作成いたしました。</p>
+</section>
+<section class="card" style="border: 2px solid var(--color-main); background: #fffdfa;">
+<h2>💡 先生方へ：ご意見・ご希望をどんどんお寄せください！</h2>
+<p>このシステムは、実際に現場で使う先生方の「ここがもっと楽になってほしい」「この画面はこう見えたほうが使いやすい」という生の声をもとに、みんなで使いやすいものに仕上げていきたいと考えています。</p>
+<p><strong>どんな小さなことでも、気づいたことや「こうなったらいいな」というご希望があれば、ぜひ遠慮なく、どんどん私まで<br/>お聞かせください！</strong>皆様からのたくさんのアイデアをお待ちしております。</p>
+</section>
+<section class="card">
+<h2>🌸 プロジェクトについて</h2>
+<p>本プロジェクトは、<strong>預かり保育予約システムを作ることだけを目的としたものではありません。</strong></p>
+<p>2024年10月31日、行政から委嘱された幼児教育アドバイザーとして、園のICT・DX化について提案したことが、このプロジェクトの出発点となりました。先生方の働き方改革につながる業務改善を進める中で、現在の予約システム開発へと発展しています。</p>
+</section>
+<section class="card">
+<h2>🕒 プロジェクトの歩み</h2>
+<div class="timeline">
+<div class="timeline-item">
+<h3>2024年10月31日</h3>
+<p>園のICT・DX化をご提案 / DXプロジェクト開始</p>
+</div>
+<div class="timeline-item">
+<h3>2025年</h3>
+<p>Google Workspace for Education 導入 / 園内ICT環境を整備</p>
+</div>
+<div class="timeline-item">
+<h3>2026年</h3>
+<p>請求書メール発送システム完成 / 予約システム開発へ発展</p>
+</div>
+<div class="timeline-item">
+<h3>現在</h3>
+<p>園全体のDXプロジェクトとして継続中</p>
+</div>
+</div>
+</section>
+<section class="card">
+<h2>📈 開発状況</h2>
+<p>予約システム本体の主要機能はTESTが進み、<strong>予約 → 利用実績 → 月末集計 → 園児別請求書PDF作成</strong>まで確認しています。</p>
+<div class="progress-container">
+<p><strong>現在：</strong>15:35自動処理の現行設定での実地確認、翌月1日の請求メール送信・自動実行、臨時徴収の扱いを順に確認しています。</p>
+</div>
+</section>
+<section class="card" style="border: 2px solid #e2c66d; background: #fff9e8;">
+<h2>🌸 Ver.2.0 基本動作確認のお知らせ</h2>
+<p>予約画面とGoogle側の園児情報をつなぎ、<strong>クラス・園児名の表示から予約受付、確認メール送信までの基本動作を確認しました。</strong></p>
+<p>園児情報は、予約に必要な情報だけを予約画面に表示し、メールアドレスなどは園側で管理する仕組みとしています。</p>
+<p>これまでの設計内容に加えて、実装・動作確認の内容を<strong>「05 システム実装・動作確認」</strong>としてご紹介しています。現在は、<strong>05-00「システムの概要」から05-04「明日の名簿と当日の利用確認」までの5ページ</strong>に分けて整理しています。</p>
+<p>01 → 02 → 03 → 04 → 05-00 の順にご覧いただくと、設計から実装・動作確認までの流れをご確認いただけます。園スタッフ向けの05系列に続き、開発・保守担当者向けの06系列で技術記録を整理しています。</p>
+<div style="margin-top: 1.2rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
+<a class="menu-card" href="./design/01_system_overview.html" style="flex: 1 1 240px;">
+<h3>📘 01 システム概要を見る</h3>
+<p>今回の予約方法の改訂イメージをご確認ください。</p>
+</a>
+<a class="menu-card" href="./design/02_system_architecture.html" style="flex: 1 1 240px;">
+<h3>🖥️ 02 システムの流れを見る</h3>
+<p>予約生成の4つのルールをご確認ください。</p>
+</a>
+<a class="menu-card" href="./design/03_data_design.html" style="flex: 1 1 240px;">
+<h3>📋 03 情報の管理を見る</h3>
+<p>一括登録から日別予約データができる流れをご確認ください。</p>
+</a>
+<a class="menu-card" href="./design/04_reservation_design.html" style="flex: 1 1 240px; border: 2px solid #6f42c1;">
+<h3>🟣 04 日別予約データを見る</h3>
+<p>Ver.01の日別予約を残しながら、<strong>一括登録にも対応</strong>します。一括登録した予約も1日ごとに管理するため、<strong>必要な日だけ変更・取消できます。</strong>あわせて、利用時間・料金・キャンセルの考え方も整理しています。</p>
+</a>
+<a class="menu-card" href="./design/05_implementation_test_00.html" style="flex: 1 1 240px; border: 2px solid #2e7d32;">
+<h3>🛠️ 05 システム実装・動作確認を見る</h3>
+<p>まず<strong>05-00「システムの概要」</strong>からご覧ください。日別予約・一括登録・変更・取消・確認メールまでの到達点をまとめています。</p>
+</a>
+<a class="menu-card" href="./design/06_development_maintenance_00.html" style="flex:1 1 240px;border:2px solid #35516f;">
+<h3>🛠️ 06 開発・保守記録を見る</h3>
+<p>アカウント、Apps Script、データ構造、自動処理、本番移行・保守を開発担当者向けに整理しています。</p>
+</a></div>
+</section>
+<section class="card">
+<h2>📚 開発ドキュメント</h2>
+<p>システム開発の内容を、テーマごとにご紹介しています。</p>
+<div class="grid">
+<a class="menu-card" href="./design/01_system_overview.html">
+<h3>📘 01 システム概要</h3>
+<p>開発の目的と背景をご紹介します。</p>
+</a>
+<a class="menu-card" href="./design/02_system_architecture.html">
+<h3>🖥️ 02 システムの流れ</h3>
+<p>予約から請求までの流れをご紹介します。</p>
+</a>
+<a class="menu-card" href="./design/03_data_design.html">
+<h3>📋 03 情報（データ）の管理</h3>
+<p>予約システムで管理する情報と、日別予約データができる流れをご紹介します。</p>
+</a>
+<a class="menu-card" href="./design/04_reservation_design.html" style="border: 2px solid #6f42c1;">
+<h3>🟣 04 日別予約データ</h3>
+<p>現在の予約と、変更・取消などの予約履歴の管理方法をご紹介します。</p>
+</a>
+<a class="menu-card" href="./design/05_implementation_test_00.html" style="border: 2px solid #2e7d32;">
+<h3>🛠️ 05 システム実装・動作確認</h3>
+<p>05-00〜05-04の5ページで、予約操作、データ管理、集計・請求、翌日名簿・利用実績を整理しています。</p>
+</a>
+<a class="menu-card" href="./design/06_development_maintenance_00.html" style="border:2px solid #35516f;">
+<h3>🛠️ 06 開発・保守記録</h3>
+<p>06-00〜06-05で、認証・Apps Script・データ構造・自動処理・本番移行と保守を整理しています。</p>
+</a></div>
+</section>
 </main>
-
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>園のDXを支える開発記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br>Last Update 2026-09-01</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>園のDXを支える開発記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
-
 </body>
 </html>
