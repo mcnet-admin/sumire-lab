@@ -206,29 +206,51 @@ footer{
 .staff-point{background:#f4fbf5;border-left:5px solid #4f9b58;padding:13px 15px;border-radius:9px;margin:12px 0;line-height:1.65}
 .detail-link{font-size:13px;color:#667;margin-top:10px}
 </style>
-</head>
-
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
 <h1>🔐 05-02 データ管理と安全性</h1>
 <p>園スタッフ向けに、園児情報や予約記録を「どこまで扱うのか」「誰が確認できるのか」を分かりやすく整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05-00 まず全体像</a>
-  <a href="05_implementation_test_01.html">05-01 予約画面を見る</a>
-  <a class="current" href="05_implementation_test_02.html">05-02 データ管理と安全性</a>
-  <a href="05_implementation_test_03.html">05-03 集計・請求</a>
-  <a href="05_implementation_test_04.html">05-04 名簿・利用実績</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="05_implementation_test_01.html">◀ 05-01 予約・操作</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="05_implementation_test_03.html">05-03 集計・請求 ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05-00 全体像</a><a href="05_implementation_test_01.html">05-01 予約・操作</a><a class="current" href="05_implementation_test_02.html">05-02 データ・安全性</a><a href="05_implementation_test_03.html">05-03 集計・請求</a><a href="05_implementation_test_04.html">05-04 名簿・利用実績</a></nav>
 <div class="audience">
-  <span class="role-tag">園スタッフ向け</span><br/>
-  <strong>このページでは、日常の運用で知っておきたい安全面だけを説明します。</strong><br/>
+<span class="role-tag">園スタッフ向け</span><br/>
+<strong>このページでは、日常の運用で知っておきたい安全面だけを説明します。</strong><br/>
   プログラム名、保存先の細かな構成、開発用設定などは「06 開発・保守記録」に分けて整理します。
 </div>
-
 <section class="card purple">
 <h2>🌸 最初に、安心のポイント</h2>
 <div class="staff-point"><strong>① 園児情報の原本は園内PCに残します。</strong><br/>予約システムのために、園児情報の原本そのものをインターネット上へ移す運用にはしません。</div>
@@ -236,72 +258,62 @@ footer{
 <div class="staff-point"><strong>③ 保護者が園の管理データを直接見ることはできません。</strong><br/>保護者の画面には予約に必要な内容だけを表示し、園側の管理情報は表示しません。</div>
 <div class="staff-point"><strong>④ 園側の管理情報を確認できる人を限定します。</strong><br/>園が指定した職員だけが、園児情報や予約記録を確認できる運用とします。</div>
 </section>
-
 <section class="card">
 <h2>🧭 情報は3つの段階に分けて扱います</h2>
 <p>園児情報を一か所へすべて集めるのではなく、役割に応じて分けて扱うことを基本にします。</p>
-
 <div class="simple-flow">
-  <div class="step">
-    <strong>① 園内の園児情報</strong>
+<div class="step">
+<strong>① 園内の園児情報</strong>
     園児情報の原本。園内PCで管理します。
   </div>
-  <div class="step">
-    <strong>② 予約に必要な情報</strong>
+<div class="step">
+<strong>② 予約に必要な情報</strong>
     予約受付に必要な項目だけを使用します。
   </div>
-  <div class="step">
-    <strong>③ 日々の予約記録</strong>
+<div class="step">
+<strong>③ 日々の予約記録</strong>
     利用日・時間・変更・取消などを園児ごとに記録します。
   </div>
 </div>
-
 <div class="emphasis">
 <strong>大切なのは「必要な情報だけを次の段階へ渡す」ことです。</strong><br/>
 園児情報の原本をそのまま予約画面へ出したり、予約のたびに園児名やメールアドレスを重ねて保存したりしない設計とします。
 </div>
 </section>
-
 <section class="card">
 <h2>👨‍👩‍👧 保護者の予約画面に表示する情報</h2>
 <p>保護者が予約するときは、操作に必要な情報だけを表示します。</p>
-
 <div class="grid">
-  <div class="box">
-    <h3>表示するもの</h3>
-    <p>クラス、園児名、利用日、利用時間、予約状況など、予約操作に必要な内容です。</p>
-  </div>
-  <div class="box">
-    <h3>表示しないもの</h3>
-    <p>保護者メールアドレスなど、予約画面で確認する必要のない個人情報は表示しません。</p>
-  </div>
+<div class="box">
+<h3>表示するもの</h3>
+<p>クラス、園児名、利用日、利用時間、予約状況など、予約操作に必要な内容です。</p>
 </div>
-
+<div class="box">
+<h3>表示しないもの</h3>
+<p>保護者メールアドレスなど、予約画面で確認する必要のない個人情報は表示しません。</p>
+</div>
+</div>
 <div class="note" style="margin-top:14px;">
 <strong>確認メールの送信先は、園側で管理します。</strong><br/>
 保護者が予約画面でメールアドレスを入力し直す方式ではなく、園で確認済みの連絡先を使用して通知します。
 </div>
 </section>
-
 <section class="card">
 <h2>📅 予約記録は「園児ごと・1日ごと」に管理します</h2>
 <p>
 一括登録を利用した場合も、保存後は1日ずつの予約として扱います。
 これにより、必要な日だけ変更・取消し、利用当日の実績や月末集計へつなげることができます。
 </p>
-
 <div class="grid">
-  <div class="box"><h3>新規予約</h3><p>園児と利用日ごとに予約内容を記録します。</p></div>
-  <div class="box"><h3>変更</h3><p>変更した日の最新内容が分かるように更新します。</p></div>
-  <div class="box"><h3>取消</h3><p>「予約がなかった」ことにせず、取消したことが分かる形で扱います。</p></div>
-  <div class="box"><h3>利用実績</h3><p>予約とは別に、実際に利用したか、何時まで利用したかを記録します。</p></div>
+<div class="box"><h3>新規予約</h3><p>園児と利用日ごとに予約内容を記録します。</p></div>
+<div class="box"><h3>変更</h3><p>変更した日の最新内容が分かるように更新します。</p></div>
+<div class="box"><h3>取消</h3><p>「予約がなかった」ことにせず、取消したことが分かる形で扱います。</p></div>
+<div class="box"><h3>利用実績</h3><p>予約とは別に、実際に利用したか、何時まで利用したかを記録します。</p></div>
 </div>
 </section>
-
 <section class="card">
 <h2>📨 確認メールも、園の記録と同じ内容で残します</h2>
 <p>予約・変更・取消を行ったときは、園側の記録だけでなく、保護者にも確認メールを送ります。</p>
-
 <table>
 <thead><tr><th>場面</th><th>園側の記録</th><th>保護者への通知</th></tr></thead>
 <tbody>
@@ -311,86 +323,74 @@ footer{
 <tr><td>電話受付</td><td>電話内容・受付職員などを記録</td><td>変更・取消結果をメールで確認</td></tr>
 </tbody>
 </table>
-
 <div class="success" style="margin-top:14px;">
 <strong>園側の記録と保護者への通知を一致させることを基本とします。</strong><br/>
 「電話では変更したが記録が残っていない」といった食い違いを防ぎ、後から確認できるようにします。
 </div>
 </section>
-
 <section class="card">
 <h2>🗂️ 年度が変わるときの考え方</h2>
 <p>園児の進級・入園・退園に合わせて、予約に使用する園児情報も年度ごとに見直します。</p>
-
 <div class="simple-flow">
-  <div class="step"><strong>年度当初</strong>園児情報を確認し、その年度の予約対象者を準備します。</div>
-  <div class="step"><strong>年度途中</strong>入退園や連絡先変更など、必要な変更だけを反映します。</div>
-  <div class="step"><strong>年度末</strong>次年度へ引き継ぐ情報と、過年度の記録を分けて整理します。</div>
+<div class="step"><strong>年度当初</strong>園児情報を確認し、その年度の予約対象者を準備します。</div>
+<div class="step"><strong>年度途中</strong>入退園や連絡先変更など、必要な変更だけを反映します。</div>
+<div class="step"><strong>年度末</strong>次年度へ引き継ぐ情報と、過年度の記録を分けて整理します。</div>
 </div>
-
 <div class="note">
 <strong>園児情報の原本を基準にします。</strong><br/>
 予約システムだけで園児情報を独自に作り続けるのではなく、園が管理する正式な園児情報との一致を確認して運用します。
 </div>
 </section>
-
 <section class="card">
 <h2>🧪 TESTと本番は分けて進めます</h2>
 <p>開発中の機能を、実際の園児情報を使う本番環境へ直接入れることはしません。</p>
-
 <div class="grid">
-  <div class="box">
-    <h3>TEST</h3>
-    <p>ダミー園児を使い、予約・変更・取消・メール・利用実績・集計などを確認します。</p>
-  </div>
-  <div class="box">
-    <h3>本番</h3>
-    <p>TESTで確認できた機能だけを、正式な運用へ反映します。</p>
-  </div>
+<div class="box">
+<h3>TEST</h3>
+<p>ダミー園児を使い、予約・変更・取消・メール・利用実績・集計などを確認します。</p>
 </div>
-
+<div class="box">
+<h3>本番</h3>
+<p>TESTで確認できた機能だけを、正式な運用へ反映します。</p>
+</div>
+</div>
 <div class="success" style="margin-top:14px;">
-<strong>2026年9月27日時点</strong><br/>
-予約、変更・取消、電話受付、翌日利用者リスト、利用実績、月末集計、請求書PDF作成、保護者への確認メール送信までTESTを完了しました。
-次は、臨時徴収を含む請求額の扱いを整理し、本番運用へ向けた最終確認を進めます。
+<strong>2026年10月2日時点</strong><br/>
+予約、変更・取消、電話受付、翌日利用者リスト、利用実績、月末集計、請求書PDF作成までTESTを確認しています。請求メール送信・自動実行は次工程です。
+次は、15:35自動処理の現行設定での実地確認、翌月1日の請求メール送信・自動実行、臨時徴収の扱いを確認し、本番運用へ向けた最終確認を進めます。
 </div>
 </section>
-
 <section class="card">
 <h2>🔐 園スタッフが覚えておくこと</h2>
 <div class="privacy-summary">
 <strong>日常の運用では、次の4点を意識すれば十分です。</strong>
 <ul class="check-list">
-  <li>園児情報の原本は園内で管理する。</li>
-  <li>予約画面には必要な情報だけを表示する。</li>
-  <li>園の管理情報は、指定された職員だけが確認する。</li>
-  <li>変更・取消は、口頭だけで終わらせず必ずシステムにも記録する。</li>
+<li>園児情報の原本は園内で管理する。</li>
+<li>予約画面には必要な情報だけを表示する。</li>
+<li>園の管理情報は、指定された職員だけが確認する。</li>
+<li>変更・取消は、口頭だけで終わらせず必ずシステムにも記録する。</li>
 </ul>
 </div>
 <p class="small" style="margin-top:14px;">
 ※使用しているサービス名、データ項目、アクセス設定、TEST環境と本番環境の構成など、開発・保守に必要な技術情報は「06 開発・保守記録」にまとめます。
 </p>
 </section>
-
 <section class="card" style="text-align:center;">
 <h2>📘 前後のページ</h2>
 <p>予約画面の操作は「05-01」、集計・請求は「05-03」、翌日名簿と利用実績は「05-04」をご覧ください。</p>
 <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-  <a class="menu-card" href="05_implementation_test_01.html">◀ 05-01 予約画面と操作方法へ</a>
-  <a class="menu-card" href="05_implementation_test_03.html">05-03 集計・請求へ ▶</a>
-  <a class="menu-card" href="05_implementation_test_04.html">05-04 名簿・利用実績へ ▶</a>
+<a class="menu-card" href="05_implementation_test_01.html">◀ 05-01 予約画面と操作方法へ</a>
+<a class="menu-card" href="05_implementation_test_03.html">05-03 集計・請求へ ▶</a>
+<a class="menu-card" href="05_implementation_test_04.html">05-04 名簿・利用実績へ ▶</a>
 </div>
 </section>
-
 </main>
-
 <footer>
 <p>🌸 <strong>Sumire Lab</strong></p>
 <p>先生方の時間を、子どもたちの笑顔へ。</p>
 <p>園のDXを支える開発記録</p>
 <p>© McLean Kindergarten</p>
-<p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
-
 </html>

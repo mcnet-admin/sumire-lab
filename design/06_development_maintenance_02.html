@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>06-00 開発・保守記録の全体像 | Sumire Lab</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>06-02 Apps Script・デプロイ | Sumire Lab</title>
 <style>
 :root{
   --purple:#6f42c1;
@@ -66,260 +67,266 @@ th{background:#fafafa}
 footer{text-align:center;padding:24px;color:#666;font-size:13px}
 @media(max-width:700px){main{padding:14px}.page-nav{position:static}.page-nav a{flex-basis:100%}}
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
-  <h1>🧩 06-02 Apps Script・デプロイ</h1>
-  <p>予約から請求まで、どの処理が何を担当しているかを役割別に整理します。</p>
+<h1>🧩 06-02 Apps Script・デプロイ</h1>
+<p>予約から請求まで、どの処理が何を担当しているかを役割別に整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05 園スタッフ向け</a>
-  <a href="06_development_maintenance_00.html">06-00 開発・保守の全体像</a>
-  <a href="06_development_maintenance_01.html">06-01 アクセス・認証・公開設定</a>
-  <a class="current" href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="06_development_maintenance_01.html">◀ 06-01 アクセス・認証</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="06_development_maintenance_03.html">06-03 データ構造 ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05 園スタッフ向け</a><a href="06_development_maintenance_00.html">06-00 全体像</a><a href="06_development_maintenance_01.html">06-01 アクセス・認証</a><a class="current" href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a><a href="06_development_maintenance_03.html">06-03 データ構造</a><a href="06_development_maintenance_04.html">06-04 自動処理・検証</a><a href="06_development_maintenance_05.html">06-05 本番移行・保守</a></nav>
 <div class="audience">
-  <span class="role-tag">開発・保守担当者向け</span><br/>
-  <strong>このページでは、コード全文ではなく「どの処理が何を担当しているか」を中心に説明します。</strong><br/>
+<span class="role-tag">開発・保守担当者向け</span><br/>
+<strong>このページでは、コード全文ではなく「どの処理が何を担当しているか」を中心に説明します。</strong><br/>
   保守時に「どこを確認すればよいか」が分かることを目的とします。
 </div>
-
 <section class="card">
-  <h2>🌸 Apps Scriptは「園の業務をつなぐ処理」を担当します</h2>
-  <p>
+<h2>🌸 Apps Scriptは「園の業務をつなぐ処理」を担当します</h2>
+<p>
     保護者向け画面で入力された内容を受け取り、予約記録へ反映し、
     確認メール、翌日名簿、利用実績、月末集計、請求書作成へつなげます。
   </p>
-  <div class="emphasis">
-    <strong>画面を表示するだけではなく、「受け取る・確認する・保存する・送る」をつなぐ部分がApps Scriptの役割です。</strong>
-  </div>
+<div class="emphasis">
+<strong>画面を表示するだけではなく、「受け取る・確認する・保存する・送る」をつなぐ部分がApps Scriptの役割です。</strong>
+</div>
 </section>
-
 <section class="card">
-  <h2>🗂️ 主な処理を役割別に整理します</h2>
-  <div class="grid">
-    <div class="box">
-      <h3>① 予約受付</h3>
-      <p>保護者からの新規予約、一括登録、変更、取消を受け付けます。</p>
-    </div>
-    <div class="box">
-      <h3>② 電話受付・予約修正</h3>
-      <p>園スタッフ用画面から、締切後の変更・取消を記録します。</p>
-    </div>
-    <div class="box">
-      <h3>③ 翌日利用者リスト</h3>
-      <p>前日15:30の受付締切を基準に、翌日の利用予定者をまとめて園へ送ります。</p>
-    </div>
-    <div class="box">
-      <h3>④ 利用実績</h3>
-      <p>翌日の利用予定者について、実際の利用有無と終了時刻を記録する準備を行います。</p>
-    </div>
-    <div class="box">
-      <h3>⑤ 月末集計</h3>
-      <p>確認済みの利用実績から、時間帯別件数と通常利用額を集計します。</p>
-    </div>
-    <div class="box">
-      <h3>⑥ 請求書・メール</h3>
-      <p>園児ごとの請求内容をもとに請求書PDFを作成し、確認メールへつなげます。</p>
-    </div>
-  </div>
+<h2>🗂️ 主な処理を役割別に整理します</h2>
+<div class="grid">
+<div class="box">
+<h3>① 予約受付</h3>
+<p>保護者からの新規予約、一括登録、変更、取消を受け付けます。</p>
+</div>
+<div class="box">
+<h3>② 電話受付・予約修正</h3>
+<p>園スタッフ用画面から、締切後の変更・取消を記録します。</p>
+</div>
+<div class="box">
+<h3>③ 翌日利用者リスト</h3>
+<p>前日15:30の受付締切を基準に、翌日の利用予定者をまとめて園へ送ります。</p>
+</div>
+<div class="box">
+<h3>④ 利用実績</h3>
+<p>翌日の利用予定者について、実際の利用有無と終了時刻を記録する準備を行います。</p>
+</div>
+<div class="box">
+<h3>⑤ 月末集計</h3>
+<p>確認済みの利用実績から、時間帯別件数と通常利用額を集計します。</p>
+</div>
+<div class="box">
+<h3>⑥ 請求書・メール</h3>
+<p>園児ごとの請求内容をもとに請求書PDFを作成し、確認メールへつなげます。</p>
+</div>
+</div>
 </section>
-
 <section class="card">
-  <h2>📄 現在確認している主なスクリプト</h2>
-  <table class="compact-table">
-    <thead>
-      <tr><th>スクリプト／処理</th><th>役割</th><th>保守時に見るポイント</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><code>ReservationWebApp.gs</code></td>
-        <td>予約受付、変更・取消など、保護者向け予約処理の中心。</td>
-        <td>予約の受付条件、保存内容、確認メール、公開画面との受け渡し。</td>
-      </tr>
-      <tr>
-        <td>電話受付・予約修正処理</td>
-        <td>園スタッフ用画面から予約内容を修正し、電話受付履歴を残す。</td>
-        <td>園スタッフ権限、変更・取消の反映、履歴、確認メール。</td>
-      </tr>
-      <tr>
-        <td><code>UsageActuals.gs</code></td>
-        <td>翌日利用候補の準備、当日の利用実績処理、15:35の日次処理。</td>
-        <td>対象日の判定、利用候補生成、重複防止、翌日利用者リスト送信との連携。</td>
-      </tr>
-      <tr>
-        <td><code>MonthlySummary.gs</code></td>
-        <td>利用実績から月末集計を作成。</td>
-        <td>時間帯別件数、通常利用額、対象月、集計対象。</td>
-      </tr>
-      <tr>
-        <td>請求書PDF・メール送信処理</td>
-        <td>園児別の請求書PDF作成とTESTメール送信。</td>
-        <td>請求額、園児情報、送信先、PDF内容、誤送信防止。</td>
-      </tr>
-      <tr>
-        <td><code>BoundaryTest.gs</code></td>
-        <td>長期休暇のキャンセル料や受付締切など、境界条件をTEST。</td>
-        <td>本体処理を書き換えず、TESTだけを独立して確認する。</td>
-      </tr>
-    </tbody>
-  </table>
-  <p class="small">※ファイル名が確定していない処理は、現段階では役割名で記載しています。今後、実際のApps Script構成と照合して更新します。</p>
+<h2>📄 現在確認している主なスクリプト</h2>
+<table class="compact-table">
+<thead>
+<tr><th>スクリプト／処理</th><th>役割</th><th>保守時に見るポイント</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReservationWebApp.gs</code></td>
+<td>予約受付、変更・取消など、保護者向け予約処理の中心。</td>
+<td>予約の受付条件、保存内容、確認メール、公開画面との受け渡し。</td>
+</tr>
+<tr>
+<td>電話受付・予約修正処理</td>
+<td>園スタッフ用画面から予約内容を修正し、電話受付履歴を残す。</td>
+<td>園スタッフ権限、変更・取消の反映、履歴、確認メール。</td>
+</tr>
+<tr>
+<td><code>UsageActuals.gs</code></td>
+<td>翌日利用候補の準備、当日の利用実績処理、15:35の日次処理。</td>
+<td>対象日の判定、利用候補生成、重複防止、翌日利用者リスト送信との連携。</td>
+</tr>
+<tr>
+<td><code>MonthlySummary.gs</code></td>
+<td>利用実績から月末集計を作成。</td>
+<td>時間帯別件数、通常利用額、対象月、集計対象。</td>
+</tr>
+<tr>
+<td>請求書PDF・請求メール処理</td>
+<td>園児別の請求書PDF作成。請求メール送信・自動実行は次工程。</td>
+<td>請求額、園児情報、送信先、PDF内容、誤送信防止。</td>
+</tr>
+<tr>
+<td><code>BoundaryTest.gs</code></td>
+<td>長期休暇のキャンセル料や受付締切など、境界条件をTEST。</td>
+<td>本体処理を書き換えず、TESTだけを独立して確認する。</td>
+</tr>
+</tbody>
+</table>
+<p class="small">※ファイル名が確定していない処理は、現段階では役割名で記載しています。今後、実際のApps Script構成と照合して更新します。</p>
 </section>
-
 <section class="card">
-  <h2>⏰ <code>UsageActuals.gs</code> と15:35処理の入口</h2>
-  <p>翌日利用者リストと利用実績候補の準備は、時刻指定の自動処理として動かします。</p>
-
-  <div class="arch">
-    <div class="step">
-      <strong><code>run1535ScheduledProcess</code></strong>
+<h2>⏰ <code>UsageActuals.gs</code> と15:35処理の入口</h2>
+<p>翌日利用者リストと利用実績候補の準備は、時刻指定の自動処理として動かします。</p>
+<div class="arch">
+<div class="step">
+<strong><code>run1535ScheduledProcess</code></strong>
       自動起動の入口
     </div>
-    <div class="step">
-      <strong><code>run1535DailyProcess</code></strong>
+<div class="step">
+<strong><code>run1535DailyProcess</code></strong>
       15:35の日次処理
     </div>
-    <div class="step">
-      <strong><code>generateTomorrowUsageActuals()</code></strong>
+<div class="step">
+<strong><code>generateTomorrowUsageActuals()</code></strong>
       翌日の利用実績候補を準備
     </div>
-    <div class="step">
-      <strong>翌日利用者リスト送信</strong>
+<div class="step">
+<strong>翌日利用者リスト送信</strong>
       園側へメール送信
     </div>
-  </div>
-
-  <div class="note">
-    <strong>関数名を覚えることが目的ではありません。</strong><br/>
+</div>
+<div class="note">
+<strong>関数名を覚えることが目的ではありません。</strong><br/>
     「入口」「日次処理」「利用候補作成」「メール送信」という役割のつながりを把握しておくと、障害時に確認箇所を絞りやすくなります。
   </div>
 </section>
-
 <section class="card">
-  <h2>🔁 重複しないことを前提にします</h2>
-  <p>自動処理は、同じ処理が再実行されても、同じデータやメールが重複しないことが重要です。</p>
-
-  <table class="compact-table">
-    <thead><tr><th>重複させたくないもの</th><th>確認の考え方</th></tr></thead>
-    <tbody>
-      <tr><td>同じ園児・同じ日の利用実績候補</td><td>すでに存在する場合は、新しい行を追加しない。</td></tr>
-      <tr><td>同じ対象日の翌日利用者リスト</td><td>送信済みの場合は、同じメールを再送しない。</td></tr>
-    </tbody>
-  </table>
-
-  <div class="success" style="margin-top:14px;">
-    <strong>2026年9月23日TEST：</strong><br/>
+<h2>🔁 重複しないことを前提にします</h2>
+<p>自動処理は、同じ処理が再実行されても、同じデータやメールが重複しないことが重要です。</p>
+<table class="compact-table">
+<thead><tr><th>重複させたくないもの</th><th>確認の考え方</th></tr></thead>
+<tbody>
+<tr><td>同じ園児・同じ日の利用実績候補</td><td>すでに存在する場合は、新しい行を追加しない。</td></tr>
+<tr><td>同じ対象日の翌日利用者リスト</td><td>送信済みの場合は、同じメールを再送しない。</td></tr>
+</tbody>
+</table>
+<div class="success" style="margin-top:14px;">
+<strong>2026年9月23日TEST：</strong><br/>
     翌日利用候補2件を生成後、同じ処理を再実行しても2件のままで増えないことを確認しました。
     同日の15:35メールについても、送信済み記録を残す仕組みを確認しています。
   </div>
 </section>
-
 <section class="card">
-  <h2>🚀 デプロイとは何か</h2>
-  <p>
+<h2>🚀 デプロイとは何か</h2>
+<p>
     Apps Scriptで作成した処理を、実際にWebアプリとして利用できる状態にする作業が「デプロイ」です。
   </p>
-  <div class="grid">
-    <div class="box">
-      <h3>開発中</h3>
-      <p>コードを修正し、開発・保守担当が最新版を確認します。</p>
-      <p class="small"><code>/dev</code> 側は開発確認用。</p>
-    </div>
-    <div class="box">
-      <h3>公開後</h3>
-      <p>確認した版を正式なWebアプリとして公開し、園スタッフや保護者が利用します。</p>
-      <p class="small"><code>/exec</code> 側を正式運用で使用。</p>
-    </div>
-  </div>
-
-  <div class="warning" style="margin-top:14px;">
-    <strong>コードを修正しただけでは、正式公開側へ自動反映されるとは限りません。</strong><br/>
+<div class="grid">
+<div class="box">
+<h3>開発中</h3>
+<p>コードを修正し、開発・保守担当が最新版を確認します。</p>
+<p class="small"><code>/dev</code> 側は開発確認用。</p>
+</div>
+<div class="box">
+<h3>公開後</h3>
+<p>確認した版を正式なWebアプリとして公開し、園スタッフや保護者が利用します。</p>
+<p class="small"><code>/exec</code> 側を正式運用で使用。</p>
+</div>
+</div>
+<div class="warning" style="margin-top:14px;">
+<strong>コードを修正しただけでは、正式公開側へ自動反映されるとは限りません。</strong><br/>
     修正後は「どの版をデプロイしたか」「正式運用側へ反映したか」を確認します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧪 TESTと本番で、参照先を分けます</h2>
-  <p>TEST中は、ダミー園児・TEST用データ・TEST送信先を使用します。本番では正式データへ切り替えます。</p>
-
-  <table class="compact-table">
-    <thead><tr><th>確認項目</th><th>TEST</th><th>本番</th></tr></thead>
-    <tbody>
-      <tr><td>園児</td><td>ダミー園児</td><td>正式な園児情報</td></tr>
-      <tr><td>予約</td><td>TEST用予約</td><td>正式予約</td></tr>
-      <tr><td>利用実績</td><td>TEST用利用実績</td><td>正式利用実績</td></tr>
-      <tr><td>月末集計</td><td>TEST用集計</td><td>正式集計</td></tr>
-      <tr><td>メール</td><td>TEST送信先</td><td>正式な保護者・園側送信先</td></tr>
-    </tbody>
-  </table>
-
-  <div class="emphasis">
-    <strong>本番移行で最も注意するのは「参照先の切替」です。</strong><br/>
+<h2>🧪 TESTと本番で、参照先を分けます</h2>
+<p>TEST中は、ダミー園児・TEST用データ・TEST送信先を使用します。本番では正式データへ切り替えます。</p>
+<table class="compact-table">
+<thead><tr><th>確認項目</th><th>TEST</th><th>本番</th></tr></thead>
+<tbody>
+<tr><td>園児</td><td>ダミー園児</td><td>正式な園児情報</td></tr>
+<tr><td>予約</td><td>TEST用予約</td><td>正式予約</td></tr>
+<tr><td>利用実績</td><td>TEST用利用実績</td><td>正式利用実績</td></tr>
+<tr><td>月末集計</td><td>TEST用集計</td><td>正式集計</td></tr>
+<tr><td>メール</td><td>TEST送信先</td><td>正式な保護者・園側送信先</td></tr>
+</tbody>
+</table>
+<div class="emphasis">
+<strong>本番移行で最も注意するのは「参照先の切替」です。</strong><br/>
     コードそのものが正しくても、TEST用データやTEST送信先を参照したままでは正式運用になりません。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧭 修正するときの確認順</h2>
-  <ol>
-    <li><strong>どの機能か：</strong>予約、電話受付、15:35処理、利用実績、月末集計、請求のどこか。</li>
-    <li><strong>どのスクリプトか：</strong>その機能を担当する処理を特定する。</li>
-    <li><strong>どのデータを読むか：</strong>園児、予約、利用実績、月末集計など。</li>
-    <li><strong>どのデータを書くか：</strong>予約更新、利用実績、集計、送信済み記録など。</li>
-    <li><strong>メールを送るか：</strong>宛先・件名・本文・添付を確認する。</li>
-    <li><strong>自動実行か：</strong>時刻指定の処理ならトリガーも確認する。</li>
-    <li><strong>デプロイが必要か：</strong>正式公開側への反映を確認する。</li>
-  </ol>
+<h2>🧭 修正するときの確認順</h2>
+<ol>
+<li><strong>どの機能か：</strong>予約、電話受付、15:35処理、利用実績、月末集計、請求のどこか。</li>
+<li><strong>どのスクリプトか：</strong>その機能を担当する処理を特定する。</li>
+<li><strong>どのデータを読むか：</strong>園児、予約、利用実績、月末集計など。</li>
+<li><strong>どのデータを書くか：</strong>予約更新、利用実績、集計、送信済み記録など。</li>
+<li><strong>メールを送るか：</strong>宛先・件名・本文・添付を確認する。</li>
+<li><strong>自動実行か：</strong>時刻指定の処理ならトリガーも確認する。</li>
+<li><strong>デプロイが必要か：</strong>正式公開側への反映を確認する。</li>
+</ol>
 </section>
-
 <section class="card">
-  <h2>📌 2026年9月27日時点</h2>
-  <table class="compact-table">
-    <tbody>
-      <tr><td>予約処理</td><td><span class="badge ok">TEST済み</span> 日別・一括・変更・取消・確認メール。</td></tr>
-      <tr><td>電話受付処理</td><td><span class="badge ok">TEST済み</span> 園スタッフ画面から変更・取消、履歴、メール。</td></tr>
-      <tr><td>15:35日次処理</td><td><span class="badge ok">TEST済み</span> 翌日候補作成、名簿送信、重複防止。</td></tr>
-      <tr><td>月末集計</td><td><span class="badge ok">TEST済み</span> 57件、通常利用額27,400円まで検算。</td></tr>
-      <tr><td>請求書PDF</td><td><span class="badge ok">TEST済み</span> 園児別PDF作成。</td></tr>
-      <tr><td>請求メール</td><td><span class="badge ok">TEST済み</span> TEST送信先への確認メール送信。</td></tr>
-      <tr><td>臨時徴収</td><td><span class="badge plan">次工程</span> 通常利用料と分離して請求へ加算。</td></tr>
-      <tr><td>本番デプロイ</td><td><span class="badge plan">本番前確認</span> URL・権限・参照先・送信先を最終確認。</td></tr>
-    </tbody>
-  </table>
+<h2>📌 2026年10月2日時点</h2>
+<table class="compact-table">
+<tbody>
+<tr><td>予約処理</td><td><span class="badge ok">TEST済み</span> 日別・一括・変更・取消・確認メール。</td></tr>
+<tr><td>電話受付処理</td><td><span class="badge ok">TEST済み</span> 園スタッフ画面から変更・取消、履歴、メール。</td></tr>
+<tr><td>15:35日次処理</td><td><span class="badge plan">実地確認中</span> 基本動作は確認済み。現行Ver.03の自動トリガー・送信先・次回再設定を再確認。</td></tr>
+<tr><td>月末集計</td><td><span class="badge ok">TEST済み</span> 57件、通常利用額27,400円まで検算。</td></tr>
+<tr><td>請求書PDF</td><td><span class="badge ok">TEST済み</span> 園児別PDF作成。</td></tr>
+<tr><td>請求メール</td><td><span class="badge plan">次工程</span> 翌月1日の送信先・添付・重複防止・自動実行を確認予定。</td></tr>
+<tr><td>臨時徴収</td><td><span class="badge plan">次工程</span> 通常利用料と分離して請求へ加算。</td></tr>
+<tr><td>本番デプロイ</td><td><span class="badge plan">本番前確認</span> URL・権限・参照先・送信先を最終確認。</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>📝 コードを載せる場合の方針</h2>
-  <p>
+<h2>📝 コードを載せる場合の方針</h2>
+<p>
     06-02では、コード全文を保存するのではなく、保守に必要な関数や処理の抜粋だけを掲載します。
     コード全文はApps Script本体を正とし、このページでは<strong>「役割・関係・確認ポイント」</strong>を記録します。
   </p>
-  <div class="note">
-    <strong>このページはソースコードの代替ではありません。</strong><br/>
+<div class="note">
+<strong>このページはソースコードの代替ではありません。</strong><br/>
     「何のための処理か」「修正すると何に影響するか」を理解するための保守資料です。
   </div>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>📘 次の技術記録</h2>
-  <p>各データシートの役割、ID、項目、予約から請求までのデータの受け渡しは06-03で整理します。</p>
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-    <a class="menu-card" href="06_development_maintenance_01.html">◀ 06-01 アクセス・認証へ</a>
-    <a class="menu-card" href="06_development_maintenance_03.html">06-03 データ構造へ ▶</a>
-  </div>
+<h2>📘 次の技術記録</h2>
+<p>各データシートの役割、ID、項目、予約から請求までのデータの受け渡しは06-03で整理します。</p>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+<a class="menu-card" href="06_development_maintenance_01.html">◀ 06-01 アクセス・認証へ</a>
+<a class="menu-card" href="06_development_maintenance_03.html">06-03 データ構造へ ▶</a>
+</div>
 </section>
-
 </main>
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>開発・保守担当者向け 技術記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>開発・保守担当者向け 技術記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
 </html>

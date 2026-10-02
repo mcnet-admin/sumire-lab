@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>06-00 開発・保守記録の全体像 | Sumire Lab</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>06-04 自動処理・検証記録 | Sumire Lab</title>
 <style>
 :root{
   --purple:#6f42c1;
@@ -66,301 +67,293 @@ th{background:#fafafa}
 footer{text-align:center;padding:24px;color:#666;font-size:13px}
 @media(max-width:700px){main{padding:14px}.page-nav{position:static}.page-nav a{flex-basis:100%}}
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
-  <h1>⚙️ 06-04 自動処理・検証記録</h1>
-  <p>15:35の自動処理、重複防止、境界条件TEST、実行結果をSE向けに整理します。</p>
+<h1>⚙️ 06-04 自動処理・検証記録</h1>
+<p>15:35の自動処理、重複防止、境界条件TEST、実行結果を開発・保守担当者向けに整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05 園スタッフ向け</a>
-  <a href="06_development_maintenance_00.html">06-00 開発・保守の全体像</a>
-  <a href="06_development_maintenance_01.html">06-01 アクセス・認証</a>
-  <a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a>
-  <a href="06_development_maintenance_03.html">06-03 データ構造</a>
-  <a class="current" href="06_development_maintenance_04.html">06-04 自動処理・検証記録</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="06_development_maintenance_03.html">◀ 06-03 データ構造</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="06_development_maintenance_05.html">06-05 本番移行・保守 ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05 園スタッフ向け</a><a href="06_development_maintenance_00.html">06-00 全体像</a><a href="06_development_maintenance_01.html">06-01 アクセス・認証</a><a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a><a href="06_development_maintenance_03.html">06-03 データ構造</a><a class="current" href="06_development_maintenance_04.html">06-04 自動処理・検証</a><a href="06_development_maintenance_05.html">06-05 本番移行・保守</a></nav>
 <div class="audience">
-  <span class="role-tag">SE・開発保守担当者向け</span><br/>
-  <strong>このページは、実装を引き継ぐ担当者が「いつ・何が起動し・何を確認したか」を追えることを目的とします。</strong><br/>
+<span class="role-tag">開発・保守担当者向け</span><br/>
+<strong>このページは、実装を引き継ぐ担当者が「いつ・何が起動し・何を確認したか」を追えることを目的とします。</strong><br/>
   園側の業務説明は05、処理の役割は06-02、データ構造は06-03を参照します。
 </div>
-
 <section class="card">
-  <h2>🌸 自動処理の中心は「前日15:35」です</h2>
-  <p>
+<h2>🌸 自動処理の中心は「前日15:35」です</h2>
+<p>
     翌日の利用予定を園へ届け、当日の利用実績確認につなぐため、
     前日15:30の受付締切を基準に15:35の自動処理を実行します。
   </p>
-
-  <div class="arch">
-    <div class="step"><strong>15:30</strong>保護者側の翌日受付を締切</div>
-    <div class="step"><strong>15:35</strong><code>run1535ScheduledProcess</code> 起動</div>
-    <div class="step"><strong>日次処理</strong><code>run1535DailyProcess</code></div>
-    <div class="step"><strong>候補生成</strong><code>generateTomorrowUsageActuals()</code></div>
-    <div class="step"><strong>園へ送信</strong>翌日利用者リスト</div>
-    <div class="step"><strong>次回設定</strong>翌日の自動処理を予約</div>
-  </div>
-
-  <div class="note">
-    <strong>「15:30→15:35」の5分は、電話変更の猶予時間ではありません。</strong><br/>
+<div class="arch">
+<div class="step"><strong>15:30</strong>保護者側の翌日受付を締切</div>
+<div class="step"><strong>15:35</strong><code>run1535ScheduledProcess</code> 起動</div>
+<div class="step"><strong>日次処理</strong><code>run1535DailyProcess</code></div>
+<div class="step"><strong>候補生成</strong><code>generateTomorrowUsageActuals()</code></div>
+<div class="step"><strong>園へ送信</strong>翌日利用者リスト</div>
+<div class="step"><strong>次回設定</strong>翌日の自動処理を予約</div>
+</div>
+<div class="note">
+<strong>「15:30→15:35」の5分は、電話変更の猶予時間ではありません。</strong><br/>
     15:30で保護者側を締め切り、その時点の基準データを整理して15:35に園へ届けるための処理間隔です。
   </div>
-</section>
-
+<div class="note" style="margin-top:14px;">
+<strong>休日判定の確認事項：</strong>実行日が土日かどうかではなく、<strong>翌日が利用対象日かどうか</strong>で実行可否を判断する方針です。したがって、翌日が休園日ならスキップし、日曜日でも翌日が月曜日の利用日なら処理します。現行Ver.03では、この休日スキップ条件を実地TESTで確認・調整します。
+</div></section>
 <section class="card">
-  <h2>🧩 処理の役割分担</h2>
-  <table class="compact-table">
-    <thead>
-      <tr><th>処理</th><th>役割</th><th>主な確認点</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><code>run1535ScheduledProcess</code></td>
-        <td>時刻指定で起動する入口。</td>
-        <td>トリガー起動、例外発生、実行時間。</td>
-      </tr>
-      <tr>
-        <td><code>run1535DailyProcess</code></td>
-        <td>15:35の日次処理全体をまとめる。</td>
-        <td>候補生成、メール送信、次回設定の連携。</td>
-      </tr>
-      <tr>
-        <td><code>generateTomorrowUsageActuals()</code></td>
-        <td>翌日の予約から利用実績候補を準備。</td>
-        <td>対象日、active予約、重複防止。</td>
-      </tr>
-      <tr>
-        <td>翌日利用者リスト送信</td>
-        <td>15:30締切時点の翌日予定を園へメール送信。</td>
-        <td>宛先、対象日、送信済み判定。</td>
-      </tr>
-      <tr>
-        <td>次回トリガー設定</td>
-        <td>翌日の15:35処理を予約。</td>
-        <td>重複トリガー、次回実行日時。</td>
-      </tr>
-    </tbody>
-  </table>
+<h2>🧩 処理の役割分担</h2>
+<table class="compact-table">
+<thead>
+<tr><th>処理</th><th>役割</th><th>主な確認点</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run1535ScheduledProcess</code></td>
+<td>時刻指定で起動する入口。</td>
+<td>トリガー起動、例外発生、実行時間。</td>
+</tr>
+<tr>
+<td><code>run1535DailyProcess</code></td>
+<td>15:35の日次処理全体をまとめる。</td>
+<td>候補生成、メール送信、次回設定の連携。</td>
+</tr>
+<tr>
+<td><code>generateTomorrowUsageActuals()</code></td>
+<td>翌日の予約から利用実績候補を準備。</td>
+<td>対象日、active予約、重複防止。</td>
+</tr>
+<tr>
+<td>翌日利用者リスト送信</td>
+<td><span class="badge plan">実地確認中</span> 送信ロジックは確認済み。現行の園スタッフ宛先で再確認。</td>
+<td>宛先、対象日、送信済み判定。</td>
+</tr>
+<tr>
+<td>次回トリガー設定</td>
+<td>翌日の15:35処理を予約。</td>
+<td>重複トリガー、次回実行日時。</td>
+</tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>🔁 再実行しても重複しないことを確認します</h2>
-  <p>自動処理は、一度だけ動くことよりも、再実行されても壊れないことが重要です。</p>
-
-  <div class="grid">
-    <div class="box">
-      <h3>利用実績候補</h3>
-      <p>同じ <code>usage_id</code> が存在する場合は、新しい行を追加しません。</p>
-    </div>
-    <div class="box">
-      <h3>翌日利用者リスト</h3>
-      <p>同じ対象日の送信済み記録がある場合は、原則として再送しません。</p>
-    </div>
-    <div class="box">
-      <h3>次回トリガー</h3>
-      <p>同じ目的の時刻指定処理を重複して登録しないよう確認します。</p>
-    </div>
-  </div>
-
-  <div class="emphasis">
-    <strong>「もう一度動いても困らないか」をTEST項目に含めます。</strong><br/>
+<h2>🔁 再実行しても重複しないことを確認します</h2>
+<p>自動処理は、一度だけ動くことよりも、再実行されても壊れないことが重要です。</p>
+<div class="grid">
+<div class="box">
+<h3>利用実績候補</h3>
+<p>同じ <code>usage_id</code> が存在する場合は、新しい行を追加しません。</p>
+</div>
+<div class="box">
+<h3>翌日利用者リスト</h3>
+<p>同じ対象日の送信済み記録がある場合は、原則として再送しません。</p>
+</div>
+<div class="box">
+<h3>次回トリガー</h3>
+<p>同じ目的の時刻指定処理を重複して登録しないよう確認します。</p>
+</div>
+</div>
+<div class="emphasis">
+<strong>「もう一度動いても困らないか」をTEST項目に含めます。</strong><br/>
     行・メール・トリガーの重複防止をそれぞれ別に確認します。
   </div>
 </section>
-
 <section class="card">
-  <span class="timeline-date">2026年9月23日</span>
-  <h2>✅ 翌日利用候補の生成TEST</h2>
-  <p>
+<span class="timeline-date">2026年9月23日</span>
+<h2>✅ 翌日利用候補の生成TEST</h2>
+<p>
     9月24日の予約2件を対象に、翌日利用候補の自動生成を確認しました。
   </p>
-
-  <table class="compact-table">
-    <tbody>
-      <tr><td>対象日</td><td>2026-09-24</td></tr>
-      <tr><td>対象予約</td><td>2件（test005、test006）</td></tr>
-      <tr><td>1回目</td><td><code>matched_reservations: 2 / created: 2 / skipped_existing: 0</code></td></tr>
-      <tr><td>2回目</td><td><code>matched_reservations: 2 / created: 0 / skipped_existing: 2</code></td></tr>
-    </tbody>
-  </table>
-
-  <div class="success" style="margin-top:14px;">
-    <strong>確認結果：</strong><br/>
+<table class="compact-table">
+<tbody>
+<tr><td>対象日</td><td>2026-09-24</td></tr>
+<tr><td>対象予約</td><td>2件（test005、test006）</td></tr>
+<tr><td>1回目</td><td><code>matched_reservations: 2 / created: 2 / skipped_existing: 0</code></td></tr>
+<tr><td>2回目</td><td><code>matched_reservations: 2 / created: 0 / skipped_existing: 2</code></td></tr>
+</tbody>
+</table>
+<div class="success" style="margin-top:14px;">
+<strong>確認結果：</strong><br/>
     翌日判定、対象予約抽出、候補生成、同一候補の二重生成防止まで確認しました。
   </div>
 </section>
-
 <section class="card">
-  <span class="timeline-date">2026年9月23日</span>
-  <h2>📨 15:35自動実行TEST</h2>
-
-  <table class="compact-table">
-    <thead><tr><th>確認項目</th><th>確認した事実</th></tr></thead>
-    <tbody>
-      <tr>
-        <td>自動起動</td>
-        <td><code>run1535ScheduledProcess</code> が時間主導型で15:35:45に開始し、3.563秒で完了。</td>
-      </tr>
-      <tr>
-        <td>メール</td>
-        <td>9/24分の翌日確定リストを15:35に受信。</td>
-      </tr>
-      <tr>
-        <td>利用候補</td>
-        <td><code>test005_20260924</code>、<code>test006_20260924</code> の2行。重複なし。</td>
-      </tr>
-      <tr>
-        <td>送信済み記録</td>
-        <td><code>SUMIRE_1535_MAIL_SENT_20260924</code> = 2026-09-23 15:35:48</td>
-      </tr>
-      <tr>
-        <td>次回予定</td>
-        <td><code>SUMIRE_1535_NEXT_TRIGGER_AT</code> = 2026-09-24 15:35:00</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="success">
-    <strong>本番相当TESTで、自動起動・メール受信・候補重複なし・送信済み記録を確認しました。</strong>
-  </div>
+<span class="timeline-date">2026年9月23日</span>
+<h2>📨 15:35自動実行TEST</h2>
+<table class="compact-table">
+<thead><tr><th>確認項目</th><th>確認した事実</th></tr></thead>
+<tbody>
+<tr>
+<td>自動起動</td>
+<td><code>run1535ScheduledProcess</code> が時間主導型で15:35:45に開始し、3.563秒で完了。</td>
+</tr>
+<tr>
+<td>メール</td>
+<td>9/24分の翌日確定リストを15:35に受信。</td>
+</tr>
+<tr>
+<td>利用候補</td>
+<td><code>test005_20260924</code>、<code>test006_20260924</code> の2行。重複なし。</td>
+</tr>
+<tr>
+<td>送信済み記録</td>
+<td><code>SUMIRE_1535_MAIL_SENT_20260924</code> = 2026-09-23 15:35:48</td>
+</tr>
+<tr>
+<td>次回予定</td>
+<td><code>SUMIRE_1535_NEXT_TRIGGER_AT</code> = 2026-09-24 15:35:00</td>
+</tr>
+</tbody>
+</table>
+<div class="success">
+<strong>本番相当TESTで、自動起動・メール受信・候補重複なし・送信済み記録を確認しました。</strong>
+</div>
 </section>
-
 <section class="card">
-  <h2>🧪 長期休暇の境界条件TEST</h2>
-  <p>
+<h2>🧪 長期休暇の境界条件TEST</h2>
+<p>
     通常の日付になるまで待たなくても条件判定を確認できるよう、
     <code>BoundaryTest.gs</code> を本体処理と分離して用意しました。
   </p>
-
-  <table class="compact-table">
-    <thead>
-      <tr><th>条件</th><th>期待する判定</th><th>結果</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>利用日の8日前までに取消</td><td>キャンセル料なし</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>利用日の7日前以降に取消</td><td>予約料金の全額をキャンセル料として扱う</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>利用日前日15:30</td><td>Web受付可</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>利用日前日15:31以降</td><td>Web受付終了、電話対応へ</td><td><span class="badge ok">確認済み</span></td></tr>
-    </tbody>
-  </table>
-
-  <div class="note">
-    <strong>TESTコードを本体から分離する理由：</strong><br/>
+<table class="compact-table">
+<thead>
+<tr><th>条件</th><th>期待する判定</th><th>結果</th></tr>
+</thead>
+<tbody>
+<tr><td>利用日の8日前までに取消</td><td>キャンセル料なし</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>利用日の7日前以降に取消</td><td>予約料金の全額をキャンセル料として扱う</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>利用日前日15:30</td><td>Web受付可</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>利用日前日15:31以降</td><td>Web受付終了、電話対応へ</td><td><span class="badge ok">確認済み</span></td></tr>
+</tbody>
+</table>
+<div class="note">
+<strong>TESTコードを本体から分離する理由：</strong><br/>
     日付・時刻の条件を再現するために本体コードへTEST用分岐を混在させず、
     検証専用ファイルで安全に確認できるようにします。
   </div>
 </section>
-
 <section class="card">
-  <h2>📊 月末集計の検証結果</h2>
-  <p>
-    <code>MonthlySummary.gs</code> Ver.02でTESTデータ57件を集計しました。
+<h2>📊 月末集計の検証結果</h2>
+<p>
+<code>MonthlySummary.gs</code> Ver.02でTESTデータ57件を集計しました。
   </p>
-
-  <table class="compact-table">
-    <tbody>
-      <tr><td>総件数</td><td>57件</td></tr>
-      <tr><td>利用あり</td><td>46件</td></tr>
-      <tr><td>利用なし</td><td>11件</td></tr>
-      <tr><td>未確定</td><td>0件</td></tr>
-      <tr><td>15:00まで</td><td>22件</td></tr>
-      <tr><td>16:30まで</td><td>0件</td></tr>
-      <tr><td>17:00まで</td><td>14件</td></tr>
-      <tr><td>18:00まで</td><td>10件</td></tr>
-      <tr><td>通常利用額合計</td><td><strong>27,400円</strong></td></tr>
-    </tbody>
-  </table>
-
-  <div class="success">
-    <strong>期待値と一致し、月末集計処理の基本動作を確認しました。</strong>
-  </div>
+<table class="compact-table">
+<tbody>
+<tr><td>総件数</td><td>57件</td></tr>
+<tr><td>利用あり</td><td>46件</td></tr>
+<tr><td>利用なし</td><td>11件</td></tr>
+<tr><td>未確定</td><td>0件</td></tr>
+<tr><td>15:00まで</td><td>22件</td></tr>
+<tr><td>16:30まで</td><td>0件</td></tr>
+<tr><td>17:00まで</td><td>14件</td></tr>
+<tr><td>18:00まで</td><td>10件</td></tr>
+<tr><td>通常利用額合計</td><td><strong>27,400円</strong></td></tr>
+</tbody>
+</table>
+<div class="success">
+<strong>期待値と一致し、月末集計処理の基本動作を確認しました。</strong>
+</div>
 </section>
-
 <section class="card">
-  <h2>📄 請求書PDF・メール送信TEST</h2>
-  <p>
-    月末集計後、園児別の請求書PDFを生成し、TEST用の送信先へメール送信するところまで確認しました。
-  </p>
-
-  <div class="arch">
-    <div class="step"><strong>① 月末集計</strong>対象月の請求元データを確認</div>
-    <div class="step"><strong>② 請求額確認</strong>園児ごとの金額を確認</div>
-    <div class="step"><strong>③ PDF生成</strong>園児別請求書を作成</div>
-    <div class="step"><strong>④ メール送信</strong>TEST宛先へ添付送信</div>
-  </div>
-
-  <div class="warning">
-    <strong>本番送信時は、送信先切替が最重要です。</strong><br/>
-    TEST用アドレスが残っていないこと、園児と保護者の対応が正しいことを送信前に確認します。
-  </div>
+<h2>📄 請求書PDF生成TEST</h2>
+<p>月末集計後、園児別の請求書PDFを生成し、指定フォルダへ保存するところまで確認しました。</p>
+<div class="arch">
+<div class="step"><strong>① 月末集計</strong>対象月の請求元データを確認</div>
+<div class="step"><strong>② 請求額確認</strong>園児ごとの金額を確認</div>
+<div class="step"><strong>③ PDF生成</strong>園児別請求書を作成・保存</div>
+<div class="step"><strong>④ 請求メール</strong><span class="badge plan">次工程</span> 翌月1日の自動送信を確認</div>
+</div>
 </section>
-
 <section class="card">
-  <h2>🧭 障害時の切り分け</h2>
-  <table class="compact-table">
-    <thead><tr><th>現象</th><th>最初に確認する場所</th></tr></thead>
-    <tbody>
-      <tr><td>15:35に何も動かない</td><td>トリガー、<code>run1535ScheduledProcess</code> の実行履歴</td></tr>
-      <tr><td>翌日候補が作られない</td><td>対象日判定、予約の <code>status</code>、<code>generateTomorrowUsageActuals()</code></td></tr>
-      <tr><td>候補が重複する</td><td><code>usage_id</code> の重複判定</td></tr>
-      <tr><td>翌日メールが届かない</td><td>送信先、送信済み記録、MailApp実行結果</td></tr>
-      <tr><td>同じメールが複数届く</td><td>送信済みフラグ、トリガー重複</td></tr>
-      <tr><td>月末集計額が合わない</td><td><code>usage_actuals</code> の確定状態、時間コード、料金計算</td></tr>
-      <tr><td>請求書メールが誤送信される</td><td>childrenの保護者メール、TEST／本番送信先の切替</td></tr>
-    </tbody>
-  </table>
+<h2>🧭 障害時の切り分け</h2>
+<table class="compact-table">
+<thead><tr><th>現象</th><th>最初に確認する場所</th></tr></thead>
+<tbody>
+<tr><td>15:35に何も動かない</td><td>トリガー、<code>run1535ScheduledProcess</code> の実行履歴</td></tr>
+<tr><td>翌日候補が作られない</td><td>対象日判定、予約の <code>status</code>、<code>generateTomorrowUsageActuals()</code></td></tr>
+<tr><td>候補が重複する</td><td><code>usage_id</code> の重複判定</td></tr>
+<tr><td>翌日メールが届かない</td><td>送信先、送信済み記録、MailApp実行結果</td></tr>
+<tr><td>同じメールが複数届く</td><td>送信済みフラグ、トリガー重複</td></tr>
+<tr><td>月末集計額が合わない</td><td><code>usage_actuals</code> の確定状態、時間コード、料金計算</td></tr>
+<tr><td>請求書メールが誤送信される</td><td>childrenの保護者メール、TEST／本番送信先の切替</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>⚠️ TEST時に守ること</h2>
-  <ul>
-    <li>本体処理を書き換えてTEST条件を埋め込まない。</li>
-    <li>TEST用日付・時刻は検証専用処理で再現する。</li>
-    <li>再実行時の重複を必ず確認する。</li>
-    <li>メールTESTは送信先を限定する。</li>
-    <li>TEST終了後に送信済み記録やトリガー状態を確認する。</li>
-    <li>本番相当TESTでも、本番園児・本番保護者へ送信しない。</li>
-  </ul>
+<h2>⚠️ TEST時に守ること</h2>
+<ul>
+<li>本体処理を書き換えてTEST条件を埋め込まない。</li>
+<li>TEST用日付・時刻は検証専用処理で再現する。</li>
+<li>再実行時の重複を必ず確認する。</li>
+<li>メールTESTは送信先を限定する。</li>
+<li>TEST終了後に送信済み記録やトリガー状態を確認する。</li>
+<li>本番相当TESTでも、本番園児・本番保護者へ送信しない。</li>
+</ul>
 </section>
-
 <section class="card">
-  <h2>📌 2026年9月27日時点の検証状況</h2>
-  <table class="compact-table">
-    <tbody>
-      <tr><td>15:35自動起動</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>翌日利用候補生成</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>候補の重複防止</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>翌日利用者リスト送信</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>送信済み記録</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>長期休暇境界条件</td><td><span class="badge ok">4条件確認済み</span></td></tr>
-      <tr><td>月末集計</td><td><span class="badge ok">57件・27,400円確認済み</span></td></tr>
-      <tr><td>請求書PDF</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>請求メール</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>臨時徴収</td><td><span class="badge plan">次工程</span></td></tr>
-    </tbody>
-  </table>
+<h2>📌 2026年10月2日時点の検証状況</h2>
+<table class="compact-table">
+<tbody>
+<tr><td>15:35自動起動</td><td><span class="badge plan">実地確認中</span> 基本動作は確認済み。現行Ver.03の自動起動と次回再設定を再確認。</td></tr>
+<tr><td>翌日利用候補生成</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>候補の重複防止</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>翌日利用者リスト送信</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>送信済み記録</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>長期休暇境界条件</td><td><span class="badge ok">4条件確認済み</span></td></tr>
+<tr><td>月末集計</td><td><span class="badge ok">57件・27,400円確認済み</span></td></tr>
+<tr><td>請求書PDF</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>請求メール</td><td><span class="badge plan">次工程</span> 翌月1日の送信先・添付・重複防止・自動実行を確認予定。</td></tr>
+<tr><td>臨時徴収</td><td><span class="badge plan">次工程</span></td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>📘 次の技術記録</h2>
-  <p>本番移行前のチェック、障害対応、権限移譲、保守手順は06-05で整理します。</p>
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-    <a class="menu-card" href="06_development_maintenance_03.html">◀ 06-03 データ構造へ</a>
-    <a class="menu-card" href="06_development_maintenance_05.html">06-05 本番移行・保守へ ▶</a>
-  </div>
+<h2>📘 次の技術記録</h2>
+<p>本番移行前のチェック、障害対応、権限移譲、保守手順は06-05で整理します。</p>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+<a class="menu-card" href="06_development_maintenance_03.html">◀ 06-03 データ構造へ</a>
+<a class="menu-card" href="06_development_maintenance_05.html">06-05 本番移行・保守へ ▶</a>
+</div>
 </section>
-
 </main>
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>SE・開発保守担当者向け 技術記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>開発・保守担当者向け 技術記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
 </html>

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>06-00 開発・保守記録の全体像 | Sumire Lab</title>
 <style>
 :root{
@@ -49,7 +50,11 @@ code{background:#f1f3f5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere
 table{width:100%;border-collapse:collapse}
 th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;vertical-align:top;font-size:14px}
 th{background:#fafafa}
-.compact-table td:first-child{white-space:nowrap;font-weight:700}
+.compact-table td:first-child{font-weight:700}
+.account-role{min-width:250px}
+.account-role strong{display:block;margin-bottom:4px}
+.account-mail{display:inline-block;white-space:nowrap;font-size:13px;font-weight:500}
+@media(max-width:700px){.account-role{min-width:220px}.account-mail{font-size:12px}}
 .page-nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px;padding:10px;background:#fff;border:1px solid #ddd;border-radius:12px;position:sticky;top:8px;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 .page-nav a{flex:1 1 180px;text-align:center;text-decoration:none;color:#35516f;background:#f7f9fc;border:1px solid #d7e2ef;border-radius:9px;padding:9px 10px;font-weight:700;font-size:14px}
 .page-nav a.current{background:#35516f;color:#fff;border-color:#35516f}
@@ -66,265 +71,323 @@ th{background:#fafafa}
 footer{text-align:center;padding:24px;color:#666;font-size:13px}
 @media(max-width:700px){main{padding:14px}.page-nav{position:static}.page-nav a{flex-basis:100%}}
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
-  <h1>🛠️ 06-00 開発・保守記録の全体像</h1>
-  <p>05から分離した、開発・保守担当者向けの技術情報を整理します。</p>
+<h1>🛠️ 06-00 開発・保守記録の全体像</h1>
+<p>05から分離した、開発・保守担当者向けの技術情報を整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05 園スタッフ向け</a>
-  <a class="current" href="06_development_maintenance_00.html">06-00 開発・保守の全体像</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="05_implementation_test_04.html">◀ 05-04 名簿・利用実績</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="06_development_maintenance_01.html">06-01 アクセス・認証 ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05 園スタッフ向け</a><a class="current" href="06_development_maintenance_00.html">06-00 全体像</a><a href="06_development_maintenance_01.html">06-01 アクセス・認証</a><a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a><a href="06_development_maintenance_03.html">06-03 データ構造</a><a href="06_development_maintenance_04.html">06-04 自動処理・検証</a><a href="06_development_maintenance_05.html">06-05 本番移行・保守</a></nav>
 <div class="audience">
-  <span class="role-tag">開発・保守担当者向け</span><br/>
-  <strong>05は園側の業務・操作、06はシステム構成・設定・検証・保守を記録します。</strong><br/>
+<span class="role-tag">開発・保守担当者向け</span><br/>
+<strong>05は園側の業務・操作、06はシステム構成・設定・検証・保守を記録します。</strong><br/>
   園スタッフが日常運用で覚える必要のない技術情報は、今後この06系列へ集約します。
 </div>
-
 <section class="card">
-  <h2>🌸 05と06の役割を分けます</h2>
-  <div class="grid">
-    <div class="box">
-      <h3>05　園スタッフ向け</h3>
-      <p>予約、電話変更、翌日名簿、利用実績、月末集計、請求など、園の日常業務を中心に説明します。</p>
-    </div>
-    <div class="box">
-      <h3>06　開発・保守担当者向け</h3>
-      <p>公開画面、Apps Script、Spreadsheet、認証、デプロイ、TEST環境、データ構造、自動処理、障害対応などを記録します。</p>
-    </div>
-  </div>
-  <div class="emphasis">
-    <strong>基本方針：</strong>園側ページでは「何をするか」を説明し、06では「どう動いているか・どう保守するか」を記録します。
+<h2>🌸 05と06の役割を分けます</h2>
+<div class="grid">
+<div class="box">
+<h3>05　園スタッフ向け</h3>
+<p>予約、電話変更、翌日名簿、利用実績、月末集計、請求など、園の日常業務を中心に説明します。</p>
+</div>
+<div class="box">
+<h3>06　開発・保守担当者向け</h3>
+<p>公開画面、Apps Script、Spreadsheet、認証、デプロイ、TEST環境、データ構造、自動処理、障害対応などを記録します。</p>
+</div>
+</div>
+<div class="emphasis">
+<strong>基本方針：</strong>園側ページでは「何をするか」を説明し、06では「どう動いているか・どう保守するか」を記録します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧪 「TEST運用」の位置づけ</h2>
-  <p>
+<h2>🧪 「TEST運用」の位置づけ</h2>
+<p>
     現在のVersion 2.0は、正式運用へ移す前に、
     <strong>ダミー園児・TEST用データ・TEST用送信先を使って、実際の業務に近い流れを確認する段階</strong>です。
   </p>
-
-  <div class="grid">
-    <div class="box">
-      <h3>TEST運用で確認すること</h3>
-      <p>予約、変更・取消、電話受付、翌日名簿、利用実績、月末集計、請求書、メール送信までを一連で確認します。</p>
-    </div>
-    <div class="box">
-      <h3>TEST運用でしないこと</h3>
-      <p>実園児・実保護者へ本番データを使って送信したり、未確認の機能を正式運用へ直接入れたりしません。</p>
-    </div>
-  </div>
-
-  <div class="emphasis">
-    <strong>TEST運用は「試しに使う」だけではなく、本番前に業務とシステムの両方を確認する期間です。</strong><br/>
+<div class="grid">
+<div class="box">
+<h3>TEST運用で確認すること</h3>
+<p>予約、変更・取消、電話受付、翌日名簿、利用実績、月末集計、請求書、メール送信までを一連で確認します。</p>
+</div>
+<div class="box">
+<h3>TEST運用でしないこと</h3>
+<p>実園児・実保護者へ本番データを使って送信したり、未確認の機能を正式運用へ直接入れたりしません。</p>
+</div>
+</div>
+<div class="emphasis">
+<strong>TEST運用は「試しに使う」だけではなく、本番前に業務とシステムの両方を確認する期間です。</strong><br/>
     園側の操作性、データの正しさ、メール送信、自動処理、権限、例外時の対応まで確認し、
     問題がないことを確認した機能から本番へ移します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧩 Version 2.0 の技術構成</h2>
-  <div class="arch">
-    <div class="step"><strong>① 公開画面</strong>GitHub Pages<br/><span class="small">保護者向け予約画面・公開可能な情報</span></div>
-    <div class="step"><strong>② 処理</strong>Google Apps Script<br/><span class="small">予約受付・変更・取消・メール・自動処理</span></div>
-    <div class="step"><strong>③ 業務データ</strong>Google Spreadsheet<br/><span class="small">園児・予約・利用実績・月次集計等</span></div>
-    <div class="step"><strong>④ 園内原本</strong>園内PC<br/><span class="small">正式な園児情報の原本</span></div>
-  </div>
-  <div class="note">
-    <strong>公開領域と業務データを分離します。</strong><br/>
+<h2>🧩 Version 2.0 の技術構成</h2>
+<div class="arch">
+<div class="step"><strong>① 公開画面</strong>GitHub Pages<br/><span class="small">保護者向け予約画面・公開可能な情報</span></div>
+<div class="step"><strong>② 処理</strong>Google Apps Script<br/><span class="small">予約受付・変更・取消・メール・自動処理</span></div>
+<div class="step"><strong>③ 業務データ</strong>Google Spreadsheet<br/><span class="small">園児・予約・利用実績・月次集計等</span></div>
+<div class="step"><strong>④ 園内原本</strong>園内PC<br/><span class="small">正式な園児情報の原本</span></div>
+</div>
+<div class="note">
+<strong>公開領域と業務データを分離します。</strong><br/>
     GitHubには公開して差し支えない画面・データのみを置き、園児情報・保護者連絡先・予約記録等はGoogle側で管理します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🔐 アカウントと権限の考え方</h2>
-  <table class="compact-table">
-    <thead>
-      <tr><th>役割</th><th>用途・使用アカウント</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>園スタッフ操作</td>
-        <td>電話受付・予約修正などの日常操作に使用。<br/><code>sumire-staffs@mclean.ed.jp</code></td>
-      </tr>
-      <tr>
-        <td>園側業務メール</td>
-        <td>翌日利用者リストや業務通知を受信。<br/><code>sumire@mclean.ed.jp</code></td>
-      </tr>
-      <tr>
-        <td>システム管理</td>
-        <td>将来、Apps ScriptやSpreadsheet等を園側へ移譲するための管理用。<br/><code>sumire-system@mclean.ed.jp</code></td>
-      </tr>
-      <tr>
-        <td>開発・保守</td>
-        <td>現在の開発、デプロイ、設定変更、TESTを担当。<br/><code>mcnet-admin@mclean.ed.jp</code></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="note" style="margin-top:14px;">
-    <strong>現在と将来の管理体制を分けて考えます。</strong><br/>
-    現在は <code>mcnet-admin@mclean.ed.jp</code> が開発・保守を担当し、
-    将来的にはシステム管理に必要な権限を <code>sumire-system@mclean.ed.jp</code> へ移譲することを想定しています。
+<h2>🔐 アカウントと権限の考え方</h2>
+<div class="emphasis">
+<strong>4つのGoogleアカウントは、役割を明確に分けて使用します。</strong><br/>
+    園スタッフの操作・受信、システムからの送信、将来の管理、現在の開発・保守を分離します。
   </div>
-
-  <p class="small">
+<div class="success" style="margin-top:14px;">
+<strong>迷ったときの覚え方：</strong><br/>
+<strong>操作・受信＝staffs ／ 送信＝sumire ／ 管理＝system ／ 開発＝mcnet-admin</strong>
+</div>
+<table class="compact-table" style="margin-top:16px;">
+<thead>
+<tr><th>役割・使用アカウント</th><th>何に使うか／使わないか</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="account-role"><strong>園スタッフの日常操作・確認</strong><code class="account-mail">sumire-staffs@mclean.ed.jp</code></td>
+<td>電話受付、予約変更・取消などの日常操作に加え、園側で確認するメールを受信します。予約・変更・取消の控え、15:35の翌日利用確認、請求書の控えをここで確認します。複数の園スタッフが使用する共通アカウントで、実際に操作した職員名は画面上で別途記録します。<strong>システムメールの送信元やシステム管理には使用しません。</strong></td>
+</tr>
+<tr>
+<td class="account-role"><strong>すみれクラブ システム送信</strong><code class="account-mail">sumire@mclean.ed.jp</code></td>
+<td>保護者への予約確認・変更・取消通知、請求書など、システムから送る業務メールの送信元として使用します。<strong>園スタッフの日常受信箱・日常操作・開発作業には使用しません。</strong></td>
+</tr>
+<tr>
+<td class="account-role"><strong>将来のシステム管理</strong><code class="account-mail">sumire-system@mclean.ed.jp</code></td>
+<td>将来、Apps Script、Spreadsheet、トリガー、Webアプリ等を園側へ移譲する際の管理用アカウントです。<strong>現時点では待機用で、園スタッフの日常操作には使用しません。</strong></td>
+</tr>
+<tr>
+<td class="account-role"><strong>現在の開発・保守・TEST</strong><code class="account-mail">mcnet-admin@mclean.ed.jp</code></td>
+<td>現在のプログラム修正、設定変更、デプロイ、TEST環境の確認などを担当します。<strong>園の日常業務には使用しません。</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="note" style="margin-top:14px;">
+<strong>園側の日常運用は2つのアカウントで理解します。</strong><br/>
+<code>sumire@mclean.ed.jp</code> は<strong>「システムから送る」</strong>、
+    <code>sumire-staffs@mclean.ed.jp</code> は<strong>「園で見る・確認する・操作する」</strong>ためのアカウントです。
+    現在の開発・保守は <code>mcnet-admin@mclean.ed.jp</code> が担当し、将来的には管理権限を <code>sumire-system@mclean.ed.jp</code> へ移譲することを想定しています。
+  </div>
+<p class="small">
     ※公開用ページには、個人のTEST用メールアドレス、Spreadsheet ID、デプロイURLなどの機微な値は記載しません。
   </p>
 </section>
-
 <section class="card">
-  <h2>🗂️ 主なデータ構造</h2>
-  <table class="compact-table">
-    <tbody>
-      <tr><td><code>children</code></td><td>予約運用に必要な園児情報。</td></tr>
-      <tr><td><code>reservations</code></td><td>園児ごと・利用日ごとの予約最新状態。</td></tr>
-      <tr><td><code>phone_reception_logs</code></td><td>電話受付による変更・取消の履歴。</td></tr>
-      <tr><td><code>usage_actuals</code></td><td>実際の利用有無・実終了時刻・確認日時。</td></tr>
-      <tr><td><code>monthly_summary_TEST</code></td><td>月次集計TEST。園児ごとの時間帯別件数と利用額。</td></tr>
-      <tr><td><code>extra_charges_TEST</code></td><td>臨時徴収を通常利用料と分離して管理する予定のTEST領域。</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<section class="card">
-  <h2>⏰ 自動処理の基本</h2>
-  <p>翌日利用者リストと利用実績候補の準備は、前日15:30の受付締切を基準に処理します。</p>
-  <div class="arch">
-    <div class="step"><strong>15:30</strong>保護者側の翌日受付を締切</div>
-    <div class="step"><strong>15:35</strong>翌日利用候補を生成</div>
-    <div class="step"><strong>15:35</strong>翌日利用者リストを送信</div>
-    <div class="step"><strong>利用当日</strong>利用有無・実終了時刻を確定</div>
-    <div class="step"><strong>月末</strong>確認済み実績から月次集計</div>
+<h2>📨 メールの送り先と件名ルール</h2>
+<p>園スタッフが受信箱を見ただけでメールの種類を判別できるよう、送信先と件名の先頭表記を統一します。</p>
+<table class="compact-table">
+<thead>
+<tr><th>メール種別</th><th>送信元</th><th>送信先</th><th>件名の先頭</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>予約・変更・取消</td>
+<td><code>sumire@mclean.ed.jp</code></td>
+<td>①各保護者<br/>②<code>sumire-staffs@mclean.ed.jp</code></td>
+<td><strong>📩【予約】</strong>／<strong>📩【変更】</strong>／<strong>📩【取消】</strong></td>
+</tr>
+<tr>
+<td>15:35 翌日利用確認</td>
+<td><code>sumire@mclean.ed.jp</code></td>
+<td><code>sumire-staffs@mclean.ed.jp</code></td>
+<td><strong>📅【明日確認】</strong></td>
+</tr>
+<tr>
+<td>月次請求書</td>
+<td><code>sumire@mclean.ed.jp</code></td>
+<td>①各保護者<br/>②<code>sumire-staffs@mclean.ed.jp</code></td>
+<td><strong>🧾【請求書】</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="info" style="margin-top:14px;">
+<strong>件名は「絵文字＋【プレーンテキスト】」の二重表現とします。</strong><br/>
+    絵文字は視覚的な判別を助け、端末・OS・メールアプリの違いで絵文字の見え方が変わっても、
+    <strong>【予約】【変更】【取消】【明日確認】【請求書】</strong>の文字で内容を判別できるようにします。
   </div>
-  <div class="info">
-    <strong>重複防止を前提に設計します。</strong><br/>
+<div class="note" style="margin-top:14px;">
+<strong>15:35メールの件名は本番移行前に最終統一します。</strong><br/>
+現行TESTコードでは <code>【Sumire Lab TEST】＋対象日＋翌日確定リスト</code> を使用しています。正式運用では、上表の <strong>📅【明日確認】</strong> を含む分かりやすい件名へ統一する予定です。
+</div></section>
+<section class="card">
+<h2>🗂️ 主なデータ構造</h2>
+<table class="compact-table">
+<tbody>
+<tr><td><code>children</code></td><td>予約運用に必要な園児情報。</td></tr>
+<tr><td><code>reservations</code></td><td>園児ごと・利用日ごとの予約最新状態。</td></tr>
+<tr><td><code>phone_reception_logs</code></td><td>電話受付による変更・取消の履歴。</td></tr>
+<tr><td><code>usage_actuals</code></td><td>実際の利用有無・実終了時刻・確認日時。</td></tr>
+<tr><td><code>monthly_summary_TEST</code></td><td>月次集計TEST。園児ごとの時間帯別件数と利用額。</td></tr>
+<tr><td><code>extra_charges_TEST</code></td><td>臨時徴収を通常利用料と分離して管理する予定のTEST領域。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="card">
+<h2>⏰ 自動処理の基本</h2>
+<p>翌日利用者リストと利用実績候補の準備は、前日15:30の受付締切を基準に処理します。</p>
+<div class="arch">
+<div class="step"><strong>15:30</strong>保護者側の翌日受付を締切</div>
+<div class="step"><strong>15:35</strong>翌日利用候補を生成</div>
+<div class="step"><strong>15:35</strong>翌日利用者リストを <code>sumire-staffs@mclean.ed.jp</code> へ送信</div>
+<div class="step"><strong>利用当日</strong>利用有無・実終了時刻を確定</div>
+<div class="step"><strong>月末</strong>確認済み実績から月次集計</div>
+</div>
+<div class="info">
+<strong>重複防止を前提に設計します。</strong><br/>
     同じ園児・同じ利用日の実績候補を二重生成しないこと、同じ対象日の確定メールを重複送信しないことをTESTで確認しています。
   </div>
-</section>
-
-<section class="card">
-  <h2>🧪 TEST環境と本番環境</h2>
-  <div class="grid">
-    <div class="box"><h3>TEST</h3><p>ダミー園児・TEST専用データ・TEST用画面を使い、新機能を確認します。</p></div>
-    <div class="box"><h3>本番</h3><p>TESTで確認できた機能だけを正式環境へ反映し、開発用データを混在させません。</p></div>
+<div class="note" style="margin-top:14px;">
+<strong>将来拡張の検討：保護者向け前日リマインド</strong><br/>
+    現行版では、保護者には<strong>予約・変更・取消時に確認メール</strong>を送り、
+    園スタッフには<strong>前日15:35に翌日の確定リスト</strong>を送る運用とします。<br/><br/>
+    保護者への前日リマインドは、毎日利用する家庭では通知が煩雑になる可能性があるため、
+    現時点では一律送信しません。今後、実際の運用状況や保護者からの要望を踏まえ、
+    <strong>①希望する家庭のみ受信、②前日に変更があった場合のみ通知、③長期休暇など通常と異なる利用日に限定して通知</strong>
+    といった方式を追加オプションとして検討できるよう、拡張余地を残します。
   </div>
-  <div class="note">
-    <strong>本番移行前に確認する項目</strong><br/>
+<div class="note" style="margin-top:14px;">
+<strong>休日の扱いは「実行日の曜日」ではなく「翌日の利用可否」で判断する方針です。</strong><br/>
+土日など翌日が利用対象外なら処理をスキップし、日曜日でも翌日が月曜日の利用日であれば15:35処理を実行できる形を目指します。現行Ver.03の休日スキップ条件は、実地TESTで確認・調整する対象です。
+</div></section>
+<section class="card">
+<h2>🧪 TEST環境と本番環境</h2>
+<div class="grid">
+<div class="box"><h3>TEST</h3><p>ダミー園児・TEST専用データ・TEST用画面を使い、新機能を確認します。</p></div>
+<div class="box"><h3>本番</h3><p>TESTで確認できた機能だけを正式環境へ反映し、開発用データを混在させません。</p></div>
+</div>
+<div class="note">
+<strong>本番移行前に確認する項目</strong><br/>
     認証、公開URL、複数Googleアカウント利用時の挙動、権限、送信先、トリガー、データ参照先を再確認します。
   </div>
 </section>
-
 <section class="card">
-  <h2>⚠️ 複数Googleアカウント環境で確認した事象</h2>
-  <p>
+<h2>⚠️ 複数Googleアカウント環境で確認した事象</h2>
+<p>
     TEST中、複数のGoogleアカウントへ同時ログインしているブラウザで、
     WebアプリURLにアカウント番号を示す経路が付加され、園児名簿を取得できない場面がありました。
     一方、シークレットウインドウでは同じWebアプリから正常に取得できました。
   </p>
-  <div class="warning">
-    <strong>本番公開前の確認事項：</strong><br/>
+<div class="warning">
+<strong>本番公開前の確認事項：</strong><br/>
     保護者がスマートフォンやパソコンで複数のGoogleアカウントを使っている場合でも、
     予約画面を迷わず開き、園児名の選択や予約操作を問題なく行えるかを確認します。<br/>
     あわせて、園から案内するアクセス方法が分かりやすく、特別な操作をしなくても利用できる形になっているかを最終確認します。
   </div>
 </section>
-
 <section class="card">
-  <h2>📌 2026年9月27日時点の技術ステータス</h2>
-  <table class="compact-table">
-    <tbody>
-      <tr><td>予約</td><td><span class="badge ok">TEST済み</span> 日別・一括登録、変更・取消、確認メール。</td></tr>
-      <tr><td>電話受付</td><td><span class="badge ok">TEST済み</span> 園スタッフ用画面から変更・取消、履歴保存、確認メール。</td></tr>
-      <tr><td>翌日利用者リスト</td><td><span class="badge ok">TEST済み</span> 15:35自動送信、送信済み記録。</td></tr>
-      <tr><td>利用実績</td><td><span class="badge ok">TEST済み</span> 翌日候補生成、重複防止、利用有無・実終了時刻。</td></tr>
-      <tr><td>月末集計</td><td><span class="badge ok">TEST済み</span> 57件、利用あり46、利用なし11、未確定0、通常利用額27,400円。</td></tr>
-      <tr><td>請求書PDF</td><td><span class="badge ok">TEST済み</span> 園児別請求書PDFを生成。</td></tr>
-      <tr><td>請求メール</td><td><span class="badge ok">TEST済み</span> TEST送信先への確認メール送信まで完了。</td></tr>
-      <tr><td>臨時徴収</td><td><span class="badge plan">次工程</span> 通常利用料と分離して登録し、請求時に加算。</td></tr>
-      <tr><td>複数アカウント環境</td><td><span class="badge.plan">本番前確認</span> 公開方法を含め再検証。</td></tr>
-    </tbody>
-  </table>
+<h2>📌 2026年10月2日時点の技術ステータス</h2>
+<table class="compact-table">
+<tbody>
+<tr><td>予約</td><td><span class="badge ok">TEST済み</span> 日別・一括登録、変更・取消、確認メール。</td></tr>
+<tr><td>電話受付</td><td><span class="badge ok">TEST済み</span> 園スタッフ用画面から変更・取消、履歴保存、確認メール。</td></tr>
+<tr><td>翌日利用者リスト</td><td><span class="badge plan">実地確認中</span> 基本動作は確認済み。現行Ver.03の15:35自動トリガー、送信先、次回トリガー再設定を再確認します。</td></tr>
+<tr><td>利用実績</td><td><span class="badge ok">TEST済み</span> 翌日候補生成、重複防止、利用有無・実終了時刻。</td></tr>
+<tr><td>月末集計</td><td><span class="badge ok">TEST済み</span> 57件、利用あり46、利用なし11、未確定0、通常利用額27,400円。</td></tr>
+<tr><td>請求書PDF</td><td><span class="badge ok">TEST済み</span> 園児別請求書PDFを生成。</td></tr>
+<tr><td>請求メール</td><td><span class="badge plan">次工程</span> <code>sumire@mclean.ed.jp</code> から各保護者＋<code>sumire-staffs@mclean.ed.jp</code> へ送るTESTを実施予定。</td></tr>
+<tr><td>臨時徴収</td><td><span class="badge plan">次工程</span> 通常利用料と分離して登録し、請求時に加算。</td></tr>
+<tr><td>複数アカウント環境</td><td><span class="badge.plan">本番前確認</span> 公開方法を含め再検証。</td></tr>
+</tbody>
+</table>
 </section>
-
-
 <section class="card">
-  <h2>🧾 請求書運用の園側確認</h2>
-
-  <div class="timeline-date">2026年9月27日 確認</div>
-
-  <p>
+<h2>🧾 請求書運用の園側確認</h2>
+<div class="timeline-date">2026年9月27日 確認</div>
+<p>
     請求書の宛名表記と、きょうだい在籍時の請求単位について園側へ確認し、
     現在の運用とシステム設計の方向性が一致していることを確認しました。
   </p>
-
-  <div class="grid">
-    <div class="box">
-      <h3>① 請求書の宛名</h3>
-      <p>
+<div class="grid">
+<div class="box">
+<h3>① 請求書の宛名</h3>
+<p>
         現在も請求書は<strong>園児名を基準</strong>に発行しているため、
         保護者氏名を別途記載しない形で問題ないことを確認しました。
       </p>
-      <p style="margin-bottom:0;">
+<p style="margin-bottom:0;">
         請求書では、<strong>「園児名 さん　保護者様」</strong>の表記を基本とします。
       </p>
-    </div>
-
-    <div class="box">
-      <h3>② きょうだい在籍時の請求</h3>
-      <p>
+</div>
+<div class="box">
+<h3>② きょうだい在籍時の請求</h3>
+<p>
         きょうだいが在籍している場合も、現在の運用では
         <strong>園児1人ずつに請求書を発行</strong>し、
         保育料の引き落としも1人ずつ別に行っています。
       </p>
-      <p style="margin-bottom:0;">
+<p style="margin-bottom:0;">
         そのため、Version 2.0でも<strong>園児単位（child_id単位）で請求</strong>する設計を継続します。
       </p>
-    </div>
-  </div>
-
-  <div class="success" style="margin-top:14px;">
-    <strong>設計上の整理：</strong><br/>
+</div>
+</div>
+<div class="success" style="margin-top:14px;">
+<strong>設計上の整理：</strong><br/>
     保護者氏名を請求書作成のためだけに新たに保持する必要はなく、
     きょうだいをまとめるための家庭単位IDも現時点では追加しません。
     既存の園児単位の予約・利用実績・月末集計・請求の流れをそのまま維持します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧭 06系列の今後の構成案</h2>
-  <div class="grid">
-    <div class="box"><h3>06-01 アクセス・認証・公開設定</h3><p>Webアプリ、認証、公開範囲、複数アカウント問題。</p></div>
-    <div class="box"><h3>06-02 Apps Script・デプロイ</h3><p>ファイル構成、デプロイ、TEST／本番、トリガー。</p></div>
-    <div class="box"><h3>06-03 データ構造</h3><p>各シートの役割、ID、項目、受け渡し。</p></div>
-    <div class="box"><h3>06-04 自動処理・検証記録</h3><p>15:35処理、重複防止、境界条件TEST。</p></div>
-    <div class="box"><h3>06-05 本番移行・保守</h3><p>本番前チェック、障害対応、変更履歴、引き継ぎ。</p></div>
-  </div>
-  <p class="small">
-  06-01以降は、05から移した技術情報を整理しながら順次作成します。<br/>
-  06系列は開発・保守担当者向けの技術記録ですので、必要に応じてご参照ください。
-</p>
+<h2>🧭 06系列の構成</h2>
+<div class="grid">
+<div class="box"><h3>06-01 アクセス・認証・公開設定</h3><p>Webアプリ、認証、公開範囲、複数アカウント問題。</p></div>
+<div class="box"><h3>06-02 Apps Script・デプロイ</h3><p>ファイル構成、デプロイ、TEST／本番、トリガー。</p></div>
+<div class="box"><h3>06-03 データ構造</h3><p>各シートの役割、ID、項目、受け渡し。</p></div>
+<div class="box"><h3>06-04 自動処理・検証記録</h3><p>15:35処理、重複防止、境界条件TEST。</p></div>
+<div class="box"><h3>06-05 本番移行・保守</h3><p>本番前チェック、障害対応、変更履歴、引き継ぎ。</p></div>
+</div>
+<p class="small">06-01〜06-05まで、アクセス・認証、Apps Script、データ構造、自動処理、本番移行・保守を分けて整理しています。<br/>06系列は開発・保守担当者向けの技術記録ですので、必要に応じてご参照ください。</p>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>📘 園スタッフ向けページへ戻る</h2>
-  <p>園の日常運用・操作については05系列をご覧ください。</p>
-  <p><a class="menu-card" href="05_implementation_test_00.html">◀ 05 システムの概要へ</a></p>
+<h2>📘 園スタッフ向けページへ戻る</h2>
+<p>園の日常運用・操作については05系列をご覧ください。</p>
+<p><a class="menu-card" href="05_implementation_test_00.html">◀ 05 システムの概要へ</a></p>
 </section>
-
 </main>
-
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>開発・保守担当者向け 技術記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>開発・保守担当者向け 技術記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
 </html>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>06-00 開発・保守記録の全体像 | Sumire Lab</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>06-05 本番移行・保守 | Sumire Lab</title>
 <style>
 :root{
   --purple:#6f42c1;
@@ -66,203 +67,208 @@ th{background:#fafafa}
 footer{text-align:center;padding:24px;color:#666;font-size:13px}
 @media(max-width:700px){main{padding:14px}.page-nav{position:static}.page-nav a{flex-basis:100%}}
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
-  <h1>🚀 06-05 本番移行・保守</h1>
-  <p>TEST運用から正式運用へ移るための確認事項と、運用開始後の保守方針を整理します。</p>
+<h1>🚀 06-05 本番移行・保守</h1>
+<p>TEST運用から正式運用へ移るための確認事項と、運用開始後の保守方針を整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05 園スタッフ向け</a>
-  <a href="06_development_maintenance_00.html">06-00 開発・保守の全体像</a>
-  <a href="06_development_maintenance_01.html">06-01 アクセス・認証</a>
-  <a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a>
-  <a href="06_development_maintenance_03.html">06-03 データ構造</a>
-  <a href="06_development_maintenance_04.html">06-04 自動処理・検証記録</a>
-  <a class="current" href="06_development_maintenance_05.html">06-05 本番移行・保守</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="06_development_maintenance_04.html">◀ 06-04 自動処理・検証</a><a class="seq-home" href="../index.html">🏠 トップ</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05 園スタッフ向け</a><a href="06_development_maintenance_00.html">06-00 全体像</a><a href="06_development_maintenance_01.html">06-01 アクセス・認証</a><a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a><a href="06_development_maintenance_03.html">06-03 データ構造</a><a href="06_development_maintenance_04.html">06-04 自動処理・検証</a><a class="current" href="06_development_maintenance_05.html">06-05 本番移行・保守</a></nav>
 <div class="audience">
-  <span class="role-tag">SE・開発保守担当者向け</span><br/>
-  <strong>06-05は「TESTで確認した仕組みを、どう安全に本番へ移すか」を記録します。</strong><br/>
+<span class="role-tag">開発・保守担当者向け</span><br/>
+<strong>06-05は「TESTで確認した仕組みを、どう安全に本番へ移すか」を記録します。</strong><br/>
   正式運用開始後の変更・障害・権限移譲までを含めた保守の基準とします。
 </div>
-
 <section class="card">
-  <h2>🧪 TEST運用から本番運用へ</h2>
-  <p>
+<h2>🧪 TEST運用から本番運用へ</h2>
+<p>
     TEST運用では、ダミー園児・TEST用データ・TEST送信先を使い、
     実際の園業務に近い条件で一連の流れを確認します。
   </p>
-
-  <div class="arch">
-    <div class="step"><strong>① TEST</strong>機能単位で確認</div>
-    <div class="step"><strong>② 一連動作</strong>予約から請求まで確認</div>
-    <div class="step"><strong>③ 園側確認</strong>操作・運用を確認</div>
-    <div class="step"><strong>④ 本番前点検</strong>権限・URL・送信先を確認</div>
-    <div class="step"><strong>⑤ 正式運用</strong>本番データへ切替</div>
-  </div>
-
-  <div class="emphasis">
-    <strong>本番移行は「TESTのデータをそのまま使い続ける」ことではありません。</strong><br/>
+<div class="arch">
+<div class="step"><strong>① TEST</strong>機能単位で確認</div>
+<div class="step"><strong>② 一連動作</strong>予約から請求まで確認</div>
+<div class="step"><strong>③ 園側確認</strong>操作・運用を確認</div>
+<div class="step"><strong>④ 本番前点検</strong>権限・URL・送信先を確認</div>
+<div class="step"><strong>⑤ 正式運用</strong>本番データへ切替</div>
+</div>
+<div class="emphasis">
+<strong>本番移行は「TESTのデータをそのまま使い続ける」ことではありません。</strong><br/>
     TESTで確認した仕組みを、正式な園児情報・送信先・URL・権限へ切り替える工程です。
   </div>
 </section>
-
 <section class="card">
-  <h2>✅ 本番移行前チェック</h2>
-  <table class="compact-table">
-    <thead><tr><th>確認項目</th><th>確認内容</th></tr></thead>
-    <tbody>
-      <tr><td>園児情報</td><td>TEST園児ではなく、正式な園児情報を参照しているか。</td></tr>
-      <tr><td>保護者メール</td><td>正式な送信先と園児の対応が正しいか。</td></tr>
-      <tr><td>園側業務メール</td><td><code>sumire@mclean.ed.jp</code> で業務通知を受信できるか。</td></tr>
-      <tr><td>園スタッフ操作</td><td><code>sumire-staffs@mclean.ed.jp</code> で必要な画面を操作できるか。</td></tr>
-      <tr><td>公開URL</td><td>園・保護者へ案内するURLが正式運用側になっているか。</td></tr>
-      <tr><td>開発URL</td><td><code>/dev</code> を園スタッフへ案内していないか。</td></tr>
-      <tr><td>データ参照先</td><td>TEST用シートやTEST DBを参照していないか。</td></tr>
-      <tr><td>自動処理</td><td>15:35処理・送信先・次回トリガーが本番設定か。</td></tr>
-      <tr><td>請求</td><td>料金・対象月・請求書内容・送信先を最終確認したか。</td></tr>
-      <tr><td>TEST情報</td><td>TEST用アドレス・ダミーデータ・仮設定が残っていないか。</td></tr>
-    </tbody>
-  </table>
+<h2>✅ 本番移行前チェック</h2>
+<table class="compact-table">
+<thead><tr><th>確認項目</th><th>確認内容</th></tr></thead>
+<tbody>
+<tr><td>園児情報</td><td>TEST園児ではなく、正式な園児情報を参照しているか。</td></tr>
+<tr><td>保護者メール</td><td>正式な送信先と園児の対応が正しいか。</td></tr>
+<tr><td>園側業務メール</td><td><code>sumire@mclean.ed.jp</code> で業務通知を受信できるか。</td></tr>
+<tr><td>園スタッフ操作</td><td><code>sumire-staffs@mclean.ed.jp</code> で必要な画面を操作できるか。</td></tr>
+<tr><td>公開URL</td><td>園・保護者へ案内するURLが正式運用側になっているか。</td></tr>
+<tr><td>開発URL</td><td><code>/dev</code> を園スタッフへ案内していないか。</td></tr>
+<tr><td>データ参照先</td><td>TEST用シートやTEST DBを参照していないか。</td></tr>
+<tr><td>自動処理</td><td>15:35処理・送信先・次回トリガーが本番設定か。</td></tr>
+<tr><td>請求</td><td>料金・対象月・請求書内容・送信先を最終確認したか。</td></tr>
+<tr><td>TEST情報</td><td>TEST用アドレス・ダミーデータ・仮設定が残っていないか。</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>🔐 権限と管理アカウントの最終確認</h2>
-  <table class="compact-table">
-    <thead><tr><th>役割</th><th>アカウント</th><th>本番時の考え方</th></tr></thead>
-    <tbody>
-      <tr><td>園スタッフ操作</td><td><code>sumire-staffs@mclean.ed.jp</code></td><td>日常操作に必要な範囲のみ。</td></tr>
-      <tr><td>園側業務メール</td><td><code>sumire@mclean.ed.jp</code></td><td>名簿・業務通知の受信。</td></tr>
-      <tr><td>システム管理</td><td><code>sumire-system@mclean.ed.jp</code></td><td>将来の園側管理用。</td></tr>
-      <tr><td>開発・保守</td><td><code>mcnet-admin@mclean.ed.jp</code></td><td>開発・設定変更・保守。</td></tr>
-    </tbody>
-  </table>
-
-  <div class="note">
-    <strong>権限は必要最小限にします。</strong><br/>
+<h2>🔐 権限と管理アカウントの最終確認</h2>
+<table class="compact-table">
+<thead><tr><th>役割</th><th>アカウント</th><th>本番時の考え方</th></tr></thead>
+<tbody>
+<tr><td>園スタッフ操作</td><td><code>sumire-staffs@mclean.ed.jp</code></td><td>日常操作に必要な範囲のみ。</td></tr>
+<tr><td>園側業務メール</td><td><code>sumire@mclean.ed.jp</code></td><td>名簿・業務通知の受信。</td></tr>
+<tr><td>システム管理</td><td><code>sumire-system@mclean.ed.jp</code></td><td>将来の園側管理用。</td></tr>
+<tr><td>開発・保守</td><td><code>mcnet-admin@mclean.ed.jp</code></td><td>開発・設定変更・保守。</td></tr>
+</tbody>
+</table>
+<div class="note">
+<strong>権限は必要最小限にします。</strong><br/>
     日常業務で使うアカウントに、開発・設定変更までできる権限を持たせないことを基本とします。
   </div>
 </section>
-
 <section class="card">
-  <h2>📦 本番切替時に残す記録</h2>
-  <p>本番へ切り替えた際は、「何を・いつ・誰が変更したか」を記録します。</p>
-
-  <table class="compact-table">
-    <tbody>
-      <tr><td>切替日</td><td>正式運用を開始した日。</td></tr>
-      <tr><td>公開URL</td><td>正式に案内した入口。</td></tr>
-      <tr><td>デプロイ版</td><td>本番公開した版・更新日。</td></tr>
-      <tr><td>データ参照先</td><td>正式運用で使用するデータ領域。</td></tr>
-      <tr><td>自動処理</td><td>本番トリガー・送信先・実行時刻。</td></tr>
-      <tr><td>確認者</td><td>開発側・園側の確認者。</td></tr>
-      <tr><td>未解決事項</td><td>本番後も継続確認する項目。</td></tr>
-    </tbody>
-  </table>
+<h2>📦 本番切替時に残す記録</h2>
+<p>本番へ切り替えた際は、「何を・いつ・誰が変更したか」を記録します。</p>
+<table class="compact-table">
+<tbody>
+<tr><td>切替日</td><td>正式運用を開始した日。</td></tr>
+<tr><td>公開URL</td><td>正式に案内した入口。</td></tr>
+<tr><td>デプロイ版</td><td>本番公開した版・更新日。</td></tr>
+<tr><td>データ参照先</td><td>正式運用で使用するデータ領域。</td></tr>
+<tr><td>自動処理</td><td>本番トリガー・送信先・実行時刻。</td></tr>
+<tr><td>確認者</td><td>開発側・園側の確認者。</td></tr>
+<tr><td>未解決事項</td><td>本番後も継続確認する項目。</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>🛠️ 正式運用後の保守方針</h2>
-  <div class="grid">
-    <div class="box">
-      <h3>小さな修正</h3>
-      <p>表示文言・軽微な画面修正など。TESTで確認してから本番へ反映します。</p>
-    </div>
-    <div class="box">
-      <h3>業務ルール変更</h3>
-      <p>締切時刻、料金、キャンセル条件など。園側確認を先に行い、仕様を確定してから変更します。</p>
-    </div>
-    <div class="box">
-      <h3>データ構造変更</h3>
-      <p>列追加・名称変更・ID変更など。影響するスクリプトを洗い出してから実施します。</p>
-    </div>
-    <div class="box">
-      <h3>自動処理変更</h3>
-      <p>トリガーやメール処理。重複・未送信・誤送信が起きないことをTESTします。</p>
-    </div>
-  </div>
+<h2>🛠️ 正式運用後の保守方針</h2>
+<div class="grid">
+<div class="box">
+<h3>小さな修正</h3>
+<p>表示文言・軽微な画面修正など。TESTで確認してから本番へ反映します。</p>
+</div>
+<div class="box">
+<h3>業務ルール変更</h3>
+<p>締切時刻、料金、キャンセル条件など。園側確認を先に行い、仕様を確定してから変更します。</p>
+</div>
+<div class="box">
+<h3>データ構造変更</h3>
+<p>列追加・名称変更・ID変更など。影響するスクリプトを洗い出してから実施します。</p>
+</div>
+<div class="box">
+<h3>自動処理変更</h3>
+<p>トリガーやメール処理。重複・未送信・誤送信が起きないことをTESTします。</p>
+</div>
+</div>
 </section>
-
 <section class="card">
-  <h2>🚨 障害時の基本対応</h2>
-  <ol>
-    <li><strong>園側の業務を止めない：</strong>電話・手作業で代替できる業務を先に確認。</li>
-    <li><strong>現象を記録する：</strong>日時、対象園児、画面、エラー内容、操作手順。</li>
-    <li><strong>影響範囲を確認する：</strong>1件だけか、全利用者か、自動処理全体か。</li>
-    <li><strong>TEST環境で再現する：</strong>本番データを直接使って検証しない。</li>
-    <li><strong>修正後に一連動作を確認する：</strong>該当機能だけでなく、前後の処理も確認。</li>
-    <li><strong>本番へ反映する：</strong>反映日時と変更内容を記録。</li>
-  </ol>
+<h2>🚨 障害時の基本対応</h2>
+<ol>
+<li><strong>園側の業務を止めない：</strong>電話・手作業で代替できる業務を先に確認。</li>
+<li><strong>現象を記録する：</strong>日時、対象園児、画面、エラー内容、操作手順。</li>
+<li><strong>影響範囲を確認する：</strong>1件だけか、全利用者か、自動処理全体か。</li>
+<li><strong>TEST環境で再現する：</strong>本番データを直接使って検証しない。</li>
+<li><strong>修正後に一連動作を確認する：</strong>該当機能だけでなく、前後の処理も確認。</li>
+<li><strong>本番へ反映する：</strong>反映日時と変更内容を記録。</li>
+</ol>
 </section>
-
 <section class="card">
-  <h2>📝 変更履歴を残します</h2>
-  <p>
+<h2>📝 変更履歴を残します</h2>
+<p>
     修正のたびに「最新ファイルだけ」を残すのではなく、
     なぜ変更したのかを追えるように記録します。
   </p>
-
-  <table class="compact-table">
-    <thead><tr><th>記録項目</th><th>内容</th></tr></thead>
-    <tbody>
-      <tr><td>日付</td><td>変更した日。</td></tr>
-      <tr><td>対象</td><td>画面・スクリプト・シート・設定。</td></tr>
-      <tr><td>変更理由</td><td>不具合、園要望、仕様変更、改善など。</td></tr>
-      <tr><td>変更内容</td><td>何を変えたか。</td></tr>
-      <tr><td>TEST結果</td><td>どの条件で確認したか。</td></tr>
-      <tr><td>本番反映</td><td>反映日・デプロイ状況。</td></tr>
-    </tbody>
-  </table>
+<table class="compact-table">
+<thead><tr><th>記録項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>日付</td><td>変更した日。</td></tr>
+<tr><td>対象</td><td>画面・スクリプト・シート・設定。</td></tr>
+<tr><td>変更理由</td><td>不具合、園要望、仕様変更、改善など。</td></tr>
+<tr><td>変更内容</td><td>何を変えたか。</td></tr>
+<tr><td>TEST結果</td><td>どの条件で確認したか。</td></tr>
+<tr><td>本番反映</td><td>反映日・デプロイ状況。</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>🔄 管理権限の将来移譲</h2>
-  <p>
+<h2>🔄 管理権限の将来移譲</h2>
+<p>
     現在の開発・保守は <code>mcnet-admin@mclean.ed.jp</code> が担当します。
     将来的には、園側のシステム管理アカウント
     <code>sumire-system@mclean.ed.jp</code> へ必要な管理権限を移譲することを想定します。
   </p>
-
-  <div class="note">
-    <strong>移譲はアカウントを渡すだけでは不十分です。</strong><br/>
+<div class="note">
+<strong>移譲はアカウントを渡すだけでは不十分です。</strong><br/>
     Apps Script、Spreadsheet、トリガー、公開設定、メール送信権限、保守記録を
     一式として引き継げる状態にしておく必要があります。
   </div>
 </section>
-
 <section class="card">
-  <h2>📌 2026年9月27日時点</h2>
-  <table class="compact-table">
-    <tbody>
-      <tr><td>TEST運用</td><td><span class="badge ok">継続中</span> 予約から請求書メールまで一連動作を確認。</td></tr>
-      <tr><td>正式運用</td><td><span class="badge plan">未移行</span> 本番前チェック後に切替。</td></tr>
-      <tr><td>臨時徴収</td><td><span class="badge plan">次工程</span> 入力・請求加算を実装予定。</td></tr>
-      <tr><td>複数Googleアカウント環境</td><td><span class="badge plan">本番前確認</span> 保護者アクセスを再検証。</td></tr>
-      <tr><td>管理権限移譲</td><td><span class="badge plan">将来対応</span> 園側管理アカウントへの移譲を想定。</td></tr>
-    </tbody>
-  </table>
+<h2>📌 2026年10月2日時点</h2>
+<table class="compact-table">
+<tbody>
+<tr><td>TEST運用</td><td><span class="badge ok">継続中</span> 予約から月末集計・請求書PDF作成まで一連動作を確認。請求メール自動送信は次工程。</td></tr>
+<tr><td>正式運用</td><td><span class="badge plan">未移行</span> 本番前チェック後に切替。</td></tr>
+<tr><td>臨時徴収</td><td><span class="badge plan">次工程</span> 入力・請求加算を実装予定。</td></tr>
+<tr><td>複数Googleアカウント環境</td><td><span class="badge plan">本番前確認</span> 保護者アクセスを再検証。</td></tr>
+<tr><td>管理権限移譲</td><td><span class="badge plan">将来対応</span> 園側管理アカウントへの移譲を想定。</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>📘 06 開発・保守記録</h2>
-  <p>06-00〜06-05で、全体像から本番移行・保守までを一連で整理します。</p>
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-    <a class="menu-card" href="06_development_maintenance_04.html">◀ 06-04 自動処理・検証記録へ</a>
-    <a class="menu-card" href="06_development_maintenance_00.html">06-00 全体像へ戻る</a>
-  </div>
+<h2>📘 06 開発・保守記録</h2>
+<p>06-00〜06-05で、全体像から本番移行・保守までを一連で整理します。</p>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+<a class="menu-card" href="06_development_maintenance_04.html">◀ 06-04 自動処理・検証記録へ</a>
+<a class="menu-card" href="06_development_maintenance_00.html">06-00 全体像へ戻る</a>
+</div>
 </section>
-
 </main>
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>SE・開発保守担当者向け 技術記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>開発・保守担当者向け 技術記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
 </html>

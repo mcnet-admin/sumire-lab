@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>05-04 明日の名簿と当日の利用確認 | Sumire Lab</title><style>
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>05-04 明日の名簿と当日の利用確認 | Sumire Lab</title><style>
 :root{
   --purple:#6f42c1;
   --purple-bg:#fbf8ff;
@@ -78,165 +79,167 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 }
 
 .table-scroll{overflow-x:auto}details{margin-top:18px}summary{cursor:pointer;font-weight:700;color:#35516f;padding:12px;background:#eef4ff;border-radius:8px}.flow-root{background:#35516f;color:white;padding:16px;border-radius:10px;text-align:center}.branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.branches .box{border-top:5px solid #6f42c1}a{color:#35516f}p,li,td{overflow-wrap:anywhere}@media(max-width:700px){.branches{grid-template-columns:1fr}h1{font-size:1.6rem}.compact-table td:first-child{white-space:normal}}
+</style><style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
 </style></head><body>
 <header>
-  <h1>⏰ 05-04 明日の名簿と当日の利用確認</h1>
-  <p>前日の受付締切から、翌日の名簿確認、当日の利用実績、月末集計へのつながりを整理します。</p>
+<h1>⏰ 05-04 明日の名簿と当日の利用確認</h1>
+<p>前日の受付締切から、翌日の名簿確認、当日の利用実績、月末集計へのつながりを整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05-00 まず全体像</a>
-  <a href="05_implementation_test_01.html">05-01 予約画面を見る</a>
-  <a href="05_implementation_test_02.html">05-02 データ管理と安全性</a>
-  <a href="05_implementation_test_03.html">05-03 集計・請求</a>
-  <a class="current" aria-current="page" href="05_implementation_test_04.html">05-04 名簿・利用実績</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="05_implementation_test_03.html">◀ 05-03 集計・請求</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="06_development_maintenance_00.html">06-00 全体像 ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05-00 全体像</a><a href="05_implementation_test_01.html">05-01 予約・操作</a><a href="05_implementation_test_02.html">05-02 データ・安全性</a><a href="05_implementation_test_03.html">05-03 集計・請求</a><a class="current" href="05_implementation_test_04.html">05-04 名簿・利用実績</a></nav>
 <div class="audience">
-  <span class="role-tag">園スタッフ向け</span><br/>
-  <strong>このページでは、園スタッフが日々確認する「明日の利用予定」と「実際の利用結果」を説明します。</strong><br/>
+<span class="role-tag">園スタッフ向け</span><br/>
+<strong>このページでは、園スタッフが日々確認する「明日の利用予定」と「実際の利用結果」を説明します。</strong><br/>
   使用しているサービス名、プログラム名、内部のデータ項目などは「06 開発・保守記録」に分けて整理します。
 </div>
-
 <section class="card">
-  <span class="timeline-date">2026年9月27日 更新</span>
-  <h2>🌸 明日の準備と、当日の確認を分けて考えます</h2>
-  <p>保護者の予約は「利用予定」です。実際には欠席やお迎え時刻の変更があるため、予約内容をそのまま月末の請求に使うのではなく、当日の利用結果を確認してから集計します。</p>
-  <div class="emphasis">
-    <strong>前日は「誰が利用する予定か」を確認し、当日は「実際に利用したか」を確認します。</strong>
-  </div>
+<span class="timeline-date">2026年9月27日 更新</span>
+<h2>🌸 明日の準備と、当日の確認を分けて考えます</h2>
+<p>保護者の予約は「利用予定」です。実際には欠席やお迎え時刻の変更があるため、予約内容をそのまま月末の請求に使うのではなく、当日の利用結果を確認してから集計します。</p>
+<div class="emphasis">
+<strong>前日は「誰が利用する予定か」を確認し、当日は「実際に利用したか」を確認します。</strong>
+</div>
 </section>
-
 <section class="card" id="staff">
-  <h2>1．前日の15:30に、翌日分の受付を締め切ります</h2>
-  <p>翌日分の予約・変更・取消を、保護者がインターネットから行えるのは前日15:30までです。締切後の変更・取消は、園への電話連絡で受け付けます。</p>
-  <div class="note">
-    <strong>園スタッフが毎日、締切操作をする必要はありません。</strong><br/>
+<h2>1．前日の15:30に、翌日分の受付を締め切ります</h2>
+<p>翌日分の予約・変更・取消を、保護者がインターネットから行えるのは前日15:30までです。締切後の変更・取消は、園への電話連絡で受け付けます。</p>
+<div class="note">
+<strong>園スタッフが毎日、締切操作をする必要はありません。</strong><br/>
     決められた時刻になると、翌日の名簿作成へ進みます。
   </div>
 </section>
-
 <section class="card">
-  <h2>2．15:35頃に「明日の利用予定者の名簿」が届きます</h2>
-  <p>翌日の予約内容がまとめられ、園へメールで届きます。園スタッフは、名簿で<strong>誰が、何時まで利用する予定か、お迎えは誰か</strong>を確認します。</p>
-
-  <div class="grid">
-    <div class="box"><h3>園児</h3><p>翌日利用予定の園児を確認します。</p></div>
-    <div class="box"><h3>利用予定時刻</h3><p>何時まで利用する予定かを確認します。</p></div>
-    <div class="box"><h3>お迎え</h3><p>誰がお迎えに来る予定かを確認します。</p></div>
-  </div>
-
-  <div class="note" style="margin-top:14px;">
-    <strong>名簿を受け取るための操作は不要です。</strong><br/>
+<h2>2．15:35頃に「明日の利用予定者の名簿」が届きます</h2>
+<p>翌日の予約内容がまとめられ、園へメールで届きます。園スタッフは、名簿で<strong>誰が、何時まで利用する予定か、お迎えは誰か</strong>を確認します。</p>
+<div class="grid">
+<div class="box"><h3>園児</h3><p>翌日利用予定の園児を確認します。</p></div>
+<div class="box"><h3>利用予定時刻</h3><p>何時まで利用する予定かを確認します。</p></div>
+<div class="box"><h3>お迎え</h3><p>誰がお迎えに来る予定かを確認します。</p></div>
+</div>
+<div class="note" style="margin-top:14px;">
+<strong>名簿を受け取るための操作は不要です。</strong><br/>
     このメールは園が翌日の準備に使うもので、保護者へ予約直後に届く確認メールとは別です。
   </div>
-
-  <p>15:35頃に届く名簿は、15:30の締切時点の予定をまとめたものです。15:30から15:35までの5分間に、電話変更を急いで入力する必要はありません。</p>
+<p>15:35頃に届く名簿は、15:30の締切時点の予定をまとめたものです。15:30から15:35までの5分間に、電話変更を急いで入力する必要はありません。</p>
 </section>
-
 <section class="card">
-  <h2>3．名簿が届いた後の電話変更は、園で記録します</h2>
-  <p>例えば、名簿が届いた後に「明日はお休みします」と電話があった場合は、園スタッフ用の<strong>「電話受付・予約修正」入力画面</strong>から変更内容を記録します。</p>
-
-  <div class="box">
-    <h3>園スタッフ用の入力画面を用意しています</h3>
-    <p>電話受付のために、園スタッフが使う専用の入力画面を用意しています。該当する園児の現在の予約を確認し、利用時刻・お迎えの方の変更、または利用取消を入力できます。</p>
-    <p>あわせて、誰から電話があり、誰が受け、何を変更したかも記録できるため、電話だけで対応を終わらせず、次の担当者へ内容を引き継げます。</p>
-    <p><strong>すでに届いた15:35の名簿メールそのものは書き換わりません。</strong>その後の変更は園側の最新記録で確認し、保護者には変更・取消内容の確認メールを送ります。</p>
-  </div>
-
-  <div class="note" style="margin-top:14px;">
-    <strong>園スタッフは、保存用のデータを直接編集する必要はありません。</strong><br/>
+<h2>3．名簿が届いた後の電話変更は、園で記録します</h2>
+<p>例えば、名簿が届いた後に「明日はお休みします」と電話があった場合は、園スタッフ用の<strong>「電話受付・予約修正」入力画面</strong>から変更内容を記録します。</p>
+<div class="box">
+<h3>園スタッフ用の入力画面を用意しています</h3>
+<p>電話受付のために、園スタッフが使う専用の入力画面を用意しています。該当する園児の現在の予約を確認し、利用時刻・お迎えの方の変更、または利用取消を入力できます。</p>
+<p>あわせて、誰から電話があり、誰が受け、何を変更したかも記録できるため、電話だけで対応を終わらせず、次の担当者へ内容を引き継げます。</p>
+<p><strong>すでに届いた15:35の名簿メールそのものは書き換わりません。</strong>その後の変更は園側の最新記録で確認し、保護者には変更・取消内容の確認メールを送ります。</p>
+</div>
+<div class="note" style="margin-top:14px;">
+<strong>園スタッフは、保存用のデータを直接編集する必要はありません。</strong><br/>
     電話受付・予約修正は、園スタッフ用の入力画面から行う運用とします。
   </div>
-
-  <p class="small">電話受付・予約修正の操作については05-01、情報管理の考え方は05-02をご覧ください。</p>
+<p class="small">電話受付・予約修正の操作については05-01、情報管理の考え方は05-02をご覧ください。</p>
 </section>
-
 <section class="card">
-  <h2>4．当日は「実際に利用した結果」を確認します</h2>
-  <p>予約がある園児について、当日の利用有無と実際のお迎え時刻を確認します。</p>
-
-  <div class="table-scroll">
-    <table>
-      <thead><tr><th>当日の様子</th><th>園で記録すること</th></tr></thead>
-      <tbody>
-        <tr><td>予定どおり利用した</td><td>「利用あり」と、実際のお迎え時刻</td></tr>
-        <tr><td>予約していたが欠席した</td><td>「利用なし」と、必要なメモ</td></tr>
-        <tr><td>18:00の予定だったが17:00に帰った</td><td>「利用あり」と「17:00」</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="note">
-    <strong>何も記入していない状態は、「まだ確認していない」という意味です。</strong><br/>
+<h2>4．当日は「実際に利用した結果」を確認します</h2>
+<p>予約がある園児について、当日の利用有無と実際のお迎え時刻を確認します。</p>
+<div class="table-scroll">
+<table>
+<thead><tr><th>当日の様子</th><th>園で記録すること</th></tr></thead>
+<tbody>
+<tr><td>予定どおり利用した</td><td>「利用あり」と、実際のお迎え時刻</td></tr>
+<tr><td>予約していたが欠席した</td><td>「利用なし」と、必要なメモ</td></tr>
+<tr><td>18:00の予定だったが17:00に帰った</td><td>「利用あり」と「17:00」</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<strong>何も記入していない状態は、「まだ確認していない」という意味です。</strong><br/>
     欠席したことを確認した場合は、「利用なし」として記録します。
   </div>
-
-  <p>当日の確認結果は、月末の利用料金を計算するための基礎になります。予約時刻ではなく、園で確認した実際の利用結果をもとに集計します。</p>
+<p>当日の確認結果は、月末の利用料金を計算するための基礎になります。予約時刻ではなく、園で確認した実際の利用結果をもとに集計します。</p>
 </section>
-
 <section class="card" id="results">
-  <h2>5．ここまでに確認できたこと</h2>
-  <p>翌日利用者の名簿作成から利用実績、月末集計までの流れをTESTしています。</p>
-
-  <div class="table-scroll">
-    <table>
-      <thead><tr><th>確認したこと</th><th>結果</th></tr></thead>
-      <tbody>
-        <tr><td>前日15:35頃に翌日の名簿が届くか</td><td><span class="badge ok">確認済み</span> 自動で受信できました。</td></tr>
-        <tr><td>翌日利用予定者の確認欄が正しく用意されるか</td><td><span class="badge ok">確認済み</span> 園児ごとに重複なく用意できました。</td></tr>
-        <tr><td>電話変更・取消を園側で記録できるか</td><td><span class="badge ok">確認済み</span> 変更内容と受付記録を残せます。</td></tr>
-        <tr><td>利用あり・利用なし・実際の終了時刻を区別できるか</td><td><span class="badge ok">確認済み</span> 月末集計へつなげられる形で確認しました。</td></tr>
-        <tr><td>月末集計へ正しく反映できるか</td><td><span class="badge ok">確認済み</span> TESTデータ57件で件数と通常利用額を検算しました。</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="success">
-    <strong>2026年9月27日時点：</strong><br/>
-    翌日名簿 → 当日の利用実績 → 月末集計 → 請求書作成 → 保護者への確認メール送信まで、TESTで一連の流れを確認しました。
+<h2>5．ここまでに確認できたこと</h2>
+<p>翌日利用者の名簿作成から利用実績、月末集計までの流れをTESTしています。</p>
+<div class="table-scroll">
+<table>
+<thead><tr><th>確認したこと</th><th>結果</th></tr></thead>
+<tbody>
+<tr><td>前日15:35頃に翌日の名簿が届くか</td><td><span class="badge ok">確認済み</span> 自動で受信できました。</td></tr>
+<tr><td>翌日利用予定者の確認欄が正しく用意されるか</td><td><span class="badge ok">確認済み</span> 園児ごとに重複なく用意できました。</td></tr>
+<tr><td>電話変更・取消を園側で記録できるか</td><td><span class="badge ok">確認済み</span> 変更内容と受付記録を残せます。</td></tr>
+<tr><td>利用あり・利用なし・実際の終了時刻を区別できるか</td><td><span class="badge ok">確認済み</span> 月末集計へつなげられる形で確認しました。</td></tr>
+<tr><td>月末集計へ正しく反映できるか</td><td><span class="badge ok">確認済み</span> TESTデータ57件で件数と通常利用額を検算しました。</td></tr>
+</tbody>
+</table>
+</div>
+<div class="success">
+<strong>2026年10月2日時点：</strong><br/>
+    翌日名簿 → 当日の利用実績 → 月末集計 → 請求書PDF作成まで、TESTで一連の流れを確認しました。請求メール送信・自動実行は次工程です。
   </div>
 </section>
-
 <section class="card">
-  <h2>6．園スタッフが覚えておくこと</h2>
-  <ul>
-    <li><strong>前日15:30：</strong>翌日分のインターネット受付が終了します。</li>
-    <li><strong>前日15:35頃：</strong>届いた翌日の利用予定者名簿を確認します。</li>
-    <li><strong>名簿受取後：</strong>電話変更があれば、園側で変更内容を記録します。</li>
-    <li><strong>利用当日：</strong>実際の利用の有無とお迎え時刻を確認します。</li>
-    <li><strong>月末：</strong>確認済みの利用実績をもとに料金を集計します。</li>
-  </ul>
-
-  <div class="note">
-    <strong>技術的な操作を覚える必要はありません。</strong><br/>
+<h2>6．園スタッフが覚えておくこと</h2>
+<ul>
+<li><strong>前日15:30：</strong>翌日分のインターネット受付が終了します。</li>
+<li><strong>前日15:35頃：</strong>届いた翌日の利用予定者名簿を確認します。</li>
+<li><strong>名簿受取後：</strong>電話変更があれば、園側で変更内容を記録します。</li>
+<li><strong>利用当日：</strong>実際の利用の有無とお迎え時刻を確認します。</li>
+<li><strong>月末：</strong>確認済みの利用実績をもとに料金を集計します。</li>
+</ul>
+<div class="note">
+<strong>技術的な操作を覚える必要はありません。</strong><br/>
     園スタッフが日常的に行うのは、「名簿を確認する」「電話変更を記録する」「実際の利用結果を確認する」という業務です。
   </div>
 </section>
-
 <section class="card">
-  <h2>🔗 集計・請求へつながります</h2>
-  <p>当日の利用結果を確認した後は、月末集計・臨時徴収・請求書作成・メール送信へつながります。詳しくは05-03をご覧ください。</p>
-  <p style="text-align:center;"><a class="menu-card" href="05_implementation_test_03.html">◀ 05-03 集計・請求へ</a></p>
+<h2>🔗 集計・請求へつながります</h2>
+<p>当日の利用結果を確認した後は、月末集計・臨時徴収・請求書作成・メール送信へつながります。詳しくは05-03をご覧ください。</p>
+<p style="text-align:center;"><a class="menu-card" href="05_implementation_test_03.html">◀ 05-03 集計・請求へ</a></p>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>📘 前後のページ</h2>
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-    <a class="menu-card" href="05_implementation_test_03.html">◀ 05-03 集計・請求へ</a>
-    <a class="menu-card" href="05_implementation_test_00.html">05-00 全体像へ戻る</a>
-    <a class="menu-card" href="06_development_maintenance_00.html">06 開発・保守記録へ ▶</a>
-  </div>
+<h2>📘 前後のページ</h2>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+<a class="menu-card" href="05_implementation_test_03.html">◀ 05-03 集計・請求へ</a>
+<a class="menu-card" href="05_implementation_test_00.html">05-00 全体像へ戻る</a>
+<a class="menu-card" href="06_development_maintenance_00.html">06 開発・保守記録へ ▶</a>
+</div>
 </section>
-
 </main>
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>園のDXを支える開発記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>園のDXを支える開発記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body></html>

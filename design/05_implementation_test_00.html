@@ -206,14 +206,46 @@ footer{
 .staff-point{background:#f4fbf5;border-left:5px solid #4f9b58;padding:13px 15px;border-radius:9px;margin:12px 0;line-height:1.65}
 .detail-link{font-size:13px;color:#667;margin-top:10px}
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
 <h1>🛠️ 05-00 システムの概要</h1>
 <p>園スタッフ向けに、Version 2.0で「何ができるようになったか」を簡潔にまとめます。</p>
 </header>
-<main>
-<nav class="page-nav"><a class="current" href="05_implementation_test_00.html">05-00 まず全体像</a><a href="05_implementation_test_01.html">05-01 予約画面を見る</a><a href="05_implementation_test_02.html">05-02 データ管理を詳しく</a><a href="05_implementation_test_03.html">05-03 集計・請求</a><a href="05_implementation_test_04.html">05-04 名簿・利用実績</a></nav>
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="04_reservation_design.html">◀ 04 日別予約データ</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="05_implementation_test_01.html">05-01 予約・操作 ▶</a></nav>
+<nav class="page-nav"><a class="current" href="05_implementation_test_00.html">05-00 全体像</a><a href="05_implementation_test_01.html">05-01 予約・操作</a><a href="05_implementation_test_02.html">05-02 データ・安全性</a><a href="05_implementation_test_03.html">05-03 集計・請求</a><a href="05_implementation_test_04.html">05-04 名簿・利用実績</a></nav>
 <div class="audience"><span class="role-tag">園スタッフ向け</span><br/><strong>まず、このページと05-01を読むと、現在の予約システムの使い方と到達点が分かります。</strong><br/>データ管理と安全性は05-02、予約後の集計・請求は05-03、翌日名簿と当日の利用確認は05-04に分けています。</div>
 <section class="card purple">
 <h2>🌸 現在、平日版・長期休暇版とも基本機能が動いています</h2>
@@ -225,7 +257,7 @@ footer{
 <a class="branch-card" href="05_implementation_test_01.html"><strong>05-01　予約画面と操作方法</strong>一括入力から、必要な日だけを変更・取消する流れを、実際の画面で確認できます。<div class="arrow-link">園スタッフはこちら →</div></a>
 <a class="branch-card" href="05_implementation_test_02.html"><strong>05-02　データ管理と安全性</strong>園児名・保護者メールアドレスをどこに保存し、誰が見られるのかを詳しく説明します。<div class="arrow-link">データ管理を確認する →</div></a>
 <a class="branch-card" href="05_implementation_test_03.html"><strong>05-03　集計・請求処理の設計</strong>利用実績から月次集計、請求、訂正・調整までの園の運用を整理しています。<div class="arrow-link">集計・請求の設計はこちら →</div></a>
-</div>
+<a class="branch-card" href="05_implementation_test_04.html"><strong>05-04　明日の名簿と当日の利用確認</strong>15:30締切、15:35の翌日名簿、当日の利用実績の流れを園スタッフ向けに整理しています。<div class="arrow-link">名簿・利用実績を確認する →</div></a></div>
 </section>
 <section class="card">
 <h2>🗓️ ここまでの進み方</h2>
@@ -236,8 +268,8 @@ footer{
 <div class="timeline-item"><span class="timeline-date">2026年9月2日</span><strong>運用用メールを「すみれクラブ」に切替</strong>開発・管理用のアカウントと園の運用用アカウントを分け、すみれクラブ専用メールから予約確認メールを送れることを確認しました。園スタッフによるTESTへ進む準備が整いました。</div><div class="timeline-item"><span class="timeline-date">2026年9月20日</span><strong>平日版・長期休暇版を一連で確認</strong>平日・長期休暇とも、日別予約と一括登録から保存・確認メールまでの流れを確認しました。長期休暇では、16:30以降の利用も終了時刻が分かる形で表示できるようにしています。</div>
 <div class="timeline-item"><span class="timeline-date">2026年9月23日</span><strong>翌日利用者リストと利用実績の流れを確認</strong>前日15:30を保護者側の受付区切りとし、15:35に翌日の利用者リストを作成・通知する流れを確認しました。利用当日は、予約内容とは別に実際の利用有無と終了時刻を記録する仕組みへ進みました。</div>
 <div class="timeline-item"><span class="timeline-date">2026年9月26日</span><strong>電話受付・予約修正の運用を確認</strong>Web受付後の変更・取消などを園スタッフが電話で受け付け、管理画面から修正できる流れを確認しました。</div>
-<div class="timeline-item"><span class="timeline-date">2026年9月27日</span><strong>月末集計を確認し、請求書送信工程へ</strong>利用実績から園児ごとの時間帯別件数と通常利用額を集計し、TESTデータで合計金額を検算しました。次に、臨時徴収を加えられる仕組みを整え、園児別請求書PDFの作成と保護者へのTESTメール送信まで進めます。</div>
-</div>
+<div class="timeline-item"><span class="timeline-date">2026年9月27日</span><strong>月末集計を確認し、請求書PDF作成工程へ</strong>利用実績から園児ごとの時間帯別件数と通常利用額を集計し、TESTデータで合計金額を検算しました。次に、園児別請求書PDFの作成工程へ進みました。</div>
+<div class="timeline-item"><span class="timeline-date">2026年9月28日</span><strong>園児別請求書PDFの生成を確認</strong>月次集計結果から、active園児ごとの請求書PDFをまとめて生成し、指定フォルダへ保存できることを確認しました。請求メールの自動送信は次工程で確認します。</div></div>
 </section>
 <section class="card">
 <h2>➡️ 保護者の操作は、この4つの流れです</h2>
@@ -257,8 +289,8 @@ footer{
 </section>
 <section class="card purple">
 <h2>➡️ 現在の到達点と次の確認</h2>
-<p>予約画面に加えて、<strong>前日15:30の締切、15:35の翌日利用者リスト、当日の利用実績、月末集計</strong>までTESTが進んでいます。月末集計では、時間帯別の利用件数と通常利用額を園児ごとに確認し、TESTデータで金額の検算まで完了しました。</p>
-<div class="note"><strong>次の確認</strong><br/>臨時徴収の入力方法を整えたうえで、園児別の請求書PDFを作成し、TESTメール送信へ進みます。技術的な接続情報や開発用URLなどは、今後「06 開発・保守記録」へ分離して整理します。</div>
+<p>予約画面に加えて、<strong>前日15:30の締切、15:35の翌日利用者リスト、当日の利用実績、月末集計、園児別請求書PDFの作成</strong>までTESTが進んでいます。月末集計では、時間帯別の利用件数と通常利用額を園児ごとに確認し、TESTデータで金額の検算まで完了しました。</p>
+<div class="note"><strong>次の確認</strong><br/>15:35自動処理を現行設定で実地確認したうえで、<strong>翌月1日の請求メール送信・自動実行</strong>と、臨時徴収の入力・請求加算を確認します。技術的な接続情報や開発用URLは「06 開発・保守記録」に分離して整理しています。</div>
 </section>
 <section class="card" style="text-align:center;">
 <h2>📘 前後のページ</h2>
@@ -269,6 +301,6 @@ footer{
 </div>
 </section>
 </main>
-<footer><p>🌸 <strong>Sumire Lab</strong></p><p>先生方の時間を、子どもたちの笑顔へ。</p><p>園のDXを支える開発記録</p><p>© McLean Kindergarten</p><p>Version 2.0<br/>Last Update 2026-09-27</p></footer>
+<footer><p>🌸 <strong>Sumire Lab</strong></p><p>先生方の時間を、子どもたちの笑顔へ。</p><p>園のDXを支える開発記録</p><p>© McLean Kindergarten</p><p>Version 2.0<br/>Last Update 2026-10-02</p></footer>
 </body>
 </html>

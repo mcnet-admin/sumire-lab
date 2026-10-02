@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>05-03 集計・請求処理の設計 | Sumire Lab</title>
 <style>
 :root{
@@ -83,106 +84,126 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   header{padding:12px 0}
 }
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
-  <h1>🧾 05-03 集計・請求処理の設計</h1>
-  <p>園側の実運用を確認し、予約後の「利用実績 → 集計 → 臨時徴収 → 請求書 → メール送信 → 訂正・調整」の流れを整理します。</p>
+<h1>🧾 05-03 集計・請求処理の設計</h1>
+<p>園側の実運用を確認し、予約後の「利用実績 → 集計 → 臨時徴収 → 請求書 → メール送信 → 訂正・調整」の流れを整理します。</p>
 </header>
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05-00 まず全体像</a>
-  <a href="05_implementation_test_01.html">05-01 予約画面を見る</a>
-  <a href="05_implementation_test_02.html">05-02 データ管理を詳しく</a>
-  <a class="current" href="05_implementation_test_03.html">05-03 集計・請求</a>
-<a href="05_implementation_test_04.html">05-04 名簿・利用実績</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="05_implementation_test_02.html">◀ 05-02 データ・安全性</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="05_implementation_test_04.html">05-04 名簿・利用実績 ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05-00 全体像</a><a href="05_implementation_test_01.html">05-01 予約・操作</a><a href="05_implementation_test_02.html">05-02 データ・安全性</a><a class="current" href="05_implementation_test_03.html">05-03 集計・請求</a><a href="05_implementation_test_04.html">05-04 名簿・利用実績</a></nav>
 <div class="audience">
-  <span class="role-tag">園スタッフ向け</span><br/>
+<span class="role-tag">園スタッフ向け</span><br/>
   このページでは、予約後の利用実績・月末集計・請求書・メール送信・訂正まで、
   <strong>園の日常業務として必要な流れ</strong>をまとめています。
   使用しているサービス名やプログラム構成などの技術情報は「06 開発・保守記録」に分けて整理します。
 </div>
-
 <section class="card">
-  <span class="timeline-date">2026年9月</span>
-  <h2>✅ まず、園側TESTで予約画面の使い勝手を確認しました</h2>
-  <p>
+<span class="timeline-date">2026年9月</span>
+<h2>✅ まず、園側TESTで予約画面の使い勝手を確認しました</h2>
+<p>
     園側で予約画面を試していただいた結果、副園長からは、
     <strong>「分かりやすく、すぐ使える」「一括予約が便利」「すでに予約している場合に、その情報が表示される点がよい」</strong>
     との評価が得られました。
   </p>
-  <div class="success">
-    <strong>予約操作そのものについて、大きな使いにくさは確認されませんでした。</strong><br/>
+<div class="success">
+<strong>予約操作そのものについて、大きな使いにくさは確認されませんでした。</strong><br/>
     そのため、次の開発段階として「予約後の利用実績・集計・請求」の設計へ進みます。
   </div>
-  <p class="small" style="margin-bottom:0;">
+<p class="small" style="margin-bottom:0;">
     ※他の職員からの使用感は、今後のTESTの中で引き続き確認します。
   </p>
 </section>
-
 <section class="card">
-  <h2>🔎 集計期間を再確認しました</h2>
-  <p>
+<h2>🔎 集計期間を再確認しました</h2>
+<p>
     当初は「毎月20日締め」で利用料金を集計する想定も検討していましたが、
     副園長への確認により、<strong>請求の集計期間は毎月1日～最終日の1か月単位</strong>であることを再確認しました。
   </p>
-  <div class="grid">
-    <div class="box">
-      <span class="badge ok">料金の集計期間</span>
-      <h3 style="margin-top:10px;">毎月1日 ～ 最終日</h3>
-      <p>その月に実際に利用した内容と利用料金を、暦月単位で集計します。</p>
-    </div>
-    <div class="box">
-      <span class="badge rule">自動集計</span>
-      <h3 style="margin-top:10px;">月の最終日</h3>
-      <p>最終日にシステムが自動集計し、その後に職員が内容を確認します。</p>
-    </div>
-  </div>
-  <div class="emphasis">
-    <strong>請求集計は20日締めではありません。</strong><br/>
+<div class="grid">
+<div class="box">
+<span class="badge ok">料金の集計期間</span>
+<h3 style="margin-top:10px;">毎月1日 ～ 最終日</h3>
+<p>その月に実際に利用した内容と利用料金を、暦月単位で集計します。</p>
+</div>
+<div class="box">
+<span class="badge rule">自動集計</span>
+<h3 style="margin-top:10px;">月の最終日</h3>
+<p>最終日にシステムが自動集計し、その後に職員が内容を確認します。</p>
+</div>
+</div>
+<div class="emphasis">
+<strong>請求集計は20日締めではありません。</strong><br/>
     1日から最終日までの利用実績を1か月分としてまとめ、最終日に自動集計します。
   </div>
 </section>
-
 <section class="card">
-  <h2>📅 月次の集計・請求フロー</h2>
-  <p>副園長への再確認により、通常月は次の流れで処理する方針を確定しました。</p>
-  <div class="process" aria-label="月次の集計・請求フロー">
-    <div class="step">
-      <span class="day">毎月1日～最終日</span>
-      <strong>① 利用実績を蓄積</strong>
+<h2>📅 月次の集計・請求フロー</h2>
+<p>副園長への再確認により、通常月は次の流れで処理する方針を確定しました。</p>
+<div aria-label="月次の集計・請求フロー" class="process">
+<div class="step">
+<span class="day">毎月1日～最終日</span>
+<strong>① 利用実績を蓄積</strong>
       実際の利用内容・利用料金を記録します。
     </div>
-    <div class="step">
-      <span class="day">月の最終日</span>
-      <strong>② 自動集計</strong>
+<div class="step">
+<span class="day">月の最終日</span>
+<strong>② 自動集計</strong>
       1日から最終日までの利用料金を園児ごとに自動集計します。
     </div>
-    <div class="step">
-      <span class="day">月末</span>
-      <strong>③ 職員が確認</strong>
+<div class="step">
+<span class="day">月末</span>
+<strong>③ 職員が確認</strong>
       自動集計された内容を職員がチェックします。
     </div>
-    <div class="step">
-      <span class="day">翌月1日</span>
-      <strong>④ 請求書メール送信</strong>
+<div class="step">
+<span class="day">翌月1日</span>
+<strong>④ 請求書メール送信</strong>
       確認済みの請求書を保護者へ送信します。1日が休日でも送信日は変更しません。
     </div>
-    <div class="step">
-      <span class="day">翌月7日</span>
-      <strong>⑤ 引き落とし</strong>
+<div class="step">
+<span class="day">翌月7日</span>
+<strong>⑤ 引き落とし</strong>
       保育料とあわせて引き落とします。7日が休日の場合は翌営業日です。
     </div>
-  </div>
-  <div class="note">
-    <strong>請求書は、1日が土・日・祝日でも1日に送信します。</strong><br/>
+</div>
+<div class="note">
+<strong>請求書は、1日が土・日・祝日でも1日に送信します。</strong><br/>
     引き落としは翌月7日を基本とし、7日が休日の場合は翌営業日に処理します。
   </div>
 </section>
-
-
 <section class="card">
 <span class="timeline-date">2026年9月20日</span>
 <h2>✅ 予約内容が請求前段まで正しく届くことを確認しました</h2>
@@ -193,238 +214,218 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 </div>
 </section>
 <section class="card" style="border:2px solid #9fb8d8;background:#f8fbff;">
-  <span class="timeline-date">2026年9月19日</span>
-  <h2>🧪 長期休暇の取消・変更ルールを確認しました</h2>
-  <p>
+<span class="timeline-date">2026年9月19日</span>
+<h2>🧪 長期休暇の取消・変更ルールを確認しました</h2>
+<p>
     長期休暇の予約では、園側との確認により、
     <strong>利用日の7日前以降は予約料金の全額をキャンセル料とし、
     利用日前日の15:30をWeb受付と翌日利用者リスト確定の境界として扱う</strong>
     ルールとしました。
   </p>
-
-  <div class="note">
-    <strong>園スタッフにとって大切な確認点</strong><br/>
+<div class="note">
+<strong>園スタッフにとって大切な確認点</strong><br/>
     長期休暇では、<strong>7日前の料金境界</strong>と<strong>前日15:30のWeb受付・名簿確定</strong>は別のルールです。15:30を過ぎた変更・取消は園への電話連絡へ切り替える運用とします。
   </div>
-
-  <h3 style="margin-top:1.2rem;">確認した場面と結果</h3>
-  <div class="table-scroll" style="overflow-x:auto"><table>
-    <thead>
-      <tr><th>確認した場面</th><th>園のルール</th><th>TEST結果</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>利用日の8日前までに取消</td><td>キャンセル料なし</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>利用日の7日前以降に取消</td><td>予約料金の全額をキャンセル料として扱う</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>利用日前日の15:30</td><td>Web受付・翌日利用者リスト確定の境界。15:30ちょうどは受付可</td><td><span class="badge ok">確認済み</span></td></tr>
-      <tr><td>利用日前日の15:31以降</td><td>Web受付終了。変更・取消は園へ電話連絡</td><td><span class="badge ok">確認済み</span></td></tr>
-    </tbody>
-  </table></div>
-
-  <div class="success" style="margin-top:14px;">
-    <strong>4つの境界場面すべてで、園の運用ルールどおりに判定されることを確認しました。</strong><br/>
+<h3 style="margin-top:1.2rem;">確認した場面と結果</h3>
+<div class="table-scroll" style="overflow-x:auto"><table>
+<thead>
+<tr><th>確認した場面</th><th>園のルール</th><th>TEST結果</th></tr>
+</thead>
+<tbody>
+<tr><td>利用日の8日前までに取消</td><td>キャンセル料なし</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>利用日の7日前以降に取消</td><td>予約料金の全額をキャンセル料として扱う</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>利用日前日の15:30</td><td>Web受付・翌日利用者リスト確定の境界。15:30ちょうどは受付可</td><td><span class="badge ok">確認済み</span></td></tr>
+<tr><td>利用日前日の15:31以降</td><td>Web受付終了。変更・取消は園へ電話連絡</td><td><span class="badge ok">確認済み</span></td></tr>
+</tbody>
+</table></div>
+<div class="success" style="margin-top:14px;">
+<strong>4つの境界場面すべてで、園の運用ルールどおりに判定されることを確認しました。</strong><br/>
     「7日前＝キャンセル料」と「前日15:30＝Web受付・翌日名簿確定」を別の条件として扱います。
   </div>
-
-  <p class="small" style="margin-bottom:0;margin-top:12px;">
+<p class="small" style="margin-bottom:0;margin-top:12px;">
     ※キャンセル料の請求への反映は、利用実績・月末集計とあわせて確認していきます。
   </p>
 </section>
-
 <section class="card">
-  <h2>🔒 請求確定後の訂正ルールも確定しました</h2>
-  <p>
+<h2>🔒 請求確定後の訂正ルールも確定しました</h2>
+<p>
     請求処理は月単位で管理するため、
     <strong>翌月1日の請求書送信後に利用金額の誤りが判明しても、確定済みの請求額は書き換えません。</strong>
-  </p>
-  <div class="rule-card">
-    <h3>基本ルール</h3>
-    <p style="margin-bottom:0;">
-      <strong>請求確定前</strong>に誤りが分かった場合は、その月の利用実績を修正して再集計します。<br/>
-      <strong>請求確定後</strong>に誤りが分かった場合は、差額を翌月の保育料で加算・減算して相殺します。
+</p>
+<div class="rule-card">
+<h3>基本ルール</h3>
+<p style="margin-bottom:0;">
+<strong>請求確定前</strong>に誤りが分かった場合は、その月の利用実績を修正して再集計します。<br/>
+<strong>請求確定後</strong>に誤りが分かった場合は、差額を翌月の保育料で加算・減算して相殺します。
     </p>
-  </div>
-
-  <h3>例：9月分で500円の過請求が後から判明した場合</h3>
-  <div class="billing-example">
-    <div class="money-row"><span>9月分請求</span><span>5,000円</span></div>
-    <div class="money-row"><span>10月1日</span><span>請求確定・請求書送信</span></div>
-    <div class="money-row"><span>その後に判明した9月分の調整</span><span>−500円</span></div>
-  </div>
-  <p>
+</div>
+<h3>例：9月分で500円の過請求が後から判明した場合</h3>
+<div class="billing-example">
+<div class="money-row"><span>9月分請求</span><span>5,000円</span></div>
+<div class="money-row"><span>10月1日</span><span>請求確定・請求書送信</span></div>
+<div class="money-row"><span>その後に判明した9月分の調整</span><span>−500円</span></div>
+</div>
+<p>
     この場合、9月分の請求書を作り直して再送するのではなく、次回請求時に
     <strong>「9月分調整　−500円」</strong>のように明示して相殺します。
   </p>
-  <div class="emphasis">
-    <strong>確定済みの請求データは上書きせず、後からの訂正は「調整」として履歴を残します。</strong>
-  </div>
+<div class="emphasis">
+<strong>確定済みの請求データは上書きせず、後からの訂正は「調整」として履歴を残します。</strong>
+</div>
 </section>
-
 <section class="card">
-  <h2>➕ 「臨時徴収」も同じ請求構造の中で扱います</h2>
-  <p>
+<h2>➕ 「臨時徴収」も同じ請求構造の中で扱います</h2>
+<p>
     園から要望のあった「臨時徴収」は、通常のすみれクラブ利用料とは別の加算項目として扱います。
     また、前月分の訂正はプラス・マイナスの「調整項目」として扱います。
   </p>
-  <div class="billing-example">
-    <div class="money-row"><span>通常利用料</span><span>4,000円</span></div>
-    <div class="money-row"><span>前月分調整</span><span>−500円</span></div>
-    <div class="money-row"><span>臨時徴収</span><span>＋300円</span></div>
-    <div class="money-row"><span>請求金額</span><span>3,800円</span></div>
-  </div>
-  <p class="small" style="margin-bottom:0;">
+<div class="billing-example">
+<div class="money-row"><span>通常利用料</span><span>4,000円</span></div>
+<div class="money-row"><span>前月分調整</span><span>−500円</span></div>
+<div class="money-row"><span>臨時徴収</span><span>＋300円</span></div>
+<div class="money-row"><span>請求金額</span><span>3,800円</span></div>
+</div>
+<p class="small" style="margin-bottom:0;">
     ※金額は仕組みを説明するための例です。実際の料金・臨時徴収額は園側で入力・確認します。
   </p>
 </section>
-
 <section class="card" style="border:2px solid #c7a7e8;background:#fcf9ff;">
-  <span class="timeline-date">2026年9月27日</span>
-  <h2>🌸 臨時徴収は、通常利用料とは分けて登録します</h2>
-  <p>
+<span class="timeline-date">2026年9月27日</span>
+<h2>🌸 臨時徴収は、通常利用料とは分けて登録します</h2>
+<p>
     写真代・教材費・行事費など、通常のすみれクラブ利用料とは別に請求する項目を登録できるようにします。
   </p>
-  <div class="emphasis">
-    <strong>通常利用料と臨時徴収は、別々に確認してから請求額を確定します。</strong><br/>
+<div class="emphasis">
+<strong>通常利用料と臨時徴収は、別々に確認してから請求額を確定します。</strong><br/>
     これにより、何にいくら請求したのかを園側でも保護者側でも確認しやすくします。
   </div>
-  <div class="grid" style="margin-top:14px;">
-    <div class="box"><h3>園児</h3><p>誰に対する臨時徴収かを選びます。</p></div>
-    <div class="box"><h3>対象月</h3><p>どの月の請求に加えるかを指定します。</p></div>
-    <div class="box"><h3>項目・金額</h3><p>写真代などの項目名と金額を入力します。</p></div>
-    <div class="box"><h3>備考</h3><p>必要に応じて補足を残します。</p></div>
-  </div>
+<div class="grid" style="margin-top:14px;">
+<div class="box"><h3>園児</h3><p>誰に対する臨時徴収かを選びます。</p></div>
+<div class="box"><h3>対象月</h3><p>どの月の請求に加えるかを指定します。</p></div>
+<div class="box"><h3>項目・金額</h3><p>写真代などの項目名と金額を入力します。</p></div>
+<div class="box"><h3>備考</h3><p>必要に応じて補足を残します。</p></div>
+</div>
 </section>
-
 <section class="card">
-  <h2>🧩 予約から請求までの流れ</h2>
-  <p>
+<h2>🧩 予約から請求までの流れ</h2>
+<p>
     予約内容だけから請求額を作るのではなく、
     <strong>「予約」→「実際の利用」→「月末集計」→「請求」</strong>の順に確認します。
   </p>
-  <div class="data-flow" aria-label="予約から請求までの流れ">
-    <div class="step"><strong>① 予約</strong><span class="small">利用予定を記録</span></div>
-    <div class="step"><strong>② 利用実績</strong><span class="small">実際に利用した内容を確認</span></div>
-    <div class="step"><strong>③ 臨時徴収</strong><span class="small">必要な追加項目を登録</span></div>
-    <div class="step"><strong>④ 月次集計</strong><span class="small">園児ごとの利用額を確認</span></div>
-    <div class="step"><strong>⑤ 請求確定</strong><span class="small">通常利用料と臨時徴収を合算</span></div>
-    <div class="step"><strong>⑥ 請求書</strong><span class="small">園児ごとに作成</span></div>
-    <div class="step"><strong>⑦ メール送信</strong><span class="small">保護者へ送信</span></div>
-    <div class="step"><strong>⑧ 訂正・調整</strong><span class="small">確定後の差額は翌月へ</span></div>
-  </div>
-  <div class="billing-example">
-    <div class="money-row"><span>通常利用額</span><span>月末集計で確認</span></div>
-    <div class="money-row"><span>臨時徴収額</span><span>必要に応じて加算</span></div>
-    <div class="money-row"><span>請求額合計</span><span>通常利用額 ＋ 臨時徴収額</span></div>
-  </div>
+<div aria-label="予約から請求までの流れ" class="data-flow">
+<div class="step"><strong>① 予約</strong><span class="small">利用予定を記録</span></div>
+<div class="step"><strong>② 利用実績</strong><span class="small">実際に利用した内容を確認</span></div>
+<div class="step"><strong>③ 臨時徴収</strong><span class="small">必要な追加項目を登録</span></div>
+<div class="step"><strong>④ 月次集計</strong><span class="small">園児ごとの利用額を確認</span></div>
+<div class="step"><strong>⑤ 請求確定</strong><span class="small">通常利用料と臨時徴収を合算</span></div>
+<div class="step"><strong>⑥ 請求書</strong><span class="small">園児ごとに作成</span></div>
+<div class="step"><strong>⑦ メール送信</strong><span class="small">保護者へ送信</span></div>
+<div class="step"><strong>⑧ 訂正・調整</strong><span class="small">確定後の差額は翌月へ</span></div>
+</div>
+<div class="billing-example">
+<div class="money-row"><span>通常利用額</span><span>月末集計で確認</span></div>
+<div class="money-row"><span>臨時徴収額</span><span>必要に応じて加算</span></div>
+<div class="money-row"><span>請求額合計</span><span>通常利用額 ＋ 臨時徴収額</span></div>
+</div>
 </section>
-
 <section class="card"><h2>⏰ 日々の利用実績の準備は05-04へ</h2><p>15:30締切、15:35の翌日利用者リスト、当日の利用確認の流れは05-04へまとめています。予約と実際の利用を分けて確認し、確定した利用実績を月末集計へつなぎます。</p><p><a class="menu-card" href="05_implementation_test_04.html">05-04 名簿・利用実績へ ▶</a></p></section>
-
-
-
 <section class="card" style="border:2px solid #f0b36a;background:#fffaf3;">
-  <span class="timeline-date">2026年9月23日</span>
-  <h2>🧭 本番運用前に確認する使いやすさ</h2>
-  <p>
+<span class="timeline-date">2026年9月23日</span>
+<h2>🧭 本番運用前に確認する使いやすさ</h2>
+<p>
     本番運用前には、保護者が実際に使う場面を想定して、入力のしやすさや連続操作を確認します。
   </p>
-  <h3>兄弟姉妹が在籍している家庭の連続予約</h3>
-  <p>
+<h3>兄弟姉妹が在籍している家庭の連続予約</h3>
+<p>
     同じ家庭で兄弟姉妹が在籍する場合、1人目の予約完了後に最初から操作をやり直すのではなく、
     <strong>続けて別の園児を予約できる導線</strong>を用意する方向で検討します。
   </p>
-  <div class="emphasis">
-    <strong>予約完了後の基本案：</strong><br/>
+<div class="emphasis">
+<strong>予約完了後の基本案：</strong><br/>
     「続けて別の園児を予約しますか？」
     → ［続けて予約する］ ［終了する］
   </div>
 </section>
-
 <section class="card">
-  <h2>📝 仕様確定までの記録</h2>
-  <div class="timeline">
-    <div class="timeline-item">
-      <strong>2026年9月9日 ― 現行の集計・請求フローを確認</strong>
+<h2>📝 仕様確定までの記録</h2>
+<div class="timeline">
+<div class="timeline-item">
+<strong>2026年9月9日 ― 現行の集計・請求フローを確認</strong>
       園から提示された「集計の流れ」をもとに、集計期間が毎月1日～最終日であること、翌月1日に請求書を送信すること、翌月7日に引き落とすことを確認しました。
     </div>
-    <div class="timeline-item">
-      <strong>2026年9月 ― 訂正処理について追加確認</strong>
+<div class="timeline-item">
+<strong>2026年9月 ― 訂正処理について追加確認</strong>
       請求書送信後に金額の誤りが判明した場合、「過去月を再請求するか」「翌月で差額調整するか」を確認しました。
     </div>
-    <div class="timeline-item">
-      <strong>2026年9月18日 ― 訂正・調整方法を確定</strong>
+<div class="timeline-item">
+<strong>2026年9月18日 ― 訂正・調整方法を確定</strong>
       請求処理を月単位で管理し、確定後の差額は翌月の保育料で相殺する運用とすることを確認しました。
     </div>
-    <div class="timeline-item">
-      <strong>2026年9月19日 ― 長期休暇の取消・変更ルールを動作確認</strong>
+<div class="timeline-item">
+<strong>2026年9月19日 ― 長期休暇の取消・変更ルールを動作確認</strong>
       園側で確認した「取消は利用日の7日前から予約料金の全額をキャンセル料とする」
       「時間変更は前日15:30まで」というルールを、TEST専用の仕組みで確認しました。
     </div>
-    <div class="timeline-item">
-      <strong>2026年9月20日 ― 利用実績データの基本構造を整理</strong>
+<div class="timeline-item">
+<strong>2026年9月20日 ― 利用実績データの基本構造を整理</strong>
       予約と請求を直接つなげず、実際の利用有無・終了時刻を確認してから月末集計へ進む流れとしました。
     </div>
-    <div class="timeline-item">
-      <strong>2026年9月23日 ― 翌日利用候補の自動生成と15:35運用を確認</strong>
+<div class="timeline-item">
+<strong>2026年9月23日 ― 翌日利用候補の自動生成と15:35運用を確認</strong>
       翌日利用者リストから当日の利用確認へつなぐ流れをTESTし、同じ利用者が重複して登録されないことを確認しました。
       また、園スタッフへ案内済みの「15:30締切 → 15:35確定リスト」を基準とし、15:35以降の電話変更は園スタッフが管理画面から事務修正する運用に統一しました。
       あわせて、本番運用前の検討事項として、兄弟姉妹在籍家庭の連続予約導線を追加しました。
     </div>
-    <div class="timeline-item">
-      <strong>2026年9月27日 ― 月末集計から請求書メール送信まで確認</strong>
+<div class="timeline-item">
+<strong>2026年9月27日 ― 月末集計を確認</strong>
       TESTデータ57件を用いて月末集計を行い、利用あり46件、利用なし11件、未確定0件、
       時間帯別件数（15:00まで22件、16:30まで0件、17:00まで14件、18:00まで10件）を確認しました。
       通常利用額の合計27,400円も期待値と一致しました。
-      さらに、園児別の請求書を作成し、保護者への確認メール送信までTESTを完了しました。
+      その後、園児別の請求書PDF作成工程へ進み、PDF生成まで確認しました。請求メール送信は次工程で確認します。
       臨時徴収は、通常利用料とは分けて登録し、請求時に加算する方針としています。
     </div>
-  </div>
+</div>
 </section>
-
 <section class="card" style="border:2px solid #9fb8d8;background:#f8fbff;">
-  <span class="timeline-date">2026年9月27日</span>
-  <h2>📨 請求書作成・確認メール送信までTESTを完了しました</h2>
-  <p>
-    園児ごとの請求内容を確認し、請求書を作成して、TEST用の送信先へメールで届けるところまで確認しました。
-  </p>
-  <div class="success">
-    <strong>確認できた流れ：</strong>月末集計 → 請求額確認 → 請求書作成 → メール送信。
-    請求書の内容と送信先を確認したうえで送る運用とします。
-  </div>
+<span class="timeline-date">2026年9月28日</span>
+<h2>📄 請求書PDF作成までTESTを完了しました</h2>
+<p>園児ごとの請求内容を確認し、<strong>全active園児分の請求書PDFを生成して指定フォルダへ保存するところまで</strong>確認しました。</p>
+<div class="success">
+<strong>確認できた流れ：</strong>月末集計 → 請求額確認 → 請求書PDF作成。<br/>
+<strong>翌月1日の請求メール送信・自動実行は次工程</strong>として、送信先と重複防止を含めて確認します。
+</div>
 </section>
-
 <section class="card">
-  <h2>📌 2026年9月27日時点の確認状況</h2>
-  <div class="table-scroll" style="overflow-x:auto"><table class="compact-table">
-    <tbody>
-      <tr><td>予約画面</td><td><span class="badge ok">TEST済み</span> 平日版・長期休暇版とも、日別予約・一括予約・確認メールまで確認。</td></tr>
-      <tr><td>月末集計</td><td><span class="badge ok">TEST済み</span> 57件を集計し、時間帯別件数と通常利用額27,400円を確認。</td></tr>
-      <tr><td>請求書作成</td><td><span class="badge ok">TEST済み</span> 園児ごとの請求書作成まで確認。</td></tr>
-      <tr><td>確認メール送信</td><td><span class="badge ok">TEST済み</span> 請求書を添付した確認メールの送信まで確認。</td></tr>
-      <tr><td>請求書送信日</td><td><span class="badge ok">仕様確定</span> 翌月1日。休日でも1日に送信。</td></tr>
-      <tr><td>引き落とし</td><td><span class="badge ok">仕様確定</span> 翌月7日。休日の場合は翌営業日。</td></tr>
-      <tr><td>請求後の訂正</td><td><span class="badge ok">仕様確定</span> 翌月の保育料で加算・減算して調整。</td></tr>
-      <tr><td>臨時徴収</td><td><span class="badge plan">実装準備</span> 通常利用料とは別に入力し、請求時に加算する。</td></tr>
-      <tr><td>長期休暇の取消・変更</td><td><span class="badge ok">TEST済み</span> 7日前のキャンセル料境界と前日15:30の受付境界を確認。</td></tr>
-      <tr><td>翌日利用者リスト</td><td><span class="badge ok">TEST済み</span> 15:30締切、15:35の確定リスト送信を確認。</td></tr>
-      <tr><td>利用実績</td><td><span class="badge ok">TEST済み</span> 実際の利用有無・終了時刻を確認し、月末集計へつなげる流れを確認。</td></tr>
-      <tr><td>兄弟姉妹の連続予約</td><td><span class="badge plan">本番前検討</span> 予約完了後に続けて別の園児を予約できる導線を検討。</td></tr>
-    </tbody>
-  </table></div>
+<h2>📌 2026年10月2日時点の確認状況</h2>
+<div class="table-scroll" style="overflow-x:auto"><table class="compact-table">
+<tbody>
+<tr><td>予約画面</td><td><span class="badge ok">TEST済み</span> 平日版・長期休暇版とも、日別予約・一括予約・確認メールまで確認。</td></tr>
+<tr><td>月末集計</td><td><span class="badge ok">TEST済み</span> 57件を集計し、時間帯別件数と通常利用額27,400円を確認。</td></tr>
+<tr><td>請求書作成</td><td><span class="badge ok">TEST済み</span> 園児ごとの請求書PDF作成・指定フォルダ保存まで確認。</td></tr>
+<tr><td>請求メール送信</td><td><span class="badge plan">次工程</span> 請求書添付メールの送信先・重複防止・翌月1日の自動実行を確認予定。</td></tr>
+<tr><td>請求書送信日</td><td><span class="badge ok">仕様確定</span> 翌月1日。休日でも1日に送信。</td></tr>
+<tr><td>引き落とし</td><td><span class="badge ok">仕様確定</span> 翌月7日。休日の場合は翌営業日。</td></tr>
+<tr><td>請求後の訂正</td><td><span class="badge ok">仕様確定</span> 翌月の保育料で加算・減算して調整。</td></tr>
+<tr><td>臨時徴収</td><td><span class="badge plan">実装準備</span> 通常利用料とは別に入力し、請求時に加算する。</td></tr>
+<tr><td>長期休暇の取消・変更</td><td><span class="badge ok">TEST済み</span> 7日前のキャンセル料境界と前日15:30の受付境界を確認。</td></tr>
+<tr><td>翌日利用者リスト</td><td><span class="badge ok">TEST済み</span> 15:30締切、15:35の確定リスト送信を確認。</td></tr>
+<tr><td>利用実績</td><td><span class="badge ok">TEST済み</span> 実際の利用有無・終了時刻を確認し、月末集計へつなげる流れを確認。</td></tr>
+<tr><td>兄弟姉妹の連続予約</td><td><span class="badge plan">本番前検討</span> 予約完了後に続けて別の園児を予約できる導線を検討。</td></tr>
+</tbody>
+</table></div>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>⬅️ データ管理の設計へ戻る</h2>
-  <p>園児情報や予約記録をどのように安全に管理するかは05-02にまとめています。</p>
-  <p><a class="menu-card" href="05_implementation_test_02.html">◀ 05-02 データ管理と安全性へ</a></p>
+<h2>⬅️ データ管理の設計へ戻る</h2>
+<p>園児情報や予約記録をどのように安全に管理するかは05-02にまとめています。</p>
+<p><a class="menu-card" href="05_implementation_test_02.html">◀ 05-02 データ管理と安全性へ</a></p>
 </section>
-
 </main>
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>園のDXを支える開発記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>園のDXを支える開発記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
 </html>

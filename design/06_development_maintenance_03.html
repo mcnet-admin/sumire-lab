@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>06-00 開発・保守記録の全体像 | Sumire Lab</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>06-03 データ構造 | Sumire Lab</title>
 <style>
 :root{
   --purple:#6f42c1;
@@ -66,296 +67,289 @@ th{background:#fafafa}
 footer{text-align:center;padding:24px;color:#666;font-size:13px}
 @media(max-width:700px){main{padding:14px}.page-nav{position:static}.page-nav a{flex-basis:100%}}
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
-  <h1>🗂️ 06-03 データ構造</h1>
-  <p>園児情報、予約、電話受付、利用実績、月末集計、臨時徴収、請求までのデータの流れを整理します。</p>
+<h1>🗂️ 06-03 データ構造</h1>
+<p>園児情報、予約、電話受付、利用実績、月末集計、臨時徴収、請求までのデータの流れを整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05 園スタッフ向け</a>
-  <a href="06_development_maintenance_00.html">06-00 開発・保守の全体像</a>
-  <a href="06_development_maintenance_01.html">06-01 アクセス・認証</a>
-  <a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a>
-  <a class="current" href="06_development_maintenance_03.html">06-03 データ構造</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="06_development_maintenance_02.html">◀ 06-02 Apps Script・デプロイ</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="06_development_maintenance_04.html">06-04 自動処理・検証 ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05 園スタッフ向け</a><a href="06_development_maintenance_00.html">06-00 全体像</a><a href="06_development_maintenance_01.html">06-01 アクセス・認証</a><a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a><a class="current" href="06_development_maintenance_03.html">06-03 データ構造</a><a href="06_development_maintenance_04.html">06-04 自動処理・検証</a><a href="06_development_maintenance_05.html">06-05 本番移行・保守</a></nav>
 <div class="audience">
-  <span class="role-tag">開発・保守担当者向け</span><br/>
-  <strong>06-03では、「どのデータを、どこに、どの単位で持つか」を記録します。</strong><br/>
+<span class="role-tag">開発・保守担当者向け</span><br/>
+<strong>06-03では、「どのデータを、どこに、どの単位で持つか」を記録します。</strong><br/>
   項目名は保守のために技術用語を使用しますが、園側が読んでも役割が分かるよう日本語の意味も併記します。
 </div>
-
 <section class="card">
-  <h2>🌸 データは役割ごとに分けます</h2>
-  <p>
+<h2>🌸 データは役割ごとに分けます</h2>
+<p>
     Version 2.0では、園児情報・予約予定・実際の利用・月末集計・臨時徴収を同じ表へ詰め込まず、
     <strong>役割ごとに分離して管理</strong>します。
   </p>
-
-  <div class="arch">
-    <div class="step"><strong><code>children</code></strong>園児情報</div>
-    <div class="step"><strong><code>reservations</code></strong>予約予定</div>
-    <div class="step"><strong><code>phone_reception_logs</code></strong>電話変更履歴</div>
-    <div class="step"><strong><code>usage_actuals</code></strong>実際の利用結果</div>
-    <div class="step"><strong><code>monthly_summary_TEST</code></strong>月末集計</div>
-    <div class="step"><strong><code>extra_charges_TEST</code></strong>臨時徴収</div>
-  </div>
-
-  <div class="emphasis">
-    <strong>基本原則：</strong><br/>
+<div class="arch">
+<div class="step"><strong><code>children</code></strong>園児情報</div>
+<div class="step"><strong><code>reservations</code></strong>予約予定</div>
+<div class="step"><strong><code>phone_reception_logs</code></strong>電話変更履歴</div>
+<div class="step"><strong><code>usage_actuals</code></strong>実際の利用結果</div>
+<div class="step"><strong><code>monthly_summary_TEST</code></strong>月末集計</div>
+<div class="step"><strong><code>extra_charges_TEST</code></strong>臨時徴収</div>
+</div>
+<div class="emphasis">
+<strong>基本原則：</strong><br/>
     「園児の基本情報」「予約した内容」「実際に利用した内容」「請求に使う集計結果」を分けることで、
     変更・取消・欠席・早いお迎えにも対応できる構造にします。
   </div>
 </section>
-
 <section class="card">
-  <h2>👧 <code>children</code> ― 予約に必要な園児情報</h2>
-  <p>
+<h2>👧 <code>children</code> ― 予約に必要な園児情報</h2>
+<p>
     予約画面や確認メールで必要となる園児情報を保持します。
     園内PCにある正式な園児情報の原本とは役割を分け、予約システムに必要な範囲だけを使用します。
   </p>
-
-  <div class="note">
-    <strong>現在確認できている運用上の重要点</strong><br/>
+<div class="note">
+<strong>現在確認できている運用上の重要点</strong><br/>
     予約対象として扱うのは <code>active=TRUE</code> の園児です。
     保護者メールアドレスはブラウザ側へ直接渡さず、園側で管理した情報を確認メール送信に使用します。
   </div>
-
-  <p class="small">
+<p class="small">
     ※<code>children</code> の全列定義は、現時点の記録では確定表として整理していません。
     06-03では、確認済みの役割と運用条件を記載し、列定義は実シート確認後に追記します。
   </p>
 </section>
-
 <section class="card">
-  <h2>📅 <code>reservations</code> ― 園児ごと・1日ごとの予約</h2>
-  <p>一括予約で入力した場合も、保存後は1日ごとの独立した予約として扱います。</p>
-
-  <div class="table-scroll" style="overflow-x:auto;">
-  <table class="compact-table">
-    <thead><tr><th>列</th><th>項目</th><th>意味</th></tr></thead>
-    <tbody>
-      <tr><td>A</td><td><code>child_id</code></td><td>園児を識別するID</td></tr>
-      <tr><td>B</td><td><code>date</code></td><td>利用予定日</td></tr>
-      <tr><td>C</td><td><code>end_time</code></td><td>予約時の終了予定時刻</td></tr>
-      <tr><td>D</td><td><code>received_at</code></td><td>予約を受け付けた日時</td></tr>
-      <tr><td>E</td><td><code>time_code</code></td><td>利用時間帯を表す内部コード</td></tr>
-      <tr><td>F</td><td><code>pickup</code></td><td>お迎えの方</td></tr>
-      <tr><td>G</td><td><code>memo</code></td><td>予約時の備考</td></tr>
-      <tr><td>H</td><td><code>status</code></td><td><code>active</code>／<code>cancelled</code></td></tr>
-      <tr><td>I</td><td><code>input_type</code></td><td>日別・一括などの入力区分</td></tr>
-      <tr><td>J</td><td><code>updated_at</code></td><td>最終更新日時</td></tr>
-      <tr><td>K</td><td><code>reservation_id</code></td><td>予約を一意に識別するID</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <div class="note">
-    <strong>旧データとの互換：</strong><br/>
-    <code>status</code> が空欄の旧予約については、現在の運用では <code>active</code> と同等に扱います。
+<h2>📅 <code>reservations</code> ― 園児ごと・1日ごとの予約</h2>
+<p>一括予約で入力した場合も、保存後は1日ごとの独立した予約として扱います。</p>
+<div class="table-scroll" style="overflow-x:auto;">
+<table class="compact-table">
+<thead><tr><th>列</th><th>項目</th><th>意味</th></tr></thead>
+<tbody>
+<tr><td>A</td><td><code>child_id</code></td><td>園児を識別するID</td></tr>
+<tr><td>B</td><td><code>date</code></td><td>利用予定日</td></tr>
+<tr><td>C</td><td><code>end_time</code></td><td>予約時の終了予定時刻</td></tr>
+<tr><td>D</td><td><code>received_at</code></td><td>予約を受け付けた日時</td></tr>
+<tr><td>E</td><td><code>time_code</code></td><td>利用時間帯を表す内部コード</td></tr>
+<tr><td>F</td><td><code>pickup</code></td><td>お迎えの方</td></tr>
+<tr><td>G</td><td><code>memo</code></td><td>予約時の備考</td></tr>
+<tr><td>H</td><td><code>status</code></td><td><code>active</code>／<code>cancelled</code></td></tr>
+<tr><td>I</td><td><code>input_type</code></td><td>日別・一括などの入力区分</td></tr>
+<tr><td>J</td><td><code>updated_at</code></td><td>最終更新日時</td></tr>
+<tr><td>K</td><td><code>reservation_id</code></td><td>予約を一意に識別するID</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<strong>旧データとの互換：</strong><br/>
+<code>status</code> が空欄の旧予約については、現在の運用では <code>active</code> と同等に扱います。
   </div>
 </section>
-
 <section class="card">
-  <h2>☎️ <code>phone_reception_logs</code> ― 電話変更の履歴</h2>
-  <p>
+<h2>☎️ <code>phone_reception_logs</code> ― 電話変更の履歴</h2>
+<p>
     Web受付締切後の電話変更・取消は、予約の最新状態だけを書き換えるのではなく、
     <strong>「誰から電話があり、誰が受け、何を変更したか」</strong>を別の履歴として残します。
   </p>
-
-  <div class="grid">
-    <div class="box"><h3>最新状態</h3><p><code>reservations</code> に現在の予約内容を反映します。</p></div>
-    <div class="box"><h3>変更履歴</h3><p><code>phone_reception_logs</code> に電話受付の経過を残します。</p></div>
-  </div>
-
-  <div class="success">
-    <strong>2026年9月26日TEST：</strong><br/>
+<div class="grid">
+<div class="box"><h3>最新状態</h3><p><code>reservations</code> に現在の予約内容を反映します。</p></div>
+<div class="box"><h3>変更履歴</h3><p><code>phone_reception_logs</code> に電話受付の経過を残します。</p></div>
+</div>
+<div class="success">
+<strong>2026年9月26日TEST：</strong><br/>
     予約時刻変更・取消を行い、最新状態と電話受付履歴が分かれて残ることを確認しました。
   </div>
-
-  <p class="small">
+<p class="small">
     ※<code>phone_reception_logs</code> の全列定義は、実シートと照合して今後追記します。
   </p>
 </section>
-
 <section class="card">
-  <h2>✅ <code>usage_actuals</code> ― 実際の利用結果</h2>
-  <p>
+<h2>✅ <code>usage_actuals</code> ― 実際の利用結果</h2>
+<p>
     予約があったことと、実際に利用したことは分けて記録します。
     翌日の予約をもとに確認用の行を用意し、当日に利用有無と実終了時刻を確定します。
   </p>
-
-  <div class="table-scroll" style="overflow-x:auto;">
-  <table class="compact-table">
-    <thead><tr><th>列</th><th>項目</th><th>意味</th></tr></thead>
-    <tbody>
-      <tr><td>A</td><td><code>usage_id</code></td><td>利用実績を一意に識別するID</td></tr>
-      <tr><td>B</td><td><code>child_id</code></td><td>園児ID</td></tr>
-      <tr><td>C</td><td><code>date</code></td><td>利用日</td></tr>
-      <tr><td>D</td><td><code>reservation_id</code></td><td>元になった予約ID</td></tr>
-      <tr><td>E</td><td><code>used</code></td><td>利用あり／利用なし。未確認は空欄</td></tr>
-      <tr><td>F</td><td><code>actual_end_time</code></td><td>実際の終了時刻</td></tr>
-      <tr><td>G</td><td><code>actual_time_code</code></td><td>実利用時間に対応する内部コード</td></tr>
-      <tr><td>H</td><td><code>confirmed_at</code></td><td>園で実績を確認した日時</td></tr>
-      <tr><td>I</td><td><code>memo</code></td><td>欠席・例外対応などの備考</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <div class="emphasis">
-    <strong><code>used</code> の空欄と <code>FALSE</code> は意味が違います。</strong><br/>
+<div class="table-scroll" style="overflow-x:auto;">
+<table class="compact-table">
+<thead><tr><th>列</th><th>項目</th><th>意味</th></tr></thead>
+<tbody>
+<tr><td>A</td><td><code>usage_id</code></td><td>利用実績を一意に識別するID</td></tr>
+<tr><td>B</td><td><code>child_id</code></td><td>園児ID</td></tr>
+<tr><td>C</td><td><code>date</code></td><td>利用日</td></tr>
+<tr><td>D</td><td><code>reservation_id</code></td><td>元になった予約ID</td></tr>
+<tr><td>E</td><td><code>used</code></td><td>利用あり／利用なし。未確認は空欄</td></tr>
+<tr><td>F</td><td><code>actual_end_time</code></td><td>実際の終了時刻</td></tr>
+<tr><td>G</td><td><code>actual_time_code</code></td><td>実利用時間に対応する内部コード</td></tr>
+<tr><td>H</td><td><code>confirmed_at</code></td><td>園で実績を確認した日時</td></tr>
+<tr><td>I</td><td><code>memo</code></td><td>欠席・例外対応などの備考</td></tr>
+</tbody>
+</table>
+</div>
+<div class="emphasis">
+<strong><code>used</code> の空欄と <code>FALSE</code> は意味が違います。</strong><br/>
     空欄＝まだ確認していない、<code>FALSE</code>＝確認した結果「利用なし」です。
   </div>
-
-  <div class="note">
-    <strong>重複防止：</strong><br/>
+<div class="note">
+<strong>重複防止：</strong><br/>
     同じ園児・同じ利用日の <code>usage_id</code> がすでにある場合は、新しい候補行を追加しません。
   </div>
 </section>
-
 <section class="card">
-  <h2>📊 <code>monthly_summary_TEST</code> ― 月末集計</h2>
-  <p>
+<h2>📊 <code>monthly_summary_TEST</code> ― 月末集計</h2>
+<p>
     確認済みの利用実績から、園児ごとの利用件数、時間帯別件数、通常利用額を集計します。
   </p>
-
-  <div class="table-scroll" style="overflow-x:auto;">
-  <table class="compact-table">
-    <thead><tr><th>列</th><th>内容</th></tr></thead>
-    <tbody>
-      <tr><td>A</td><td>園児ID</td></tr>
-      <tr><td>B</td><td>利用実績件数</td></tr>
-      <tr><td>C</td><td>利用あり</td></tr>
-      <tr><td>D</td><td>利用なし</td></tr>
-      <tr><td>E</td><td>未確定</td></tr>
-      <tr><td>F</td><td>15:00まで</td></tr>
-      <tr><td>G</td><td>16:30まで</td></tr>
-      <tr><td>H</td><td>17:00まで</td></tr>
-      <tr><td>I</td><td>18:00まで</td></tr>
-      <tr><td>J</td><td>通常利用額</td></tr>
-      <tr><td>K</td><td>対象月表示</td></tr>
-      <tr><td>L</td><td><code>targetMonth</code></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <div class="success">
-    <strong>2026年9月27日 月末集計TEST：</strong><br/>
+<div class="table-scroll" style="overflow-x:auto;">
+<table class="compact-table">
+<thead><tr><th>列</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>園児ID</td></tr>
+<tr><td>B</td><td>利用実績件数</td></tr>
+<tr><td>C</td><td>利用あり</td></tr>
+<tr><td>D</td><td>利用なし</td></tr>
+<tr><td>E</td><td>未確定</td></tr>
+<tr><td>F</td><td>15:00まで</td></tr>
+<tr><td>G</td><td>16:30まで</td></tr>
+<tr><td>H</td><td>17:00まで</td></tr>
+<tr><td>I</td><td>18:00まで</td></tr>
+<tr><td>J</td><td>通常利用額</td></tr>
+<tr><td>K</td><td>対象月表示</td></tr>
+<tr><td>L</td><td><code>targetMonth</code></td></tr>
+</tbody>
+</table>
+</div>
+<div class="success">
+<strong>2026年9月27日 月末集計TEST：</strong><br/>
     57件を集計し、利用あり46件、利用なし11件、未確定0件。<br/>
     15:00まで22件、16:30まで0件、17:00まで14件、18:00まで10件。<br/>
     通常利用額合計は<strong>27,400円</strong>で期待値と一致しました。
   </div>
 </section>
-
 <section class="card">
-  <h2>➕ <code>extra_charges_TEST</code> ― 臨時徴収</h2>
-  <p>
+<h2>➕ <code>extra_charges_TEST</code> ― 臨時徴収</h2>
+<p>
     写真代・教材費・行事費など、通常利用料とは性質の異なる請求項目は、
     <code>usage_actuals</code> へ混在させず、専用データとして分離します。
   </p>
-
-  <div class="table-scroll" style="overflow-x:auto;">
-  <table class="compact-table">
-    <thead><tr><th>項目</th><th>意味</th></tr></thead>
-    <tbody>
-      <tr><td><code>child_id</code></td><td>園児ID</td></tr>
-      <tr><td><code>target_month</code></td><td>請求対象月（YYYY-MM）</td></tr>
-      <tr><td><code>charge_date</code></td><td>登録日・徴収日</td></tr>
-      <tr><td><code>item</code></td><td>臨時徴収の項目名</td></tr>
-      <tr><td><code>amount</code></td><td>徴収金額</td></tr>
-      <tr><td><code>memo</code></td><td>備考</td></tr>
-      <tr><td><code>created_at</code></td><td>登録日時</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <div class="note">
-    <strong>1人・1か月に複数件登録できる前提です。</strong><br/>
+<div class="table-scroll" style="overflow-x:auto;">
+<table class="compact-table">
+<thead><tr><th>項目</th><th>意味</th></tr></thead>
+<tbody>
+<tr><td><code>child_id</code></td><td>園児ID</td></tr>
+<tr><td><code>target_month</code></td><td>請求対象月（YYYY-MM）</td></tr>
+<tr><td><code>charge_date</code></td><td>登録日・徴収日</td></tr>
+<tr><td><code>item</code></td><td>臨時徴収の項目名</td></tr>
+<tr><td><code>amount</code></td><td>徴収金額</td></tr>
+<tr><td><code>memo</code></td><td>備考</td></tr>
+<tr><td><code>created_at</code></td><td>登録日時</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<strong>1人・1か月に複数件登録できる前提です。</strong><br/>
     月末集計後に通常利用額へ加算し、請求額合計を作る方向で設計します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🔗 予約から請求までのデータの受け渡し</h2>
-  <div class="arch">
-    <div class="step"><strong><code>children</code></strong>園児を特定</div>
-    <div class="step"><strong><code>reservations</code></strong>利用予定を保存</div>
-    <div class="step"><strong><code>usage_actuals</code></strong>実際の利用を確認</div>
-    <div class="step"><strong><code>extra_charges_TEST</code></strong>必要な追加請求を登録</div>
-    <div class="step"><strong><code>monthly_summary_TEST</code></strong>月末集計</div>
-    <div class="step"><strong>請求書PDF</strong>園児ごとに作成</div>
-    <div class="step"><strong>メール送信</strong>保護者へ送信</div>
-  </div>
-
-  <div class="emphasis">
-    <strong>予約データから直接請求書を作らないことが重要です。</strong><br/>
+<h2>🔗 予約から請求までのデータの受け渡し</h2>
+<div class="arch">
+<div class="step"><strong><code>children</code></strong>園児を特定</div>
+<div class="step"><strong><code>reservations</code></strong>利用予定を保存</div>
+<div class="step"><strong><code>usage_actuals</code></strong>実際の利用を確認</div>
+<div class="step"><strong><code>extra_charges_TEST</code></strong>必要な追加請求を登録</div>
+<div class="step"><strong><code>monthly_summary_TEST</code></strong>月末集計</div>
+<div class="step"><strong>請求書PDF</strong>園児ごとに作成</div>
+<div class="step"><strong>メール送信</strong>保護者へ送信</div>
+</div>
+<div class="emphasis">
+<strong>予約データから直接請求書を作らないことが重要です。</strong><br/>
     必ず利用実績を確認し、その後に月末集計・臨時徴収を経て請求へ進みます。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧭 IDのつながり</h2>
-  <table class="compact-table">
-    <thead><tr><th>ID</th><th>役割</th><th>主なつながり</th></tr></thead>
-    <tbody>
-      <tr><td><code>child_id</code></td><td>園児を識別</td><td><code>children</code> ↔ <code>reservations</code> ↔ <code>usage_actuals</code> ↔ 臨時徴収・集計</td></tr>
-      <tr><td><code>reservation_id</code></td><td>1件の予約を識別</td><td><code>reservations</code> ↔ <code>usage_actuals</code></td></tr>
-      <tr><td><code>usage_id</code></td><td>1件の利用実績を識別</td><td>同一園児・同一日の重複生成防止</td></tr>
-    </tbody>
-  </table>
+<h2>🧭 IDのつながり</h2>
+<table class="compact-table">
+<thead><tr><th>ID</th><th>役割</th><th>主なつながり</th></tr></thead>
+<tbody>
+<tr><td><code>child_id</code></td><td>園児を識別</td><td><code>children</code> ↔ <code>reservations</code> ↔ <code>usage_actuals</code> ↔ 臨時徴収・集計</td></tr>
+<tr><td><code>reservation_id</code></td><td>1件の予約を識別</td><td><code>reservations</code> ↔ <code>usage_actuals</code></td></tr>
+<tr><td><code>usage_id</code></td><td>1件の利用実績を識別</td><td>同一園児・同一日の重複生成防止</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>⚠️ データを変更するときの注意</h2>
-  <ul>
-    <li>列の追加・削除・並び替えは、Apps Script側の参照位置に影響する可能性があります。</li>
-    <li><code>status</code>、<code>used</code>、時間コードなど、判定に使う値の表記を勝手に変更しません。</li>
-    <li>TESTシートと本番シートを混在させません。</li>
-    <li>園児ID・予約ID・利用IDを手作業で不用意に書き換えません。</li>
-    <li>保護者メールアドレスなどの個人情報を公開画面側へ渡しません。</li>
-  </ul>
-
-  <div class="warning">
-    <strong>シートを見た目だけで変更しないこと。</strong><br/>
+<h2>⚠️ データを変更するときの注意</h2>
+<ul>
+<li>列の追加・削除・並び替えは、Apps Script側の参照位置に影響する可能性があります。</li>
+<li><code>status</code>、<code>used</code>、時間コードなど、判定に使う値の表記を勝手に変更しません。</li>
+<li>TESTシートと本番シートを混在させません。</li>
+<li>園児ID・予約ID・利用IDを手作業で不用意に書き換えません。</li>
+<li>保護者メールアドレスなどの個人情報を公開画面側へ渡しません。</li>
+</ul>
+<div class="warning">
+<strong>シートを見た目だけで変更しないこと。</strong><br/>
     表の列は画面表示用ではなく、プログラムから参照されるデータ構造でもあります。
     変更前に、どのスクリプトがその列を読んでいるかを確認します。
   </div>
 </section>
-
 <section class="card">
-  <h2>📌 2026年9月27日時点</h2>
-  <table class="compact-table">
-    <tbody>
-      <tr><td><code>children</code></td><td><span class="badge ok">運用中</span> 予約対象園児と連絡先の基礎データ。</td></tr>
-      <tr><td><code>reservations</code></td><td><span class="badge ok">TEST済み</span> 新規・一括・変更・取消・電話修正まで確認。</td></tr>
-      <tr><td><code>phone_reception_logs</code></td><td><span class="badge ok">TEST済み</span> 電話変更・取消履歴を保存。</td></tr>
-      <tr><td><code>usage_actuals</code></td><td><span class="badge ok">TEST済み</span> 候補生成、重複防止、利用実績確定、月末集計連携。</td></tr>
-      <tr><td><code>monthly_summary_TEST</code></td><td><span class="badge ok">TEST済み</span> 57件・通常利用額27,400円を確認。</td></tr>
-      <tr><td><code>extra_charges_TEST</code></td><td><span class="badge plan">次工程</span> 臨時徴収入力と請求額への加算を実装予定。</td></tr>
-      <tr><td>請求書PDF・メール</td><td><span class="badge ok">TEST済み</span> 園児別PDF作成・確認メール送信まで完了。</td></tr>
-    </tbody>
-  </table>
+<h2>📌 2026年10月2日時点</h2>
+<table class="compact-table">
+<tbody>
+<tr><td><code>children</code></td><td><span class="badge ok">運用中</span> 予約対象園児と連絡先の基礎データ。</td></tr>
+<tr><td><code>reservations</code></td><td><span class="badge ok">TEST済み</span> 新規・一括・変更・取消・電話修正まで確認。</td></tr>
+<tr><td><code>phone_reception_logs</code></td><td><span class="badge ok">TEST済み</span> 電話変更・取消履歴を保存。</td></tr>
+<tr><td><code>usage_actuals</code></td><td><span class="badge ok">TEST済み</span> 候補生成、重複防止、利用実績確定、月末集計連携。</td></tr>
+<tr><td><code>monthly_summary_TEST</code></td><td><span class="badge ok">TEST済み</span> 57件・通常利用額27,400円を確認。</td></tr>
+<tr><td><code>extra_charges_TEST</code></td><td><span class="badge plan">次工程</span> 臨時徴収入力と請求額への加算を実装予定。</td></tr>
+<tr><td>請求書PDF</td><td><span class="badge ok">TEST済み</span> 園児別PDF作成・指定フォルダ保存まで完了。</td></tr><tr><td>請求メール</td><td><span class="badge plan">次工程</span> 翌月1日の送信・重複防止・自動実行を確認予定。</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>📘 次の技術記録</h2>
-  <p>15:35自動処理、境界条件、重複防止、TEST結果の詳細は06-04で整理します。</p>
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-    <a class="menu-card" href="06_development_maintenance_02.html">◀ 06-02 Apps Script・デプロイへ</a>
-    <a class="menu-card" href="06_development_maintenance_04.html">06-04 自動処理・検証記録へ ▶</a>
-  </div>
+<h2>📘 次の技術記録</h2>
+<p>15:35自動処理、境界条件、重複防止、TEST結果の詳細は06-04で整理します。</p>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+<a class="menu-card" href="06_development_maintenance_02.html">◀ 06-02 Apps Script・デプロイへ</a>
+<a class="menu-card" href="06_development_maintenance_04.html">06-04 自動処理・検証記録へ ▶</a>
+</div>
 </section>
-
 </main>
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>開発・保守担当者向け 技術記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>開発・保守担当者向け 技術記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
 </html>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>06-00 開発・保守記録の全体像 | Sumire Lab</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>06-01 アクセス・認証・公開設定 | Sumire Lab</title>
 <style>
 :root{
   --purple:#6f42c1;
@@ -66,264 +67,271 @@ th{background:#fafafa}
 footer{text-align:center;padding:24px;color:#666;font-size:13px}
 @media(max-width:700px){main{padding:14px}.page-nav{position:static}.page-nav a{flex-basis:100%}}
 </style>
-</head>
+<style id="sequence-nav-style">
+/* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
+.sequence-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.sequence-nav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 11px;
+  border:1px solid #d7e2ef;
+  border-radius:9px;
+  background:#fff;
+  color:#35516f;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.sequence-nav a:hover{background:#f5f9ff}
+.sequence-nav .seq-home{margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+  .sequence-nav{gap:6px}
+  .sequence-nav a{flex:1 1 auto;padding:7px 8px;font-size:12px}
+}
+</style></head>
 <body>
 <header>
-  <h1>🔐 06-01 アクセス・認証・公開設定</h1>
-  <p>保護者向け画面、園スタッフ用画面、開発用画面を「誰が・どこまで使えるか」で整理します。</p>
+<h1>🔐 06-01 アクセス・認証・公開設定</h1>
+<p>保護者向け画面、園スタッフ用画面、開発用画面を「誰が・どこまで使えるか」で整理します。</p>
 </header>
-
-<main>
-<nav class="page-nav">
-  <a href="05_implementation_test_00.html">05 園スタッフ向け</a>
-  <a href="06_development_maintenance_00.html">06-00 開発・保守の全体像</a>
-  <a class="current" href="06_development_maintenance_01.html">06-01 アクセス・認証・公開設定</a>
-</nav>
-
+<main><nav aria-label="前後のページへ移動" class="sequence-nav"><a href="06_development_maintenance_00.html">◀ 06-00 全体像</a><a class="seq-home" href="../index.html">🏠 トップ</a><a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ ▶</a></nav>
+<nav class="page-nav"><a href="05_implementation_test_00.html">05 園スタッフ向け</a><a href="06_development_maintenance_00.html">06-00 全体像</a><a class="current" href="06_development_maintenance_01.html">06-01 アクセス・認証</a><a href="06_development_maintenance_02.html">06-02 Apps Script・デプロイ</a><a href="06_development_maintenance_03.html">06-03 データ構造</a><a href="06_development_maintenance_04.html">06-04 自動処理・検証</a><a href="06_development_maintenance_05.html">06-05 本番移行・保守</a></nav>
 <div class="audience">
-  <span class="role-tag">開発・保守担当者向け</span><br/>
-  <strong>06-01では、「公開してよい画面」と「園だけが操作する画面」を分けて記録します。</strong><br/>
+<span class="role-tag">開発・保守担当者向け</span><br/>
+<strong>06-01では、「公開してよい画面」と「園だけが操作する画面」を分けて記録します。</strong><br/>
   技術的な設定を残しつつ、園側が読んでも「誰が何を使うのか」が分かる表現にします。
 </div>
-
 <section class="card">
-  <h2>🌸 まず、画面を3つに分けて考えます</h2>
-  <div class="grid">
-    <div class="box">
-      <h3>① 保護者向け予約画面</h3>
-      <p>インターネットから開く公開画面です。予約・変更・取消に必要な情報だけを表示します。</p>
-    </div>
-    <div class="box">
-      <h3>② 園スタッフ用画面</h3>
-      <p>電話受付・予約修正など、園が操作する専用画面です。指定された園側アカウントでのみ使用します。</p>
-    </div>
-    <div class="box">
-      <h3>③ 開発・保守用画面</h3>
-      <p>最新版の動作確認、設定変更、TEST、デプロイ確認に使います。園スタッフの日常業務では使用しません。</p>
-    </div>
-  </div>
-  <div class="emphasis">
-    <strong>公開画面と管理画面を同じ扱いにしないことが基本です。</strong><br/>
+<h2>🌸 まず、画面を3つに分けて考えます</h2>
+<div class="grid">
+<div class="box">
+<h3>① 保護者向け予約画面</h3>
+<p>インターネットから開く公開画面です。予約・変更・取消に必要な情報だけを表示します。</p>
+</div>
+<div class="box">
+<h3>② 園スタッフ用画面</h3>
+<p>電話受付・予約修正など、園が操作する専用画面です。指定された園側アカウントでのみ使用します。</p>
+</div>
+<div class="box">
+<h3>③ 開発・保守用画面</h3>
+<p>最新版の動作確認、設定変更、TEST、デプロイ確認に使います。園スタッフの日常業務では使用しません。</p>
+</div>
+</div>
+<div class="emphasis">
+<strong>公開画面と管理画面を同じ扱いにしないことが基本です。</strong><br/>
     保護者は予約に必要な操作だけ、園スタッフは園の業務に必要な操作だけ、開発担当は設定・保守まで扱います。
   </div>
 </section>
-
 <section class="card">
-  <h2>🌐 公開画面と業務画面の役割</h2>
-  <table class="compact-table">
-    <thead>
-      <tr><th>区分</th><th>主な利用者</th><th>役割</th><th>アクセスの考え方</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>保護者向け</td>
-        <td>保護者</td>
-        <td>日別予約、一括予約、変更、取消</td>
-        <td>インターネットから案内された入口を開いて利用</td>
-      </tr>
-      <tr>
-        <td>園スタッフ向け</td>
-        <td>園スタッフ</td>
-        <td>電話受付、予約修正、変更・取消記録</td>
-        <td>園が指定したGoogleアカウントでログインして利用</td>
-      </tr>
-      <tr>
-        <td>開発・保守向け</td>
-        <td>開発・保守担当</td>
-        <td>最新版確認、TEST、デプロイ、設定変更</td>
-        <td>開発・保守用アカウントで利用</td>
-      </tr>
-    </tbody>
-  </table>
+<h2>🌐 公開画面と業務画面の役割</h2>
+<table class="compact-table">
+<thead>
+<tr><th>区分</th><th>主な利用者</th><th>役割</th><th>アクセスの考え方</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>保護者向け</td>
+<td>保護者</td>
+<td>日別予約、一括予約、変更、取消</td>
+<td>インターネットから案内された入口を開いて利用</td>
+</tr>
+<tr>
+<td>園スタッフ向け</td>
+<td>園スタッフ</td>
+<td>電話受付、予約修正、変更・取消記録</td>
+<td>園が指定したGoogleアカウントでログインして利用</td>
+</tr>
+<tr>
+<td>開発・保守向け</td>
+<td>開発・保守担当</td>
+<td>最新版確認、TEST、デプロイ、設定変更</td>
+<td>開発・保守用アカウントで利用</td>
+</tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>👥 使用アカウントを役割ごとに固定します</h2>
-  <table class="compact-table">
-    <thead>
-      <tr><th>役割</th><th>アカウント</th><th>用途</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>園スタッフ操作</td>
-        <td><code>sumire-staffs@mclean.ed.jp</code></td>
-        <td>電話受付・予約修正などの日常操作</td>
-      </tr>
-      <tr>
-        <td>園側業務メール</td>
-        <td><code>sumire@mclean.ed.jp</code></td>
-        <td>翌日利用者リストや業務通知の受信</td>
-      </tr>
-      <tr>
-        <td>将来のシステム管理</td>
-        <td><code>sumire-system@mclean.ed.jp</code></td>
-        <td>将来のApps Script・Spreadsheet等の管理権限移譲先</td>
-      </tr>
-      <tr>
-        <td>現在の開発・保守</td>
-        <td><code>mcnet-admin@mclean.ed.jp</code></td>
-        <td>開発、設定変更、TEST、デプロイ、保守</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="note" style="margin-top:14px;">
-    <strong>「園スタッフ操作」と「園側業務メール」は役割が違います。</strong><br/>
-    <code>sumire-staffs@mclean.ed.jp</code> は操作用、
+<h2>👥 使用アカウントを役割ごとに固定します</h2>
+<table class="compact-table">
+<thead>
+<tr><th>役割</th><th>アカウント</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>園スタッフ操作</td>
+<td><code>sumire-staffs@mclean.ed.jp</code></td>
+<td>電話受付・予約修正などの日常操作</td>
+</tr>
+<tr>
+<td>園側業務メール</td>
+<td><code>sumire@mclean.ed.jp</code></td>
+<td>翌日利用者リストや業務通知の受信</td>
+</tr>
+<tr>
+<td>将来のシステム管理</td>
+<td><code>sumire-system@mclean.ed.jp</code></td>
+<td>将来のApps Script・Spreadsheet等の管理権限移譲先</td>
+</tr>
+<tr>
+<td>現在の開発・保守</td>
+<td><code>mcnet-admin@mclean.ed.jp</code></td>
+<td>開発、設定変更、TEST、デプロイ、保守</td>
+</tr>
+</tbody>
+</table>
+<div class="note" style="margin-top:14px;">
+<strong>「園スタッフ操作」と「園側業務メール」は役割が違います。</strong><br/>
+<code>sumire-staffs@mclean.ed.jp</code> は操作用、
     <code>sumire@mclean.ed.jp</code> は通知受信用として分けて運用します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧭 WebアプリURLは「園スタッフ用」と「開発用」を分けます</h2>
-  <div class="grid">
-    <div class="box">
-      <h3>園スタッフ用</h3>
-      <p>日常業務では、正式に公開したWebアプリのURLを使用します。</p>
-      <p class="small"><code>/exec</code> 側を使用する考え方です。</p>
-    </div>
-    <div class="box">
-      <h3>開発・保守用</h3>
-      <p>開発中の最新版を確認するときだけ、開発用のURLを使用します。</p>
-      <p class="small"><code>/dev</code> 側は開発・保守担当のみが使用します。</p>
-    </div>
-  </div>
-
-  <div class="warning" style="margin-top:14px;">
-    <strong>園スタッフへ開発用URLを案内しません。</strong><br/>
+<h2>🧭 WebアプリURLは「園スタッフ用」と「開発用」を分けます</h2>
+<div class="grid">
+<div class="box">
+<h3>園スタッフ用</h3>
+<p>日常業務では、正式に公開したWebアプリのURLを使用します。</p>
+<p class="small"><code>/exec</code> 側を使用する考え方です。</p>
+</div>
+<div class="box">
+<h3>開発・保守用</h3>
+<p>開発中の最新版を確認するときだけ、開発用のURLを使用します。</p>
+<p class="small"><code>/dev</code> 側は開発・保守担当のみが使用します。</p>
+</div>
+</div>
+<div class="warning" style="margin-top:14px;">
+<strong>園スタッフへ開発用URLを案内しません。</strong><br/>
     日常運用で使う入口と、開発中の確認用入口を混在させないことが重要です。
   </div>
 </section>
-
 <section class="card">
-  <h2>💜 電話受付・予約修正画面のアクセス</h2>
-  <p>
+<h2>💜 電話受付・予約修正画面のアクセス</h2>
+<p>
     園スタッフ用の「電話受付・予約修正」画面は、保護者向け公開画面とは分けています。
     画面を知っているだけでは操作できず、<strong>園が指定したGoogleアカウントでログインしていること</strong>を前提とします。
   </p>
-
-  <div class="success">
-    <strong>2026年9月26日確認：</strong><br/>
-    <code>sumire-staffs@mclean.ed.jp</code> から園スタッフ用画面へログインし、
+<div class="success">
+<strong>2026年9月26日確認：</strong><br/>
+<code>sumire-staffs@mclean.ed.jp</code> から園スタッフ用画面へログインし、
     電話受付・予約修正画面を正常に起動できることを確認しました。
   </div>
-
-  <div class="note" style="margin-top:14px;">
-    <strong>URLそのものは公開用の開発記録へ直接掲載しない方針です。</strong><br/>
+<div class="note" style="margin-top:14px;">
+<strong>URLそのものは公開用の開発記録へ直接掲載しない方針です。</strong><br/>
     実運用URL、デプロイID、Spreadsheet IDなどの値は、必要な管理資料で別途保持します。
   </div>
 </section>
-
 <section class="card">
-  <h2>⚠️ 複数のGoogleアカウントを使っている場合の確認</h2>
-  <p>
+<h2>⚠️ 複数のGoogleアカウントを使っている場合の確認</h2>
+<p>
     TEST中、同じブラウザで複数のGoogleアカウントへログインしている場合に、
     Webアプリへアクセスする経路が変わり、園児名簿を正常に取得できない場面がありました。
   </p>
-  <p>
+<p>
     一方、シークレットウインドウでは同じWebアプリから正常に園児名簿を取得できたため、
     <strong>システムそのものではなく、ブラウザ側のGoogleアカウントの選択状態が影響している可能性</strong>を確認しています。
   </p>
-
-  <div class="warning">
-    <strong>本番公開前の確認事項：</strong><br/>
+<div class="warning">
+<strong>本番公開前の確認事項：</strong><br/>
     保護者がスマートフォンやパソコンで複数のGoogleアカウントを使っている場合でも、
     予約画面を迷わず開き、園児名の選択や予約操作を問題なく行えるかを確認します。<br/>
     あわせて、園から案内するアクセス方法が分かりやすく、
     特別な操作をしなくても利用できる形になっているかを最終確認します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🔒 公開してよい情報／公開しない情報</h2>
-  <table class="compact-table">
-    <thead>
-      <tr><th>扱い</th><th>例</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="badge ok">公開可</span></td>
-        <td>予約画面のHTML・CSS、園の予定として公開して差し支えない情報、操作説明</td>
-      </tr>
-      <tr>
-        <td><span class="badge rule">園内・管理用</span></td>
-        <td>園児情報、保護者メールアドレス、予約記録、利用実績、請求情報</td>
-      </tr>
-      <tr>
-        <td><span class="badge rule">開発・保守管理</span></td>
-        <td>Spreadsheet ID、デプロイID、実運用URL、内部設定値、TEST送信先の個人アドレス等</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="emphasis">
-    <strong>「技術記録に必要」＝「インターネット上へ公開してよい」ではありません。</strong><br/>
+<h2>🔒 公開してよい情報／公開しない情報</h2>
+<table class="compact-table">
+<thead>
+<tr><th>扱い</th><th>例</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="badge ok">公開可</span></td>
+<td>予約画面のHTML・CSS、園の予定として公開して差し支えない情報、操作説明</td>
+</tr>
+<tr>
+<td><span class="badge rule">園内・管理用</span></td>
+<td>園児情報、保護者メールアドレス、予約記録、利用実績、請求情報</td>
+</tr>
+<tr>
+<td><span class="badge rule">開発・保守管理</span></td>
+<td>Spreadsheet ID、デプロイID、実運用URL、内部設定値、TEST送信先の個人アドレス等</td>
+</tr>
+</tbody>
+</table>
+<div class="emphasis">
+<strong>「技術記録に必要」＝「インターネット上へ公開してよい」ではありません。</strong><br/>
     06では仕組みを記録しますが、機微な値そのものは掲載せず、必要に応じて別管理します。
   </div>
 </section>
-
 <section class="card">
-  <h2>🧪 TEST環境と本番環境の入口を混在させない</h2>
-  <div class="grid">
-    <div class="box">
-      <h3>TEST</h3>
-      <p>ダミー園児、TEST用データ、TEST用画面を使って確認します。</p>
-    </div>
-    <div class="box">
-      <h3>本番</h3>
-      <p>正式な園児情報と正式URLを使用し、TEST用データや開発用URLを持ち込みません。</p>
-    </div>
-  </div>
-
-  <div class="note" style="margin-top:14px;">
-    <strong>本番移行時に確認すること：</strong><br/>
+<h2>🧪 TEST環境と本番環境の入口を混在させない</h2>
+<div class="grid">
+<div class="box">
+<h3>TEST</h3>
+<p>ダミー園児、TEST用データ、TEST用画面を使って確認します。</p>
+</div>
+<div class="box">
+<h3>本番</h3>
+<p>正式な園児情報と正式URLを使用し、TEST用データや開発用URLを持ち込みません。</p>
+</div>
+</div>
+<div class="note" style="margin-top:14px;">
+<strong>本番移行時に確認すること：</strong><br/>
     URL、権限、送信先、データ参照先、使用アカウント、画面表示をひとつずつ確認します。
   </div>
 </section>
-
 <section class="card">
-  <h2>📌 2026年9月27日時点の確認状況</h2>
-  <table class="compact-table">
-    <tbody>
-      <tr><td>保護者向け予約画面</td><td><span class="badge ok">TEST済み</span> 日別・一括・変更・取消・確認メールを確認。</td></tr>
-      <tr><td>園スタッフ用電話受付画面</td><td><span class="badge ok">TEST済み</span> 指定アカウントから起動・変更・取消を確認。</td></tr>
-      <tr><td>園スタッフ用URL</td><td><span class="badge ok">確認済み</span> 日常運用は正式公開側を使用する方針。</td></tr>
-      <tr><td>開発用URL</td><td><span class="badge ok">運用分離</span> 開発・保守担当のみ使用。</td></tr>
-      <tr><td>複数Googleアカウント環境</td><td><span class="badge plan">本番前確認</span> 保護者環境でのアクセス方法を再検証。</td></tr>
-      <tr><td>TEST／本番分離</td><td><span class="badge ok">方針確定</span> データ・URL・送信先を分けて管理。</td></tr>
-    </tbody>
-  </table>
+<h2>📌 2026年10月2日時点の確認状況</h2>
+<table class="compact-table">
+<tbody>
+<tr><td>保護者向け予約画面</td><td><span class="badge ok">TEST済み</span> 日別・一括・変更・取消・確認メールを確認。</td></tr>
+<tr><td>園スタッフ用電話受付画面</td><td><span class="badge ok">TEST済み</span> 指定アカウントから起動・変更・取消を確認。</td></tr>
+<tr><td>園スタッフ用URL</td><td><span class="badge ok">確認済み</span> 日常運用は正式公開側を使用する方針。</td></tr>
+<tr><td>開発用URL</td><td><span class="badge ok">運用分離</span> 開発・保守担当のみ使用。</td></tr>
+<tr><td>複数Googleアカウント環境</td><td><span class="badge plan">本番前確認</span> 保護者環境でのアクセス方法を再検証。</td></tr>
+<tr><td>TEST／本番分離</td><td><span class="badge ok">方針確定</span> データ・URL・送信先を分けて管理。</td></tr>
+</tbody>
+</table>
 </section>
-
 <section class="card">
-  <h2>✅ 本番公開前チェック</h2>
-  <ul>
-    <li>保護者向け入口が、案内どおり迷わず開けるか。</li>
-    <li>複数Googleアカウント環境でも予約操作できるか。</li>
-    <li>園スタッフ用画面は指定アカウントだけが操作できるか。</li>
-    <li>園スタッフへ案内するURLが開発用URLになっていないか。</li>
-    <li>TEST用データ・TEST送信先が本番へ残っていないか。</li>
-    <li>園児情報・保護者メールアドレス・予約記録が公開領域へ出ていないか。</li>
-    <li>将来の管理権限移譲先を確認できる状態になっているか。</li>
-  </ul>
+<h2>✅ 本番公開前チェック</h2>
+<ul>
+<li>保護者向け入口が、案内どおり迷わず開けるか。</li>
+<li>複数Googleアカウント環境でも予約操作できるか。</li>
+<li>園スタッフ用画面は指定アカウントだけが操作できるか。</li>
+<li>園スタッフへ案内するURLが開発用URLになっていないか。</li>
+<li>TEST用データ・TEST送信先が本番へ残っていないか。</li>
+<li>園児情報・保護者メールアドレス・予約記録が公開領域へ出ていないか。</li>
+<li>将来の管理権限移譲先を確認できる状態になっているか。</li>
+</ul>
 </section>
-
 <section class="card" style="text-align:center;">
-  <h2>📘 次の技術記録</h2>
-  <p>Apps Scriptの構成、デプロイ、TESTと本番、トリガーについては06-02で整理します。</p>
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-    <a class="menu-card" href="06_development_maintenance_00.html">◀ 06-00 全体像へ</a>
-    <a class="menu-card" href="06_development_maintenance_02.html">06-02 Apps Script・デプロイへ ▶</a>
-  </div>
+<h2>📘 次の技術記録</h2>
+<p>Apps Scriptの構成、デプロイ、TESTと本番、トリガーについては06-02で整理します。</p>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+<a class="menu-card" href="06_development_maintenance_00.html">◀ 06-00 全体像へ</a>
+<a class="menu-card" href="06_development_maintenance_02.html">06-02 Apps Script・デプロイへ ▶</a>
+</div>
 </section>
-
 </main>
 <footer>
-  <p>🌸 <strong>Sumire Lab</strong></p>
-  <p>先生方の時間を、子どもたちの笑顔へ。</p>
-  <p>開発・保守担当者向け 技術記録</p>
-  <p>© McLean Kindergarten</p>
-  <p>Version 2.0<br/>Last Update 2026-09-27</p>
+<p>🌸 <strong>Sumire Lab</strong></p>
+<p>先生方の時間を、子どもたちの笑顔へ。</p>
+<p>開発・保守担当者向け 技術記録</p>
+<p>© McLean Kindergarten</p>
+<p>Version 2.0<br/>Last Update 2026-10-02</p>
 </footer>
 </body>
 </html>
