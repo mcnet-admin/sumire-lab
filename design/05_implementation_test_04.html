@@ -78,6 +78,37 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   header{padding:12px 0}
 }
 
+
+.mail-example-card{
+  border:1px solid #d7e2ef;
+  background:#f8fbff;
+}
+.mail-example-card h3{
+  color:#35516f;
+  margin-bottom:10px;
+}
+.mail-figure{
+  margin:14px 0 0;
+}
+.mail-figure img{
+  display:block;
+  width:100%;
+  height:auto;
+  border:1px solid #d7e2ef;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.mail-figure figcaption{
+  margin-top:8px;
+  color:#666;
+  font-size:13px;
+  line-height:1.6;
+}
+@media print{
+  .mail-figure img{box-shadow:none}
+}
+
 .table-scroll{overflow-x:auto}details{margin-top:18px}summary{cursor:pointer;font-weight:700;color:#35516f;padding:12px;background:#eef4ff;border-radius:8px}.flow-root{background:#35516f;color:white;padding:16px;border-radius:10px;text-align:center}.branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.branches .box{border-top:5px solid #6f42c1}a{color:#35516f}p,li,td{overflow-wrap:anywhere}@media(max-width:700px){.branches{grid-template-columns:1fr}h1{font-size:1.6rem}.compact-table td:first-child{white-space:normal}}
 </style><style id="sequence-nav-style">
 /* 2026-10-02: ページ上部の共通「前へ／トップ／次へ」ナビ */
@@ -124,7 +155,7 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
   使用しているサービス名、プログラム名、内部のデータ項目などは「06 開発・保守記録」に分けて整理します。
 </div>
 <section class="card">
-<span class="timeline-date">2026年9月27日 更新</span>
+<span class="timeline-date">2026年10月5日 更新</span>
 <h2>🌸 明日の準備と、当日の確認を分けて考えます</h2>
 <p>保護者の予約は「利用予定」です。実際には欠席やお迎え時刻の変更があるため、予約内容をそのまま月末の請求に使うのではなく、当日の利用結果を確認してから集計します。</p>
 <div class="emphasis">
@@ -151,8 +182,22 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <strong>名簿を受け取るための操作は不要です。</strong><br/>
     このメールは園が翌日の準備に使うもので、保護者へ予約直後に届く確認メールとは別です。
   </div>
+<div class="info" style="margin-top:14px;">
+<strong>翌日が土曜・日曜の場合は、名簿メールは届きません。</strong><br/>
+    土曜・日曜は利用対象外のため、園側で確認操作をする必要はありません。日曜日でも、翌日が月曜日の利用日であれば、15:35頃に通常どおり名簿メールが届きます。
+  </div>
 <p>15:35頃に届く名簿は、15:30の締切時点の予定をまとめたものです。15:30から15:35までの5分間に、電話変更を急いで入力する必要はありません。</p>
 </section>
+
+<section class="card mail-example-card">
+<h3>📩 園スタッフに届く確認メールの例</h3>
+<p>15:35頃になると、次のようなメールが園スタッフ用のメールアドレスへ届きます。翌日の園児名、利用予定時刻、お迎え予定を確認します。</p>
+<figure class="mail-figure">
+  <img src="../img/sumire_1535_mail_20261005.png" alt="15時35分に園スタッフ用メールアドレスへ届く翌日確定リストの表示例" loading="lazy"/>
+  <figcaption>TEST環境での確認メール表示例。件名の「明日確認」を目印に、翌日の利用予定を確認します。</figcaption>
+</figure>
+</section>
+
 <section class="card">
 <h2>3．名簿が届いた後の電話変更は、園で記録します</h2>
 <p>例えば、名簿が届いた後に「明日はお休みします」と電話があった場合は、園スタッフ用の<strong>「電話受付・予約修正」入力画面</strong>から変更内容を記録します。</p>
@@ -194,7 +239,8 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <table>
 <thead><tr><th>確認したこと</th><th>結果</th></tr></thead>
 <tbody>
-<tr><td>前日15:35頃に翌日の名簿が届くか</td><td><span class="badge ok">確認済み</span> 自動で受信できました。</td></tr>
+<tr><td>前日15:35頃に翌日の名簿が届くか</td><td><span class="badge ok">確認済み</span> 10/5（月）15:35に、10/6（火）分を園スタッフ用メールアドレスで自動受信しました。</td></tr>
+<tr><td>翌日が土曜・日曜の場合にメールを送らないか</td><td><span class="badge ok">確認済み</span> 10/2（金）の自動処理で10/3（土）を判定し、メールを送信しないことを確認しました。</td></tr>
 <tr><td>翌日利用予定者の確認欄が正しく用意されるか</td><td><span class="badge ok">確認済み</span> 園児ごとに重複なく用意できました。</td></tr>
 <tr><td>電話変更・取消を園側で記録できるか</td><td><span class="badge ok">確認済み</span> 変更内容と受付記録を残せます。</td></tr>
 <tr><td>利用あり・利用なし・実際の終了時刻を区別できるか</td><td><span class="badge ok">確認済み</span> 月末集計へつなげられる形で確認しました。</td></tr>
@@ -203,15 +249,16 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 </table>
 </div>
 <div class="success">
-<strong>2026年10月2日時点：</strong><br/>
-    翌日名簿 → 当日の利用実績 → 月末集計 → 請求書PDF作成まで、TESTで一連の流れを確認しました。請求メール送信・自動実行は次工程です。
+<strong>2026年10月5日時点：</strong><br/>
+    前日15:35の自動処理について、現在の運用アカウントで平日利用分の名簿メール受信、翌日の利用確認欄の自動準備、土日分のメール非送信まで実動確認できました。あわせて、当日の利用実績 → 月末集計 → 請求書PDF作成まで、TESTで一連の流れを確認しています。請求メール送信・自動実行は次工程です。
   </div>
 </section>
 <section class="card">
 <h2>6．園スタッフが覚えておくこと</h2>
 <ul>
 <li><strong>前日15:30：</strong>翌日分のインターネット受付が終了します。</li>
-<li><strong>前日15:35頃：</strong>届いた翌日の利用予定者名簿を確認します。</li>
+<li><strong>翌日が利用日の場合：</strong>15:35頃に届いた翌日の利用予定者名簿を確認します。</li>
+<li><strong>翌日が土曜・日曜の場合：</strong>名簿メールは届きません。園側で確認操作をする必要はありません。</li>
 <li><strong>名簿受取後：</strong>電話変更があれば、園側で変更内容を記録します。</li>
 <li><strong>利用当日：</strong>実際の利用の有無とお迎え時刻を確認します。</li>
 <li><strong>月末：</strong>確認済みの利用実績をもとに料金を集計します。</li>
@@ -240,6 +287,6 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <p>先生方の時間を、子どもたちの笑顔へ。</p>
 <p>園のDXを支える開発記録</p>
 <p>© McLean Kindergarten</p>
-<p>Version 2.0<br/>Last Update 2026-10-02</p>
+<p>Version 2.0<br/>Last Update 2026-10-05</p>
 </footer>
 </body></html>
