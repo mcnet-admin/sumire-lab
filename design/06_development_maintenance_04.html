@@ -347,6 +347,12 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <a class="menu-card" href="06_development_maintenance_05.html">06-05 本番移行・保守へ ▶</a>
 </div>
 </section>
+
+<section class="card" id="update-20261011"><h2>🧪 2026年10月11日 月次請求・管理画面の検証結果</h2>
+<table><thead><tr><th>試験</th><th>結果</th></tr></thead><tbody><tr><td>月次集計・2026年10月</td><td>利用実績7件、利用あり0件、利用なし0件、未確定7件、臨時徴収2,300円、最終請求額2,300円、請求確定不可。</td></tr><tr><td>個別TEST PDF（Ver.08）</td><td>test005：700円、test006：200円。いずれも「TEST・未確定／送付・引落禁止」表示を確認。</td></tr><tr><td>HTML生成テスト</td><td><code>testMonthlyAdminDoGet()</code> 実行正常終了。</td></tr><tr><td>TEST画面表示</td><td><code>/dev?action=monthly_admin</code> でVer.02表示成功。</td></tr><tr><td>実データ読込</td><td>月次管理画面で2026年10月の集計値と未確定の請求停止状態を表示できた。</td></tr><tr><td>正式請求書PDFの画面生成</td><td>未接続・ボタン無効。正式運用のテストは未実施。</td></tr><tr><td><code>/exec</code> 公開経路</td><td>表示エラーが発生。原因未確定・要追加検証。</td></tr></tbody></table>
+<p><strong>次回試験：</strong>MonthlyAdmin.html Ver.03から <code>monthlyAdminRunSummary(month)</code> を呼び出し、再集計後の数値・月切替・未確定時の停止・エラー処理を確認します。実績を恣意的に確定へ変更してPDFを作成しないこと。</p>
+<p class="small">記録日：2026年10月11日／対象：Sumire Portal TEST。確認済み事項と未実装・未解決事項を区別して記載。</p>
+</section>
 </main>
 <footer>
 <p>🌸 <strong>Sumire Lab</strong></p>

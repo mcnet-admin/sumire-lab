@@ -320,6 +320,12 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <a class="menu-card" href="06_development_maintenance_03.html">06-03 データ構造へ ▶</a>
 </div>
 </section>
+
+<section class="card" id="update-20261011"><h2>🧩 2026年10月11日 月次請求関連スクリプト</h2>
+<table><thead><tr><th>ファイル</th><th>役割と状況</th></tr></thead><tbody><tr><td><code>MonthlySummary.gs</code> Ver.06</td><td>利用実績・通常料金・臨時徴収を月次集計表へ反映。指定月に応じて集計。</td></tr><tr><td><code>ExtraChargesRoad.gs</code></td><td>臨時徴収の登録・変更・取消・園児別加算。既存処理を維持。</td></tr><tr><td><code>InvoiceGenerator.gs</code> Ver.08</td><td>請求書PDF生成。未確定データの正式請求を停止し、2026年10月の限定TESTプレビューを分離。</td></tr><tr><td><code>MonthlyAdmin.html</code> Ver.02</td><td>年月選択、月次集計の表示、臨時徴収の操作。集計実行・PDF作成ボタンは現時点で無効。</td></tr><tr><td><code>MonthlyAdminServer.gs</code> Ver.01</td><td><code>monthlyAdminGetSummary(month)</code>／<code>monthlyAdminRunSummary(month)</code> を提供。後者の画面呼出しは次工程。</td></tr><tr><td><code>ReservationWebApp.gs</code></td><td><code>doGet(e)</code> の <code>action=monthly_admin</code> で <code>MonthlyAdmin</code> を表示。<code>page=</code> ではない。</td></tr></tbody></table>
+<p><strong>実装原則：</strong>HTML側では請求額を独自計算せず、MonthlySummary.gsが作成した集計結果を受け取り、InvoiceGenerator.gsがその結果を利用します。Webアプリ公開後は新バージョンのデプロイ更新が必要です。</p>
+<p class="small">記録日：2026年10月11日／対象：Sumire Portal TEST。確認済み事項と未実装・未解決事項を区別して記載。</p>
+</section>
 </main>
 <footer>
 <p>🌸 <strong>Sumire Lab</strong></p>

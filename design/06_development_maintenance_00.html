@@ -116,6 +116,13 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <strong>05は園側の業務・操作、06はシステム構成・設定・検証・保守を記録します。</strong><br/>
   園スタッフが日常運用で覚える必要のない技術情報は、今後この06系列へ集約します。
 </div>
+<section class="card" aria-labelledby="latest-development-title" style="border:2px solid #b6a0da;background:#fcfaff;">
+  <div class="timeline-date">最新の開発記録　2026年10月11日</div>
+  <h2 id="latest-development-title">📌 最新の開発状況</h2>
+  <p><strong>月次管理画面と月次集計データの接続に成功しました。</strong> 2026年10月のTESTでは、利用実績7件・未確定7件・臨時徴収2,300円を確認しています。未確定のため請求確定不可で、正式PDFの画面生成は無効です。</p>
+  <p><strong>次回の再開地点：</strong><code>MonthlyAdmin.html Ver.03</code> で「月次集計を実行」ボタンを接続して検証します。現在はTEST段階であり、本番移行はしていません。</p>
+  <p style="margin-bottom:0;"><a class="menu-card" href="#update-20261011">▼ 10月11日の詳細記録・検証結果を見る</a></p>
+</section>
 <section class="card">
 <h2>🌸 05と06の役割を分けます</h2>
 <div class="grid">
@@ -381,13 +388,22 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <p>園の日常運用・操作については05系列をご覧ください。</p>
 <p><a class="menu-card" href="05_implementation_test_00.html">◀ 05 システムの概要へ</a></p>
 </section>
+
+<section class="card" id="update-20261011"><h2>📌 2026年10月11日 開発進捗・次回再開地点</h2>
+<p><strong>本日時点の成果：</strong>月次集計の実データを園スタッフ用の月次管理画面（TEST Ver.02）へ表示できることを確認しました。月次請求処理の汎用化は進行中であり、正式運用開始を意味しません。</p>
+<table><thead><tr><th>対象</th><th>到達点</th></tr></thead><tbody>
+<tr><td>MonthlySummary.gs Ver.06</td><td>月次集計・臨時徴収の統合を確認</td></tr><tr><td>InvoiceGenerator.gs Ver.08</td><td>未確定TEST用請求書PDFをtest005・test006で確認</td></tr><tr><td>MonthlyAdmin.html Ver.02</td><td>任意年月の選択・実データ表示に対応</td></tr><tr><td>MonthlyAdminServer.gs Ver.01</td><td>月次集計結果読込のサーバーAPIを追加</td></tr>
+</tbody></table><p><strong>2026年10月TEST表示：</strong>利用実績7件、未確定7件、臨時徴収合計2,300円、最終請求額2,300円、請求確定不可。PDF作成の画面ボタンは無効。</p>
+<p><strong>次回：</strong>MonthlyAdmin.html Ver.03で「月次集計を実行」ボタンを接続し、指定月の再集計、月変更時の整合性、権限確認をテストします。長期休暇・キャンセル料金の正式集計は別工程です。</p>
+<p class="small">記録日：2026年10月11日／対象：Sumire Portal TEST。確認済み事項と未実装・未解決事項を区別して記載。</p>
+</section>
 </main>
 <footer>
 <p>🌸 <strong>Sumire Lab</strong></p>
 <p>先生方の時間を、子どもたちの笑顔へ。</p>
 <p>開発・保守担当者向け 技術記録</p>
 <p>© McLean Kindergarten</p>
-<p>Version 2.0<br/>Last Update 2026-10-02</p>
+<p>Version 2.0<br/>Last Update 2026-10-11</p>
 </footer>
 </body>
 </html>

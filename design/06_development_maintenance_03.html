@@ -343,6 +343,13 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <a class="menu-card" href="06_development_maintenance_04.html">06-04 自動処理・検証記録へ ▶</a>
 </div>
 </section>
+
+<section class="card" id="update-20261011"><h2>🗂️ 2026年10月11日 月次集計と臨時徴収の接続結果</h2>
+<p><code>monthly_summary_TEST</code> には園児別の「通常利用料金」「臨時徴収」「最終請求額」を保持し、画面とPDFが共通の集計結果を参照します。<code>extra_charges_TEST</code> では有効（active）な徴収を加算し、取消済み（cancelled）は除外します。</p>
+<table><thead><tr><th>TEST対象</th><th>臨時徴収内訳</th><th>請求額（未確定）</th></tr></thead><tbody><tr><td>test005</td><td>全園児共通200円＋個別500円</td><td>700円</td></tr><tr><td>test006</td><td>全園児共通200円、取消済み100円は除外</td><td>200円</td></tr><tr><td>2026年10月・9園児合計</td><td>共通200円×9＋個別500円</td><td>2,300円</td></tr></tbody></table>
+<p><strong>留意：</strong>2026年10月の通常利用実績は7件とも未確定で、上記金額は確認用です。また <code>monthly_summary_TEST</code> は保存された対象月の集計結果を参照する方式のため、画面の対象月と保存済み対象月の一致を検証します。複数月の履歴保存仕様は今後の保守検討項目です。</p>
+<p class="small">記録日：2026年10月11日／対象：Sumire Portal TEST。確認済み事項と未実装・未解決事項を区別して記載。</p>
+</section>
 </main>
 <footer>
 <p>🌸 <strong>Sumire Lab</strong></p>
