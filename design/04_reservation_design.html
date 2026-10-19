@@ -339,7 +339,7 @@ footer p{margin:.45rem 0}
 <tbody>
 <tr><td>通常保育</td><td><strong>なし</strong></td><td>利用日前日の15:30まで</td></tr>
 <tr><td>午前保育</td><td><strong>なし</strong></td><td>利用日前日の15:30まで</td></tr>
-<tr><td>長期休暇</td><td><strong>利用日の7日前以降は、予約料金の全額</strong></td><td>利用日前日の15:30まで</td></tr>
+<tr><td>長期休暇</td><td><strong>利用日の7日前以降は、取消時点の予約料金の全額（早朝預かりを予約していた場合は200円も含む）</strong></td><td>利用日前日の15:30まで</td></tr>
 </tbody>
 </table>
 <div class="note" style="margin-top:1rem;">
@@ -350,7 +350,17 @@ footer p{margin:.45rem 0}
 </p>
 <p style="margin-bottom:0;">15:30は料金発生の境界ではなく、園が翌日の利用予定者リストを確定する運用時刻です。</p>
 </div>
-<p style="margin-top:1rem;margin-bottom:0;">キャンセル料の請求反映は、利用実績・集計・請求処理の実装工程で行います。</p>
+<div class="note" style="margin-top:1rem; background:#f3fbf4; border-color:#81c784;">
+<strong>2026年10月19日・副園長回答による確定事項</strong>
+<p>通常保育日・午前保育日のキャンセル料金は発生しません。長期休暇は、利用日の7日前以降に取り消した場合、<strong>取消時点で予約されていた預かり料金の100％をキャンセル料</strong>とします。<strong>早朝預かり（8:00〜8:30、200円）を予約していた場合、その200円もキャンセル料に含めます。</strong></p>
+<table>
+<thead><tr><th>取消前の長期休暇予約（例）</th><th>7日前以降のキャンセル料</th></tr></thead>
+<tbody><tr><td>通常預かり 1,400円・早朝預かりなし</td><td>1,400円</td></tr>
+<tr><td>通常預かり 1,400円・早朝預かりあり（200円）</td><td><strong>1,600円</strong></td></tr></tbody>
+</table>
+<p style="margin-bottom:0;">根拠：副園長先生の2026年10月19日付メール回答。料金規則は<strong>確定</strong>していますが、取消時の料金保存・月次集計・請求書PDFへの反映は<strong>これから実装・TESTする工程</strong>です（未検証の処理を実装済みとは記載しません）。</p>
+</div>
+<p style="margin-top:1rem;margin-bottom:0;">今後の実装では、取消時点の予約内容（終了時刻・早朝預かりの有無）、取消日時、適用料金を請求用に保持し、月次集計と請求書PDFまで整合を検証します。なお、7日前の境界計算や既存データとの整合は実装時の検証項目です。</p>
 </section><section class="card" style="border:2px solid #2e7d32;background:#f3fbf4;">
 <h2>✅ 2026年9月20日：TEST実装と予約設計を照合しました</h2>
 <ul>

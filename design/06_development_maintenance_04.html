@@ -263,6 +263,21 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
     日付・時刻の条件を再現するために本体コードへTEST用分岐を混在させず、
     検証専用ファイルで安全に確認できるようにします。
   </div>
+</section><section class="card" id="cancellation-fee-20261019" style="border:2px solid #6f42c1;background:#fbf8ff;">
+<span class="timeline-date">2026年10月19日　副園長回答による仕様確定</span>
+<h2>💴 取消料金・早朝預かり料金の確定仕様と追加TEST</h2>
+<p>副園長先生のメール回答により、<strong>通常保育日・午前保育日は取消料金なし</strong>、<strong>長期休暇中は利用日の7日前以降の取消で予約時点の預かり料金の100％を請求</strong>する方針を再確認しました。長期休暇で早朝預かり（8:00～8:30・200円）を申し込んでいた場合、その<strong>200円も取消料金に含めます</strong>。</p>
+<div style="overflow-x:auto"><table><thead><tr><th>区分・条件</th><th>キャンセル料</th><th>仕様の根拠／状態</th></tr></thead><tbody>
+<tr><td>通常保育日・午前保育日（取消）</td><td>0円</td><td>副園長回答で確定</td></tr>
+<tr><td>長期休暇・利用日の8日前までの取消</td><td>0円</td><td>既存の7日前境界ルール</td></tr>
+<tr><td>長期休暇・利用日の7日前以降の取消（早朝なし）</td><td>通常の予約料金100％</td><td>副園長回答で確定</td></tr>
+<tr><td>長期休暇・利用日の7日前以降の取消（早朝あり）</td><td>通常の予約料金100％＋200円</td><td>副園長回答で確定</td></tr>
+</tbody></table></div>
+<p><strong>副園長回答の金額例：</strong>通常の預かり料金1,400円＋早朝預かり200円＝キャンセル料金<strong>1,600円</strong>。</p>
+<div class="note"><strong>実装・検証状況の区別：</strong>従来の「7日前」および「前日15:30」の境界判定TEST記録はそのまま維持します。ただし、<strong>早朝預かりを含む取消金額の確定保存・月次集計・園児別請求書PDFへの反映は未実施・未検証</strong>です。過去の「確認済み」は、この追加料金の請求処理を検証済みであることを意味しません。</div>
+<h3>今後の実装・総合TESTで確認する内容</h3>
+<ol><li>取消時点の予約内容、取消日時、早朝預かりの有無、請求対象額を追跡できる形で保存する。</li><li>長期休暇の「8日前まで＝0円」「7日前以降＝予約料金100％（早朝ありは＋200円）」および平日0円を照合する。</li><li>取消を含む月次集計で、通常利用料とキャンセル料金を区分し、請求額が重複計上されないことを確認する。</li><li>園児別請求書PDFで料金の内訳と総額を照合する。</li></ol>
+<p class="small">注：長期休暇の「7日前」の日付境界の詳細は既存の境界条件設計に従い、実装時に照合する。Web受付の前日15:30の境界とは別条件。</p>
 </section>
 <section class="card">
 <h2>📊 月末集計の検証結果</h2>
@@ -347,7 +362,6 @@ footer{text-align:center;padding:24px;color:#666;font-size:13px}
 <a class="menu-card" href="06_development_maintenance_05.html">06-05 本番移行・保守へ ▶</a>
 </div>
 </section>
-
 <section class="card" id="update-20261011"><h2>🧪 2026年10月11日 月次請求・管理画面の検証結果</h2>
 <table><thead><tr><th>試験</th><th>結果</th></tr></thead><tbody><tr><td>月次集計・2026年10月</td><td>利用実績7件、利用あり0件、利用なし0件、未確定7件、臨時徴収2,300円、最終請求額2,300円、請求確定不可。</td></tr><tr><td>個別TEST PDF（Ver.08）</td><td>test005：700円、test006：200円。いずれも「TEST・未確定／送付・引落禁止」表示を確認。</td></tr><tr><td>HTML生成テスト</td><td><code>testMonthlyAdminDoGet()</code> 実行正常終了。</td></tr><tr><td>TEST画面表示</td><td><code>/dev?action=monthly_admin</code> でVer.02表示成功。</td></tr><tr><td>実データ読込</td><td>月次管理画面で2026年10月の集計値と未確定の請求停止状態を表示できた。</td></tr><tr><td>正式請求書PDFの画面生成</td><td>未接続・ボタン無効。正式運用のテストは未実施。</td></tr><tr><td><code>/exec</code> 公開経路</td><td>表示エラーが発生。原因未確定・要追加検証。</td></tr></tbody></table>
 <p><strong>次回試験：</strong>MonthlyAdmin.html Ver.03から <code>monthlyAdminRunSummary(month)</code> を呼び出し、再集計後の数値・月切替・未確定時の停止・エラー処理を確認します。実績を恣意的に確定へ変更してPDFを作成しないこと。</p>
